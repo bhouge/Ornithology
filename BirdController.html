@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+
+<div id="buttons" align="center">
+
+<button id="listen" class="off">Listen</button>
+<button id="nudge" class="off">Nudge</button>
+
+</div>
+
+<p>
+Control birds here.
+</p>
+
+<script type="text/javascript">
+
+var cues2Play = { cue1 : "off", cue2 : "on" };
+
+updateCues();
+
+function updateCues(){
+	var ajaxRequest;  // The variable that makes Ajax possible!
+	
+	try{
+		// Opera 8.0+, Firefox, Safari
+		ajaxRequest = new XMLHttpRequest();
+	} catch(e) {
+		// Internet Explorer Browsers
+		try{
+			ajaxRequest = new ActiveXObject("Msxml2.XMLHTTP");
+		} catch(e) {
+			try{
+				ajaxRequest = new ActiveXObject("Microsoft.XMLHTTP");
+			} catch(e) {
+				// Something went wrong
+				alert("There appears to be a problem with your browser.");
+				return false;
+			}
+		}
+	}
+	
+	var json = JSON.stringify(cues2Play);
+	var encoded = btoa(json);
+	
+	ajaxRequest.open("POST", "Birds.php", true);
+	ajaxRequest.setRequestHeader('Content-type','application/x-www-form-urlencoded');
+	ajaxRequest.send('var=' + encoded);
+}
+
+</script>
+
+</body>
+</html>
