@@ -19,5 +19,164 @@ This is where fascinating things shall transpire.
 
 <script src="scripts/BufferLoader.js"></script>
 
+<script type="text/javascript">
+
+var cues2Play = { cue0: "off", cue1 : "off" };
+
+var button0 = document.getElementById("listen");
+var button1 = document.getElementById("nudge");
+
+button0.onclick = pollForChanges;
+button1.onclick = button1Clicked;
+
+var AudioContext = window.AudioContext || window.webkitAudioContext;
+var audioCtx = new AudioContext();
+
+var gainNode = audioCtx.createGain();
+gainNode.connect(audioCtx.destination);
+gainNode.gain.value = 0.5;
+
+var soundNode;
+
+var mySoundFileBuffer0, mySoundFileBuffer1;
+var mySoundFileURL0 = 'sounds/Pan_1.112 2.mp4';
+var mySoundFileURL1 = 'sounds/El caramelo de chocolate.97 1.mp4';
+
+var request0 = new XMLHttpRequest();
+request0.open('GET', mySoundFileURL0, true);
+request0.responseType = 'arraybuffer';
+request0.onload = function() {
+	audioCtx.decodeAudioData(request0.response, function(buffer) {
+		mySoundFileBuffer0 = buffer;
+	}, function(error) {
+        alert('decodeAudioData error!');
+    });
+}
+request0.send();
+
+var request1 = new XMLHttpRequest();
+request1.open('GET', mySoundFileURL1, true);
+request1.responseType = 'arraybuffer';
+request1.onload = function() {
+	audioCtx.decodeAudioData(request1.response, function(buffer) {
+		mySoundFileBuffer1 = buffer;
+	}, function(error) {
+        alert('decodeAudioData error!');
+    });
+}
+request1.send();
+
+function button0Clicked() {
+	soundNode = audioCtx.createBufferSource();
+	soundNode.buffer = mySoundFileBuffer0;
+	soundNode.connect(gainNode);
+	soundNode.start();
+}
+
+function button1Clicked() {
+	soundNode = audioCtx.createBufferSource();
+	soundNode.buffer = mySoundFileBuffer1;
+	//soundNode.playbackRate.value = 0.5;
+	soundNode.connect(gainNode);
+	// you can also play back just part of the sound; check the documentation
+	// https://developer.mozilla.org/en-US/docs/Web/API/AudioBufferSourceNode.start
+	// parameters are when to start the sound, how far into the sound to start, and how much of the sound to play
+	// (note that the actual duration is a combination of the third parameter and playback rate)
+	// observe how you get the current time from the audio context
+	//alert(audioCtx.currentTime);
+	//soundNode.start(audioCtx.currentTime + 1., 0.5, 0.1);
+	soundNode.start();
+	// loops with loop points are also possible; see documentation
+}
+
+function pollForChanges(force) {
+	getCues(force);
+	window.setTimeout(pollForChanges, 1000., false);
+}
+
+function getCues(force) {
+	var xhr;
+	try{
+		// Opera 8.0+, Firefox, Safari
+		xhr = new XMLHttpRequest();
+	} catch(e) {
+		// Internet Explorer Browsers
+		try{
+			xhr = new ActiveXObject("Msxml2.XMLHTTP");
+		} catch(e) {
+			try{
+				xhr = new ActiveXObject("Microsoft.XMLHTTP");
+			} catch(e) {
+				alert("Your browser broke!");
+				return false;
+			}
+		}
+	}
+	xhr.onreadystatechange = function() {
+		//alert("readyState: " + xhr.readyState + "; status: " + xhr.status);
+		if (xhr.readyState == 4) {
+			if (xhr.status == 200) {
+				try {
+					var newCues2Play = JSON.parse(xhr.responseText);
+					if (cues2Play.cue0 != newCues2Play.cue0) {
+						cues2Play.cue0 = newCues2Play.cue0;
+						if (cues2Play.cue0 == "on") {
+							button0Clicked();
+						}
+						//alert(cues2Play.cue0);
+					}
+					if (cues2Play.cue1 != newCues2Play.cue1) {
+						cues2Play.cue1 = newCues2Play.cue1;
+						if (cues2Play.cue1 == "on") {
+							button1Clicked();
+						}
+						//alert(cues2Play.cue1);
+					}
+					
+					/*
+					// took out the buffersAreLoaded check, as that happens back when you first click the Listen button
+					for (var cue in newCues2Play) {
+							if (cues2Play[cue] != newCues2Play[cue]) {
+								cues2Play[cue] = newCues2Play[cue];
+								var cueIndex = cue.slice(3);
+								if (cue != "panic") {
+									if (cues2Play[cue] == "on") {
+										buttonActivated(cueIndex);
+									} else {
+										buttonDeactivated(cueIndex);
+									}
+								} else {
+									//alert("Start panicking!");
+									stopEverything();
+								}
+							}
+						}
+					*/
+				} catch(e) {
+					// Of course we don't want to alert this; we want it to fail unobtrusively,
+					// since all it means is that we got a bad json file... 
+					var error = e;
+				}
+			}
+		}
+	}
+	
+	if (force) {
+		// Adding a time stamp gives it a unique name which should force the browser to actually read the json file
+		// instead of using a cached version
+		var currentTime = new Date();
+		var timeStamp = currentTime.getTime();
+		xhr.open('GET', 'cues.json?_=' + timeStamp, true);
+		xhr.setRequestHeader('Cache-Control', 'no-cache');
+	} else {
+		xhr.open('GET', 'cues.json', true);
+	}
+
+	xhr.overrideMimeType("application/json");
+	xhr.send(null);
+}
+
+</script>
+
 </body>
 </html>

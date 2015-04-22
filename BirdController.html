@@ -8,8 +8,8 @@
 
 <div id="buttons" align="center">
 
-<button id="listen" class="off">Listen</button>
-<button id="nudge" class="off">Nudge</button>
+<button id="cue0" class="off">off</button>
+<button id="cue1" class="off">off</button>
 
 </div>
 
@@ -19,11 +19,37 @@ Control birds here.
 
 <script type="text/javascript">
 
-var cues2Play = { cue1 : "off", cue2 : "on" };
+var cues2Play = { cue0: "off", cue1 : "off" };
 
 updateCues();
 
+function buttonClicked() {
+	alert("clicked!");
+}
+
+var button0 = document.getElementById("cue0");
+var button1 = document.getElementById("cue1");
+
+button0.onclick = clickButton;
+button1.onclick = clickButton;
+	
+function clickButton() {
+	if(this.className == "off") {
+		this.className = "on";
+		this.innerHTML = "on";
+		cues2Play[this.id] = "on";
+		//playBuffer(0);
+	} else {
+		this.className = "off";
+		this.innerHTML = "off";
+		cues2Play[this.id] = "off";
+	}
+	updateCues();
+}
+
+
 function updateCues(){
+	//alert(cues2Play.cue0 + cues2Play.cue1);
 	var ajaxRequest;  // The variable that makes Ajax possible!
 	
 	try{
