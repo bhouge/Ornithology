@@ -21,27 +21,38 @@ This is where fascinating things shall transpire.
 
 <script type="text/javascript">
 
+// initializing our cues2Play variable
 var cues2Play = { cue0: "off", cue1 : "off" };
 
-var button0 = document.getElementById("listen");
-var button1 = document.getElementById("nudge");
+// getting references to our buttons from the parent object
+// note that I have renamed these from what we used in class to make the code clearer
+var listenButton = document.getElementById("listen");
+// nudgeButton doesn't do anything yet
+var nudgeButton = document.getElementById("nudge");
 
-button0.onclick = pollForChanges;
-button1.onclick = button1Clicked;
+// setting up what functions get called when the buttons are clicked
+// for now, nudgeButton just plays a sound as a test.
+listenButton.onclick = listenButtonClicked;
+nudgeButton.onclick = button1Clicked;
 
+// setting up our audio context and creating our master gain
 var AudioContext = window.AudioContext || window.webkitAudioContext;
 var audioCtx = new AudioContext();
 
 var gainNode = audioCtx.createGain();
 gainNode.connect(audioCtx.destination);
-gainNode.gain.value = 0.5;
+gainNode.gain.value = 1.0;
 
 var soundNode;
 
+// manually loading some sounds (courtesy of Neil Leonard)
 var mySoundFileBuffer0, mySoundFileBuffer1;
 var mySoundFileURL0 = 'sounds/Pan_1.112 2.mp4';
 var mySoundFileURL1 = 'sounds/El caramelo de chocolate.97 1.mp4';
 
+// for our first test, we copied an identical function twice, which is bad practice
+// later we'll look at how to replace this with our BufferLoader script
+// check out the PlayFile3 demo for a description of everything that's going on here
 var request0 = new XMLHttpRequest();
 request0.open('GET', mySoundFileURL0, true);
 request0.responseType = 'arraybuffer';
@@ -66,9 +77,12 @@ request1.onload = function() {
 }
 request1.send();
 
+// See the comments in the PlayFile3 demo to review what's going on each of these steps
+// And for some other options of what you can do when playing back a sound
 function button0Clicked() {
 	soundNode = audioCtx.createBufferSource();
 	soundNode.buffer = mySoundFileBuffer0;
+	//soundNode.playbackRate.value = 0.5;
 	soundNode.connect(gainNode);
 	soundNode.start();
 }
@@ -78,15 +92,22 @@ function button1Clicked() {
 	soundNode.buffer = mySoundFileBuffer1;
 	//soundNode.playbackRate.value = 0.5;
 	soundNode.connect(gainNode);
-	// you can also play back just part of the sound; check the documentation
-	// https://developer.mozilla.org/en-US/docs/Web/API/AudioBufferSourceNode.start
-	// parameters are when to start the sound, how far into the sound to start, and how much of the sound to play
-	// (note that the actual duration is a combination of the third parameter and playback rate)
-	// observe how you get the current time from the audio context
-	//alert(audioCtx.currentTime);
-	//soundNode.start(audioCtx.currentTime + 1., 0.5, 0.1);
 	soundNode.start();
-	// loops with loop points are also possible; see documentation
+}
+
+// adding an intermediary function to extend what we did in class,
+// so that instead of our nudgeButton calling pollForChanges directly, we let it toggle polling on/off
+
+function listenButtonClicked() {
+	if(this.className == "off") {
+		this.className = "on";
+		this.innerHTML = "Stop Listening";
+		// this line used to be directly linked to the listenButton's onclick property
+		pollForChanges();
+	} else {
+		this.className = "off";
+		this.innerHTML = "Listen";
+	}
 }
 
 function pollForChanges(force) {

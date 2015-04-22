@@ -19,39 +19,48 @@ Control birds here.
 
 <script type="text/javascript">
 
+// declare and initialize our cues2Play variable
 var cues2Play = { cue0: "off", cue1 : "off" };
 
+// when the page is first loaded, write a new cues.json script with the default values
 updateCues();
+
 
 function buttonClicked() {
 	alert("clicked!");
 }
 
+// get access to the buttons as objects
 var button0 = document.getElementById("cue0");
 var button1 = document.getElementById("cue1");
 
+// assign what will happen when the buttons are clicked
 button0.onclick = clickButton;
 button1.onclick = clickButton;
-	
+
+// a handy function that will work for whichever button is clicked, avoiding code duplication
 function clickButton() {
+	// this refers to whichever button is clicked
 	if(this.className == "off") {
 		this.className = "on";
 		this.innerHTML = "on";
+		// a good use of the object's array notation to get an object
+		// here we can't use the dot notation, since we don't know what the property is
 		cues2Play[this.id] = "on";
-		//playBuffer(0);
 	} else {
 		this.className = "off";
 		this.innerHTML = "off";
 		cues2Play[this.id] = "off";
 	}
+	// write a new cues.json file
 	updateCues();
 }
 
-
 function updateCues(){
-	//alert(cues2Play.cue0 + cues2Play.cue1);
-	var ajaxRequest;  // The variable that makes Ajax possible!
+	// The variable that makes Ajax possible!
+	var ajaxRequest;
 	
+	// try a bunch of different versions of the object to support different browsers
 	try{
 		// Opera 8.0+, Firefox, Safari
 		ajaxRequest = new XMLHttpRequest();
@@ -70,11 +79,17 @@ function updateCues(){
 		}
 	}
 	
+	// turn the object into a JSON string
 	var json = JSON.stringify(cues2Play);
+	// compress it from a "binary string" to 64bit ASCII
+	// note how the php file does the inverse
 	var encoded = btoa(json);
 	
+	// note that here we're using "POST" instead of "GET", which is what the index.html file uses
 	ajaxRequest.open("POST", "Birds.php", true);
+	// set the content type
 	ajaxRequest.setRequestHeader('Content-type','application/x-www-form-urlencoded');
+	// prepend "var=" for the php script; see how it parses data it receives based on this prefix
 	ajaxRequest.send('var=' + encoded);
 }
 
