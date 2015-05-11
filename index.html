@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Ornithology</title>
+<title>Ornithological Blogpoem</title>
 </head>
 <body>
 
@@ -14,7 +14,9 @@
 </div>
 
 <p>
-This is where fascinating things shall transpire.
+"Ornithological Blogpoem" by
+<a href="https://twitter.com/egabbert">Elisa Gabbert</a>.
+
 </p>
 
 <script src="scripts/BufferLoader.js"></script>
@@ -22,18 +24,17 @@ This is where fascinating things shall transpire.
 <script type="text/javascript">
 
 // initializing our cues2Play variable
-var cues2Play = { cue0: "off", cue1 : "off" };
+var cues2Play = { cue0: "off", cue1 : "off", pitch : 1. };
 
 // getting references to our buttons from the parent object
-// note that I have renamed these from what we used in class to make the code clearer
 var listenButton = document.getElementById("listen");
-// nudgeButton doesn't do anything yet
+// nudgeButton doesn't work yet
 var nudgeButton = document.getElementById("nudge");
 
 // setting up what functions get called when the buttons are clicked
 // for now, nudgeButton just plays a sound as a test.
 listenButton.onclick = listenButtonClicked;
-nudgeButton.onclick = button1Clicked;
+nudgeButton.onclick = nudgeButtonClicked;
 
 // setting up our audio context and creating our master gain
 var AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -45,59 +46,83 @@ gainNode.gain.value = 1.0;
 
 var soundNode;
 
-// manually loading some sounds (courtesy of Neil Leonard)
-var mySoundFileBuffer0, mySoundFileBuffer1;
-var mySoundFileURL0 = 'sounds/Pan_1.112 2.mp4';
-var mySoundFileURL1 = 'sounds/El caramelo de chocolate.97 1.mp4';
+var fileList = ['birds01.wav', 'birds02.wav', 'birds03.wav'];
+      
+var audioBuffers = [];
 
-// for our first test, we copied an identical function twice, which is bad practice
-// later we'll look at how to replace this with our BufferLoader script
-// check out the PlayFile3 demo for a description of everything that's going on here
-var request0 = new XMLHttpRequest();
-request0.open('GET', mySoundFileURL0, true);
-request0.responseType = 'arraybuffer';
-request0.onload = function() {
-	audioCtx.decodeAudioData(request0.response, function(buffer) {
-		mySoundFileBuffer0 = buffer;
-	}, function(error) {
-        alert('decodeAudioData error!');
-    });
+function getRandomFileNames(fileList, desiredFileNumber) {
+	var randomFiles = [];
+	if (fileList.length >= desiredFileNumber) {
+		var currentFile;
+		while (randomFiles.length < desiredFileNumber) {
+			var newFileIndex = Math.floor(Math.random() * fileList.length);
+			newFile = fileList[newFileIndex];
+			if (randomFiles.indexOf(newFile) < 0) {
+				randomFiles.push(newFile);
+			}
+		}
+	} else {
+		randomFiles = fileList;
+	}
+	return randomFiles;
 }
-request0.send();
 
-var request1 = new XMLHttpRequest();
-request1.open('GET', mySoundFileURL1, true);
-request1.responseType = 'arraybuffer';
-request1.onload = function() {
-	audioCtx.decodeAudioData(request1.response, function(buffer) {
-		mySoundFileBuffer1 = buffer;
-	}, function(error) {
-        alert('decodeAudioData error!');
-    });
+var randomFiles = getRandomFileNames(fileList, 2);
+//alert(randomFiles);
+
+bufferLoader = new BufferLoader(audioCtx, 
+		'sounds/uncompressed/',
+		randomFiles, 
+		 finishedLoading);
+bufferLoader.load();
+
+function finishedLoading(bufferList) {
+	for (var i = 0; i < bufferList.length; ++i) {
+		audioBuffers[i] = bufferList[i];
+	}
+	buffersAreLoaded = true;
+	//alert(audioBuffers);
 }
-request1.send();
 
 // See the comments in the PlayFile3 demo to review what's going on each of these steps
 // And for some other options of what you can do when playing back a sound
 function button0Clicked() {
-	soundNode = audioCtx.createBufferSource();
-	soundNode.buffer = mySoundFileBuffer0;
-	//soundNode.playbackRate.value = 0.5;
-	soundNode.connect(gainNode);
-	soundNode.start();
+	playIntermittentBuffer(0);
 }
 
 function button1Clicked() {
+	playIntermittentBuffer(1);
+}
+
+function playIntermittentBuffer(bufferIndex) {
+	playBuffer(bufferIndex);
+	var cueName = "cue" + bufferIndex;
+	var randomPause = Math.random() * 1000. + 1000.;
+	if (cues2Play[cueName] == "on") {
+		// Note that passing functions as strings presents security risks
+		// This will be replaced with the IntermittentSound functionality of Lysias
+		window.setTimeout('playIntermittentBuffer(' + bufferIndex + ')', randomPause);
+	}
+}
+
+function playBuffer(bufferIndex) {
 	soundNode = audioCtx.createBufferSource();
-	soundNode.buffer = mySoundFileBuffer1;
-	//soundNode.playbackRate.value = 0.5;
+	soundNode.buffer = audioBuffers[bufferIndex];
+	
+	var randomPitch = cues2Play.pitch;
+	//alert(randomPitch);
+	
+	soundNode.playbackRate.value = randomPitch;
 	soundNode.connect(gainNode);
 	soundNode.start();
 }
 
-// adding an intermediary function to extend what we did in class,
-// so that instead of our nudgeButton calling pollForChanges directly, we let it toggle polling on/off
+// for now, nudgeButton only plays a sound as a test
+function nudgeButtonClicked() {
+	playBuffer(1);
+}
 
+// when the listenButton is clicked, we start start polling for changes in the json file
 function listenButtonClicked() {
 	if(this.className == "off") {
 		this.className = "on";
@@ -128,7 +153,7 @@ function getCues(force) {
 			try{
 				xhr = new ActiveXObject("Microsoft.XMLHTTP");
 			} catch(e) {
-				alert("Your browser broke!");
+				alert("Your browser apparently does not support AJAX.");
 				return false;
 			}
 		}
@@ -139,6 +164,7 @@ function getCues(force) {
 			if (xhr.status == 200) {
 				try {
 					var newCues2Play = JSON.parse(xhr.responseText);
+					cues2Play.pitch = newCues2Play.pitch;
 					if (cues2Play.cue0 != newCues2Play.cue0) {
 						cues2Play.cue0 = newCues2Play.cue0;
 						if (cues2Play.cue0 == "on") {
@@ -155,7 +181,6 @@ function getCues(force) {
 					}
 					
 					/*
-					// took out the buffersAreLoaded check, as that happens back when you first click the Listen button
 					for (var cue in newCues2Play) {
 							if (cues2Play[cue] != newCues2Play[cue]) {
 								cues2Play[cue] = newCues2Play[cue];
@@ -183,7 +208,7 @@ function getCues(force) {
 	}
 	
 	if (force) {
-		// Adding a time stamp gives it a unique name which should force the browser to actually read the json file
+		// Adding a time stamp gives it a unique name which should force the browser to really read the json file
 		// instead of using a cached version
 		var currentTime = new Date();
 		var timeStamp = currentTime.getTime();

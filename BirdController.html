@@ -15,12 +15,17 @@
 
 <p>
 Control birds here.
+A refinement of our last class exercise.
+We randomly associate a file with each button when the page loads.
+When the left button is turned on, it sets the pitch multiplier to 8.
+When the right button is turned on, it sets the pitch multipleir to 1.
+So you can control the pitch based on whichever button was turned on most recently. 
 </p>
 
 <script type="text/javascript">
 
 // declare and initialize our cues2Play variable
-var cues2Play = { cue0: "off", cue1 : "off" };
+var cues2Play = { cue0: "off", cue1 : "off", pitch : 1. };
 
 // when the page is first loaded, write a new cues.json script with the default values
 updateCues();
@@ -47,6 +52,12 @@ function clickButton() {
 		// a good use of the object's array notation to get an object
 		// here we can't use the dot notation, since we don't know what the property is
 		cues2Play[this.id] = "on";
+		if (this.id == "cue0") {
+			cues2Play.pitch = 4.;
+		} else {
+			cues2Play.pitch = 1.;
+		}
+		
 	} else {
 		this.className = "off";
 		this.innerHTML = "off";
