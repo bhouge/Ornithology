@@ -24,7 +24,7 @@
 <script type="text/javascript">
 
 // initializing our cues2Play variable
-var cues2Play = { cue0: "off", cue1 : "off", pitch : 1. };
+var cues2Play = { cue0: "off", cue1 : "off", cue2 : "off", pitch : 1. };
 
 // getting references to our buttons from the parent object
 var listenButton = document.getElementById("listen");
@@ -67,7 +67,7 @@ function getRandomFileNames(fileList, desiredFileNumber) {
 	return randomFiles;
 }
 
-var randomFiles = getRandomFileNames(fileList, 2);
+var randomFiles = getRandomFileNames(fileList, 3);
 //alert(randomFiles);
 
 bufferLoader = new BufferLoader(audioCtx, 
@@ -94,10 +94,14 @@ function button1Clicked() {
 	playIntermittentBuffer(1);
 }
 
+function buttonClicked(buttonNumber) {
+	playIntermittentBuffer(buttonNumber);
+}
+
 function playIntermittentBuffer(bufferIndex) {
 	playBuffer(bufferIndex);
 	var cueName = "cue" + bufferIndex;
-	var randomPause = Math.random() * 1000. + 1000.;
+	var randomPause = Math.random() * 1000. + 2000.;
 	if (cues2Play[cueName] == "on") {
 		// Note that passing functions as strings presents security risks
 		// This will be replaced with the IntermittentSound functionality of Lysias
@@ -109,10 +113,9 @@ function playBuffer(bufferIndex) {
 	soundNode = audioCtx.createBufferSource();
 	soundNode.buffer = audioBuffers[bufferIndex];
 	
-	var randomPitch = cues2Play.pitch;
-	//alert(randomPitch);
+	var cuePitch = cues2Play.pitch;
 	
-	soundNode.playbackRate.value = randomPitch;
+	soundNode.playbackRate.value = cuePitch;
 	soundNode.connect(gainNode);
 	soundNode.start();
 }
@@ -165,22 +168,23 @@ function getCues(force) {
 				try {
 					var newCues2Play = JSON.parse(xhr.responseText);
 					cues2Play.pitch = newCues2Play.pitch;
-					if (cues2Play.cue0 != newCues2Play.cue0) {
-						cues2Play.cue0 = newCues2Play.cue0;
-						if (cues2Play.cue0 == "on") {
-							button0Clicked();
+					for (var cue in newCues2Play) {
+						if (cue.slice(0, 3) == "cue") {
+							if (cues2Play[cue] != newCues2Play[cue]) {
+								cues2Play[cue] = newCues2Play[cue];
+								if (cues2Play[cue] == "on") {
+									var cueIndex = cue.slice(3);
+									//alert(cueIndex);
+									buttonClicked(cueIndex);
+								}
+							}
 						}
-						//alert(cues2Play.cue0);
-					}
-					if (cues2Play.cue1 != newCues2Play.cue1) {
-						cues2Play.cue1 = newCues2Play.cue1;
-						if (cues2Play.cue1 == "on") {
-							button1Clicked();
-						}
-						//alert(cues2Play.cue1);
+						
 					}
 					
 					/*
+					
+					// at some point I'll add back some of this functionality, specifically the panic button
 					for (var cue in newCues2Play) {
 							if (cues2Play[cue] != newCues2Play[cue]) {
 								cues2Play[cue] = newCues2Play[cue];

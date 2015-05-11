@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>Bird Controller</title>
 </head>
 <body>
 
@@ -10,6 +10,7 @@
 
 <button id="cue0" class="off">off</button>
 <button id="cue1" class="off">off</button>
+<button id="cue2" class="off">off</button>
 
 </div>
 
@@ -25,7 +26,7 @@ So you can control the pitch based on whichever button was turned on most recent
 <script type="text/javascript">
 
 // declare and initialize our cues2Play variable
-var cues2Play = { cue0: "off", cue1 : "off", pitch : 1. };
+var cues2Play = { cue0: "off", cue1 : "off", cue2 : "off", pitch : 1. };
 
 // when the page is first loaded, write a new cues.json script with the default values
 updateCues();
@@ -38,10 +39,12 @@ function buttonClicked() {
 // get access to the buttons as objects
 var button0 = document.getElementById("cue0");
 var button1 = document.getElementById("cue1");
+var button2 = document.getElementById("cue2");
 
 // assign what will happen when the buttons are clicked
 button0.onclick = clickButton;
 button1.onclick = clickButton;
+button2.onclick = clickButton;
 
 // a handy function that will work for whichever button is clicked, avoiding code duplication
 function clickButton() {
@@ -54,6 +57,8 @@ function clickButton() {
 		cues2Play[this.id] = "on";
 		if (this.id == "cue0") {
 			cues2Play.pitch = 4.;
+		} else if (this.id == "cue1") {
+			cues2Play.pitch = 16.;
 		} else {
 			cues2Play.pitch = 1.;
 		}
