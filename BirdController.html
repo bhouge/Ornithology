@@ -23,7 +23,34 @@ When the right button is turned on, it sets the pitch multipleir to 1.
 So you can control the pitch based on whichever button was turned on most recently. 
 </p>
 
+<input id="slider" type="range" min="0" max="100" value="0" oninput="showSliderValue(this.value)" onchange="updateValue(this.value)" />
+<input id="textField" type="text" value="1" onchange="textFieldChangeValue(this.value)" />
+
 <script type="text/javascript">
+
+var pitchMultiplier;
+
+var testInput;
+
+function showSliderValue(newValue)
+{
+	testInput = newValue;
+	var scaledValue = (newValue / 100.) * 31. + 1.;
+	scaledValue = Math.round(scaledValue * 100.)/100.;
+	textField.value = scaledValue;
+	pitchMultiplier = scaledValue;
+}
+
+function updateValue() {
+	cues2Play.pitch = pitchMultiplier;
+	updateCues();
+}
+
+function textFieldChangeValue(newValue) {
+	slider.value = (newValue - 1.) * (100./31.);
+	pitchMultiplier = newValue;
+	updateValue();
+}
 
 // declare and initialize our cues2Play variable
 var cues2Play = { cue0: "off", cue1 : "off", cue2 : "off", pitch : 1. };
@@ -40,6 +67,10 @@ function buttonClicked() {
 var button0 = document.getElementById("cue0");
 var button1 = document.getElementById("cue1");
 var button2 = document.getElementById("cue2");
+var textField = document.getElementById("textField")
+var slider = document.getElementById("slider")
+slider.value = 0;
+textField.value = "1.";
 
 // assign what will happen when the buttons are clicked
 button0.onclick = clickButton;
@@ -49,20 +80,12 @@ button2.onclick = clickButton;
 // a handy function that will work for whichever button is clicked, avoiding code duplication
 function clickButton() {
 	// this refers to whichever button is clicked
-	if(this.className == "off") {
+	if (this.className == "off") {
 		this.className = "on";
 		this.innerHTML = "on";
 		// a good use of the object's array notation to get an object
 		// here we can't use the dot notation, since we don't know what the property is
 		cues2Play[this.id] = "on";
-		if (this.id == "cue0") {
-			cues2Play.pitch = 4.;
-		} else if (this.id == "cue1") {
-			cues2Play.pitch = 16.;
-		} else {
-			cues2Play.pitch = 1.;
-		}
-		
 	} else {
 		this.className = "off";
 		this.innerHTML = "off";
