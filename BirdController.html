@@ -23,18 +23,73 @@ When the right button is turned on, it sets the pitch multipleir to 1.
 So you can control the pitch based on whichever button was turned on most recently. 
 </p>
 
+<div id="poemLine"></div>
+
 <input id="slider" type="range" min="0" max="100" value="0" oninput="showSliderValue(this.value)" onchange="updateValue(this.value)" />
 <input id="textField" type="text" value="1" onchange="textFieldChangeValue(this.value)" />
 
 <script type="text/javascript">
 
-var pitchMultiplier;
+//get access to the buttons as objects
+var button0 = document.getElementById("cue0");
+var button1 = document.getElementById("cue1");
+var button2 = document.getElementById("cue2");
+var textField = document.getElementById("textField")
+var slider = document.getElementById("slider")
+var poemLine = document.getElementById("poemLine");
+slider.value = 0;
+textField.value = "1.";
 
-var testInput;
+// assign what will happen when the buttons are clicked
+button0.onclick = clickButton;
+button1.onclick = clickButton;
+button2.onclick = clickButton;
+poemLine.onclick = nextLine;
+
+var poemLines = ["You will be woken by the chirping of the birds,",
+                 "which is the sound of their egos escaping from their bodies",
+                 "in loud and irregular streams.",
+                 "They are acupuncture birds;",
+                 "where the chirps fall on your eardrums corresponds to where you experience the pain.",
+                 "The birds have PhDs.",
+                 "They chirp out chapters from their dissertations.",
+                 "The birds do not agree that irony is dead.",
+                 "One of the birds has tried repeatedly to fall to its death",
+                 "but always starts flying at the last second.",
+                 "The birds are excessively vain about their wings.",
+                 "They have been known to assemble themselves into bridges and other structures.",
+                 "An obelisk of feathers.",
+                 "Do not feed the birds;",
+                 "they are following a strict high-protein diet.",
+                 "The birds are control freaks.",
+                 "Do not, under any circumstances, try to touch their beaks.",
+                 "One of the birds has assumed a leadership role.",
+                 "Another bird is plotting to assassinate it.",
+                 "Some items have gone missing from the kitchen.",
+                 "The birds are capable of eating almost anything but are far too discriminating.",
+                 "If you are lucky one morning the birds may chirp selections from your favorite opera.",
+                 "The birds are especially fond of Wagner.",
+                 "What would you like to hear?",
+                 "They have a very long waiting list and are nepotistic.",
+                 "Do not be afraid of angering the birds.",
+                 "What angers the birds is fear."];
+
+var currentPoemLine = 0;
+poemLine.innerHTML = poemLines[currentPoemLine];
+
+function nextLine() {
+	if (currentPoemLine < poemLines.length - 1) {
+		currentPoemLine += 1;
+	} else {
+		currentPoemLine = 0;
+	};
+	poemLine.innerHTML = poemLines[currentPoemLine];
+}
+
+var pitchMultiplier;
 
 function showSliderValue(newValue)
 {
-	testInput = newValue;
 	var scaledValue = (newValue / 100.) * 31. + 1.;
 	scaledValue = Math.round(scaledValue * 100.)/100.;
 	textField.value = scaledValue;
@@ -63,19 +118,6 @@ function buttonClicked() {
 	alert("clicked!");
 }
 
-// get access to the buttons as objects
-var button0 = document.getElementById("cue0");
-var button1 = document.getElementById("cue1");
-var button2 = document.getElementById("cue2");
-var textField = document.getElementById("textField")
-var slider = document.getElementById("slider")
-slider.value = 0;
-textField.value = "1.";
-
-// assign what will happen when the buttons are clicked
-button0.onclick = clickButton;
-button1.onclick = clickButton;
-button2.onclick = clickButton;
 
 // a handy function that will work for whichever button is clicked, avoiding code duplication
 function clickButton() {
