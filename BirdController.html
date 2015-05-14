@@ -79,6 +79,20 @@ var poemLines = ["Ornithological Blogpoem by Elisa Gabbert (tap to begin)",
 var currentPoemLine = 0;
 poemLine.innerHTML = poemLines[currentPoemLine];
 
+// OK, here we create the object that represents a button for each line in the poem
+// declare and initialize our cues2Play variable
+var birdCues = {};
+for (var line = 0; line < poemLines.length; line++) {
+	birdCues["cue" + line] = "off";
+}
+birdCues.pitch = 1.;
+birdCues.panic = "off";
+//alert(birdCues.cue0);
+//var cues2Play = { cue0: "off", cue1 : "off", cue2 : "off", pitch : 1. };
+
+// when the page is first loaded, write a new cues.json script with the default values
+updateCues();
+
 var timerID;
 var recordingTimeoutID;
 
@@ -179,6 +193,14 @@ function postAudio(blob) {
 		}
 	}
 	
+	xhr.onreadystatechange = function(){
+		if (xhr.readyState == 4){
+			alert(xhr.responseText);
+			// This is your notification that the file has actually successfully uploaded
+			// So this is where you should update your cues.json file to tell audience members to download
+		}
+	}
+	
 	var fd = new FormData();
 	//alert(blob);
 	fd.append("birdAudio", blob, "Birds" + currentPoemLine + ".wav");
@@ -231,12 +253,6 @@ function textFieldChangeValue(newValue) {
 	updateValue();
 }
 
-// declare and initialize our cues2Play variable
-var cues2Play = { cue0: "off", cue1 : "off", cue2 : "off", pitch : 1. };
-
-// when the page is first loaded, write a new cues.json script with the default values
-updateCues();
-
 
 function buttonClicked() {
 	alert("clicked!");
@@ -262,20 +278,19 @@ function clickButton() {
 }
 
 function updateCues(){
-	// The variable that makes Ajax possible!
-	var ajaxRequest;
+	var xhr;
 	
 	// try a bunch of different versions of the object to support different browsers
 	try{
 		// Opera 8.0+, Firefox, Safari
-		ajaxRequest = new XMLHttpRequest();
+		xhr = new XMLHttpRequest();
 	} catch(e) {
 		// Internet Explorer Browsers
 		try{
-			ajaxRequest = new ActiveXObject("Msxml2.XMLHTTP");
+			xhr = new ActiveXObject("Msxml2.XMLHTTP");
 		} catch(e) {
 			try{
-				ajaxRequest = new ActiveXObject("Microsoft.XMLHTTP");
+				xhr = new ActiveXObject("Microsoft.XMLHTTP");
 			} catch(e) {
 				// Something went wrong
 				alert("There appears to be a problem with your browser.");
@@ -285,17 +300,17 @@ function updateCues(){
 	}
 	
 	// turn the object into a JSON string
-	var json = JSON.stringify(cues2Play);
+	var json = JSON.stringify(birdCues);
 	// compress it from a "binary string" to 64bit ASCII
 	// note how the php file does the inverse
 	var encoded = btoa(json);
 	
 	// note that here we're using "POST" instead of "GET", which is what the index.html file uses
-	ajaxRequest.open("POST", "Birds.php", true);
+	xhr.open("POST", "Birds.php", true);
 	// set the content type
-	ajaxRequest.setRequestHeader('Content-type','application/x-www-form-urlencoded');
+	xhr.setRequestHeader('Content-type','application/x-www-form-urlencoded');
 	// prepend "var=" for the php script; see how it parses data it receives based on this prefix
-	ajaxRequest.send('var=' + encoded);
+	xhr.send('var=' + encoded);
 }
 
 </script>
