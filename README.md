@@ -8,7 +8,8 @@ For more of Elisa Gabbert's fantastic poetry, check out http://thefrenchexit.blo
 This project incorporates the amazing Recorderjs library by Matt Diamond, which can be found here:
 https://github.com/mattdiamond/Recorderjs
 
-The following copyright notice and permission notice pertains to Matt Diamond's Recorderjs library:
+The following copyright notice and permission notice pertains to Matt Diamond's Recorderjs library
+(in my project, this library is contained in scripts/recorder.js and scripts/recorderWorker.js):
 
 Copyright © 2013 Matt Diamond
 

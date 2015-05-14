@@ -28,6 +28,7 @@ So you can control the pitch based on whichever button was turned on most recent
 <input id="slider" type="range" min="0" max="100" value="0" oninput="showSliderValue(this.value)" onchange="updateValue(this.value)" />
 <input id="textField" type="text" value="1" onchange="textFieldChangeValue(this.value)" />
 
+<script src="scripts/recorder.js"></script>
 <script type="text/javascript">
 
 //get access to the buttons as objects
@@ -44,9 +45,10 @@ textField.value = "1.";
 button0.onclick = clickButton;
 button1.onclick = clickButton;
 button2.onclick = clickButton;
-poemLine.onclick = nextLine;
+poemLine.onclick = pauseBetweenPhrases;
 
-var poemLines = ["You will be woken by the chirping of the birds,",
+var poemLines = ["Ornithological Blogpoem by Elisa Gabbert (tap to begin)",
+                 "You will be woken by the chirping of the birds,",
                  "which is the sound of their egos escaping from their bodies",
                  "in loud and irregular streams.",
                  "They are acupuncture birds;",
@@ -77,6 +79,19 @@ var poemLines = ["You will be woken by the chirping of the birds,",
 var currentPoemLine = 0;
 poemLine.innerHTML = poemLines[currentPoemLine];
 
+var timerID;
+var recordingTimeoutID;
+
+function pauseBetweenPhrases() {
+	if (recording) {
+		stopGetAndPostAudio();
+		recording = false;
+		window.clearTimeout(recordingTimeoutID);
+	}
+	poemLine.innerHTML = "Look, it's a bird!";
+	timerID = window.setTimeout(nextLine, 1000);
+}
+
 function nextLine() {
 	if (currentPoemLine < poemLines.length - 1) {
 		currentPoemLine += 1;
@@ -84,7 +99,116 @@ function nextLine() {
 		currentPoemLine = 0;
 	};
 	poemLine.innerHTML = poemLines[currentPoemLine];
+	startRecordingAudio();
+	recording = true;
+	recordingTimeoutID = window.setTimeout(recordingTimeout, 5000);
 }
+
+function recordingTimeout() {
+	if (recording) {
+		stopGetAndPostAudio();
+		recording = false;
+	}
+}
+
+
+// ***** Let's see if we can move this to another file down the road...
+
+var AudioContext = (window.AudioContext || window.webkitAudioContext);
+var audioCtx = new AudioContext();
+
+var source;
+var recorder;
+//var recording;
+var recordings = [];
+var recording = false;
+
+function startUserMedia(stream) {
+	source = audioCtx.createMediaStreamSource(stream);
+	recorder = new Recorder(source);
+}
+
+function getBufferCallback(buffers) {
+	//var newSource = audioCtx.createBufferSource();
+	var newBuffer = audioCtx.createBuffer(2, buffers[0].length, audioCtx.sampleRate);
+	newBuffer.getChannelData(0).set(buffers[0]);
+	newBuffer.getChannelData(1).set(buffers[1]);
+	recordings.push(newBuffer);
+	recorder && recorder.exportWAV(function(blob) {
+		postAudio(blob);
+    });
+}
+
+navigator.getUserMedia = (navigator.getUserMedia ||
+        navigator.webkitGetUserMedia ||
+        navigator.mozGetUserMedia ||
+        navigator.msGetUserMedia);
+
+if (navigator.getUserMedia) {
+	navigator.getUserMedia(
+	// constraints
+	{ video: false, audio: true },
+	// successCallback
+	startUserMedia,
+	// errorCallback
+	function(err) {
+		console.log("The following error occured: " + err);
+	});
+} else {
+	console.log("getUserMedia not supported");
+};
+
+function postAudio(blob) {
+	var xhr;
+	
+	try{
+		// Opera 8.0+, Firefox, Safari
+		xhr = new XMLHttpRequest();
+	} catch(e) {
+		// Internet Explorer Browsers
+		try{
+			xhr = new ActiveXObject("Msxml2.XMLHTTP");
+		} catch(e) {
+			try{
+				xhr = new ActiveXObject("Microsoft.XMLHTTP");
+			} catch(e) {
+				// Not supported
+				alert("There appears to be a problem with your browser.");
+				return false;
+			}
+		}
+	}
+	
+	var fd = new FormData();
+	//alert(blob);
+	fd.append("birdAudio", blob, "Birds" + currentPoemLine + ".wav");
+	
+	xhr.open("POST","BirdRecorder.php",true);
+	xhr.send(fd);
+	
+	recorder.clear();
+}
+
+function startRecordingAudio() {
+	recorder.record();
+}
+
+function stopGetAndPostAudio() {
+	recorder.stop();
+	recorder.getBuffer(getBufferCallback);
+}
+
+function playRandomAudioBuffer() {
+	var newSource = audioCtx.createBufferSource();
+	var newIndex = Math.floor(Math.random() * recordings.length);
+	newSource.buffer = recordings[newIndex];
+	newSource.connect(audioCtx.destination);
+	newSource.start();
+}
+
+// ***** The above should ideally all be in a different file...
+
+
 
 var pitchMultiplier;
 
