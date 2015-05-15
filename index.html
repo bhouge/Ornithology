@@ -70,18 +70,31 @@ function getRandomFileNames(fileList, desiredFileNumber) {
 var randomFiles = getRandomFileNames(fileList, 3);
 //alert(randomFiles);
 
+/*
 bufferLoader = new BufferLoader(audioCtx, 
 		'sounds/uncompressed/',
 		randomFiles, 
 		 finishedLoading);
 bufferLoader.load();
+*/
+
+var mildlyLessHackyIntermittentSoundController = [];
 
 function finishedLoading(bufferList) {
+	//alert("am I getting called?");
+	var bufferNumber;
+	var hackyThing;
 	for (var i = 0; i < bufferList.length; ++i) {
-		audioBuffers[i] = bufferList[i];
+		//audioBuffers[i] = bufferList[i];
+		bufferNumber = audioBuffers.push(bufferList[i]);
+		hackyThing = mildlyLessHackyIntermittentSoundController.push(10);
+		if (bufferNumber != hackyThing) {
+			alert("Catastrophe!");
+		}
 	}
 	buffersAreLoaded = true;
-	//alert(audioBuffers);
+	playIntermittentBuffer(bufferNumber - 1);
+	//alert(bufferNumber);
 }
 
 // See the comments in the PlayFile3 demo to review what's going on each of these steps
@@ -95,17 +108,30 @@ function button1Clicked() {
 }
 
 function buttonClicked(buttonNumber) {
-	playIntermittentBuffer(buttonNumber);
+	// OK, let's keep a distinction between cues pressed and files recorded
+	
+	// for now, our cheating solution will be that if it's not cue0, we play the Bird.wav file that is
+	// cueIndex - 1.
+	
+	//playIntermittentBuffer(buttonNumber);
+	if (buttonNumber > 0) {
+		var filename = 'Birds' + buttonNumber + '.wav';
+		//alert(filename);
+		bufferLoader = new BufferLoader(audioCtx, 
+				'./',
+				[filename], 
+				 finishedLoading);
+		bufferLoader.load();
+		//alert(buttonNumber);
+	}
 }
 
 function playIntermittentBuffer(bufferIndex) {
-	playBuffer(bufferIndex);
-	var cueName = "cue" + bufferIndex;
-	var randomPause = Math.random() * 1000. + 2000.;
-	if (cues2Play[cueName] == "on") {
-		// Note that passing functions as strings presents security risks
-		// This will be replaced with the IntermittentSound functionality of Lysias
+	if (mildlyLessHackyIntermittentSoundController[bufferIndex] > 0) {
+		playBuffer(bufferIndex);
+		var randomPause = Math.random() * 1000. + 2000.;
 		window.setTimeout('playIntermittentBuffer(' + bufferIndex + ')', randomPause);
+		mildlyLessHackyIntermittentSoundController[bufferIndex]--;
 	}
 }
 

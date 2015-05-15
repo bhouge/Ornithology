@@ -8,9 +8,9 @@
 
 <div id="buttons" align="center">
 
-<button id="cue0" class="off">off</button>
-<button id="cue1" class="off">off</button>
-<button id="cue2" class="off">off</button>
+<button id="pitch" class="off">off</button>
+<button id="reset" class="off">off</button>
+<button id="panic" class="off">off</button>
 
 </div>
 
@@ -32,9 +32,9 @@ So you can control the pitch based on whichever button was turned on most recent
 <script type="text/javascript">
 
 //get access to the buttons as objects
-var button0 = document.getElementById("cue0");
-var button1 = document.getElementById("cue1");
-var button2 = document.getElementById("cue2");
+var pitchButton = document.getElementById("pitch");
+var resetButton = document.getElementById("reset");
+var panicButton = document.getElementById("panic");
 var textField = document.getElementById("textField")
 var slider = document.getElementById("slider")
 var poemLine = document.getElementById("poemLine");
@@ -42,9 +42,9 @@ slider.value = 0;
 textField.value = "1.";
 
 // assign what will happen when the buttons are clicked
-button0.onclick = clickButton;
-button1.onclick = clickButton;
-button2.onclick = clickButton;
+pitchButton.onclick = clickButton;
+resetButton.onclick = clickButton;
+panicButton.onclick = clickButton;
 poemLine.onclick = pauseBetweenPhrases;
 
 var poemLines = ["Ornithological Blogpoem by Elisa Gabbert (tap to begin)",
@@ -195,7 +195,11 @@ function postAudio(blob) {
 	
 	xhr.onreadystatechange = function(){
 		if (xhr.readyState == 4){
-			alert(xhr.responseText);
+			//alert(xhr.responseText);
+			var birdIndex = xhr.responseText.match("Birds(.*)\.wav")[1];
+			birdCues["cue" + birdIndex] = "on";
+			//alert(birdCues["cue" + birdIndex]);
+			updateCues();
 			// This is your notification that the file has actually successfully uploaded
 			// So this is where you should update your cues.json file to tell audience members to download
 		}
@@ -243,7 +247,7 @@ function showSliderValue(newValue)
 }
 
 function updateValue() {
-	cues2Play.pitch = pitchMultiplier;
+	birdCues.pitch = pitchMultiplier;
 	updateCues();
 }
 
@@ -300,6 +304,7 @@ function updateCues(){
 	}
 	
 	// turn the object into a JSON string
+	//var json = JSON.stringify(birdCues);
 	var json = JSON.stringify(birdCues);
 	// compress it from a "binary string" to 64bit ASCII
 	// note how the php file does the inverse
