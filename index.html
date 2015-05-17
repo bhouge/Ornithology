@@ -6,49 +6,27 @@
 </head>
 <body>
 
+<h1>Ornithological Blogpoem</h1>
+
 <div id="buttons" align="center">
 
 <button id="listen" class="off">Listen</button>
 <button id="nudge" class="off">Nudge</button>
-
+<button onclick="buttonClicked(0)">Pregonero 1</button>
+<button onclick="buttonClicked(1)">Pregonero 2</button>
+<button onclick="buttonClicked(2)">Pregonero 3</button>
 </div>
 
 <p>
 "Ornithological Blogpoem" by
 <a href="https://twitter.com/egabbert">Elisa Gabbert</a>.
-
 </p>
 
 <script src="scripts/BufferLoader.js"></script>
 
 <script type="text/javascript">
 
-// initializing our cues2Play variable
-var cues2Play = { cue0: "off", cue1 : "off", cue2 : "off", pitch : 1. };
-
-// getting references to our buttons from the parent object
-var listenButton = document.getElementById("listen");
-// nudgeButton doesn't work yet
-var nudgeButton = document.getElementById("nudge");
-
-// setting up what functions get called when the buttons are clicked
-// for now, nudgeButton just plays a sound as a test.
-listenButton.onclick = listenButtonClicked;
-nudgeButton.onclick = nudgeButtonClicked;
-
-// setting up our audio context and creating our master gain
-var AudioContext = window.AudioContext || window.webkitAudioContext;
-var audioCtx = new AudioContext();
-
-var gainNode = audioCtx.createGain();
-gainNode.connect(audioCtx.destination);
-gainNode.gain.value = 1.0;
-
-var soundNode;
-
-var fileList = ['birds01.wav', 'birds02.wav', 'birds03.wav'];
-      
-var audioBuffers = [];
+//var fileList = ['Birds1.wav', "Birds2.wav", "Birds3.wav", "Birds4.wav", "Birds5.wav"];
 
 function getRandomFileNames(fileList, desiredFileNumber) {
 	var randomFiles = [];
@@ -67,8 +45,90 @@ function getRandomFileNames(fileList, desiredFileNumber) {
 	return randomFiles;
 }
 
-var randomFiles = getRandomFileNames(fileList, 3);
+//var randomFiles = getRandomFileNames(fileList, 3);
 //alert(randomFiles);
+
+
+
+function buttonClicked(e) {
+	if (e > 0) {
+		var fileToLoad = "Birds" + e + ".wav";
+		bufferLoader = new BufferLoader(audioCtx, 
+				'sounds/uncompressed/',
+				[fileToLoad], 
+				 finishedLoading);
+		bufferLoader.load();
+		/*
+		var pregonero = audioCtx.createBufferSource();
+		pregonero.buffer = audioBuffers[e];
+		pregonero.connect(gainNode);
+		pregonero.start();
+		*/
+	}
+}
+
+
+// initializing our cues2Play variable
+var cues2Play = { "pitch" : 1. };
+
+// getting references to our buttons from the parent object
+var listenButton = document.getElementById("listen");
+// nudgeButton doesn't work yet
+var nudgeButton = document.getElementById("nudge");
+
+// setting up what functions get called when the buttons are clicked
+// for now, nudgeButton just plays a sound as a test.
+listenButton.onclick = listenButtonClicked;
+nudgeButton.onclick = nudgeButtonClicked;
+
+
+
+// setting up our audio context and creating our master gain
+var AudioContext = window.AudioContext || window.webkitAudioContext;
+var audioCtx = new AudioContext();
+
+var gainNode = audioCtx.createGain();
+gainNode.connect(audioCtx.destination);
+gainNode.gain.value = 1.0;
+
+//var soundNode;
+
+var audioBuffers = [];
+var buffersAreLoaded = false;
+
+//var birdFiles = ["Birds1.wav", "Birds2.wav", "Birds3.wav", "Birds4.wav", "Birds5.wav"];
+
+
+//this was the Pregoneros version
+function finishedLoading(bufferList) {
+	for (var i = 0; i < ggbufferList.length; ++i) {
+		audioBuffers[i] = bufferList[i];
+	}
+	buffersAreLoaded = true;
+	//alert(audioBuffers);
+}
+
+function getRandomFileNames(fileList, desiredFileNumber) {
+	var randomFiles = [];
+	if (fileList.length >= desiredFileNumber) {
+		var currentFile;
+		while (randomFiles.length < desiredFileNumber) {
+			var newFileIndex = Math.floor(Math.random() * fileList.length);
+			newFile = fileList[newFileIndex];
+			if (randomFiles.indexOf(newFile) < 0) {
+				randomFiles.push(newFile);
+			}
+		}
+	} else {
+		randomFiles = fileList;
+	}
+	return randomFiles;
+}
+
+//var randomFiles = getRandomFileNames(birdFiles, 3);
+//alert(randomFiles);
+
+
 
 /*
 bufferLoader = new BufferLoader(audioCtx, 
@@ -78,24 +138,7 @@ bufferLoader = new BufferLoader(audioCtx,
 bufferLoader.load();
 */
 
-var mildlyLessHackyIntermittentSoundController = [];
-
-function finishedLoading(bufferList) {
-	//alert("am I getting called?");
-	var bufferNumber;
-	var hackyThing;
-	for (var i = 0; i < bufferList.length; ++i) {
-		//audioBuffers[i] = bufferList[i];
-		bufferNumber = audioBuffers.push(bufferList[i]);
-		hackyThing = mildlyLessHackyIntermittentSoundController.push(10);
-		if (bufferNumber != hackyThing) {
-			alert("Catastrophe!");
-		}
-	}
-	buffersAreLoaded = true;
-	playIntermittentBuffer(bufferNumber - 1);
-	//alert(bufferNumber);
-}
+/*
 
 // See the comments in the PlayFile3 demo to review what's going on each of these steps
 // And for some other options of what you can do when playing back a sound
@@ -107,23 +150,68 @@ function button1Clicked() {
 	playIntermittentBuffer(1);
 }
 
-function buttonClicked(buttonNumber) {
+bufferLoader = new BufferLoader(audioCtx, 
+		'./',
+		birdFiles, 
+		finishedLoading);
+bufferLoader.load();
+*/
+
+function buttonClickeddd(e) {
+	var pregonero = audioCtx.createBufferSource();
+	pregonero.buffer = audioBuffers[e];
+	pregonero.connect(gainNode);
+	pregonero.start();
+	
+	//alert(buttonNumber - 1);
+	//playIntermittentBuffer(buttonNumber - 1);
 	// OK, let's keep a distinction between cues pressed and files recorded
 	
 	// for now, our cheating solution will be that if it's not cue0, we play the Bird.wav file that is
 	// cueIndex - 1.
 	
 	//playIntermittentBuffer(buttonNumber);
+	/*
 	if (buttonNumber > 0) {
 		var filename = 'Birds' + buttonNumber + '.wav';
 		//alert(filename);
 		bufferLoader = new BufferLoader(audioCtx, 
 				'./',
-				[filename], 
+				["Birds1.wav", "Birds2.wav", "Birds3.wav"], 
 				 finishedLoading);
 		bufferLoader.load();
 		//alert(buttonNumber);
 	}
+	*/
+}
+
+
+//var mildlyLessHackyIntermittentSoundController = [5, 5, 5, 5, 5];
+var mildlyLessHackyIntermittentSoundController = [];
+
+function finishedLoading(bufferList) {
+	//alert("am I getting called?");
+	/*
+	for (var i = 0; i < bufferList.length; ++i) {
+		audioBuffers[i] = bufferList[i];
+	}
+	buffersAreLoaded = true;
+	*/
+	var bufferNumber;
+	var hackyThing;
+	for (var i = 0; i < bufferList.length; ++i) {
+		//audioBuffers[i] = bufferList[i];
+		//alert(bufferList);
+		bufferNumber = audioBuffers.push(bufferList[i]);
+		hackyThing = mildlyLessHackyIntermittentSoundController.push(10);
+		if (bufferNumber != hackyThing) {
+			alert("Catastrophe!");
+		}
+	}
+	buffersAreLoaded = true;
+	playIntermittentBuffer(bufferNumber - 1);
+	//alert(bufferNumber);
+	
 }
 
 function playIntermittentBuffer(bufferIndex) {
@@ -137,6 +225,9 @@ function playIntermittentBuffer(bufferIndex) {
 
 function playBuffer(bufferIndex) {
 	soundNode = audioCtx.createBufferSource();
+	//alert(audioBuffers);
+	//alert(audioBuffers.length);
+	//alert(audioBuffers[bufferIndex]);
 	soundNode.buffer = audioBuffers[bufferIndex];
 	
 	var cuePitch = cues2Play.pitch;
@@ -146,9 +237,16 @@ function playBuffer(bufferIndex) {
 	soundNode.start();
 }
 
-// for now, nudgeButton only plays a sound as a test
+var birdCounter = 1;
 function nudgeButtonClicked() {
-	playBuffer(1);
+	// call getCues with "force" flag set to 1.
+	// make it so that tapping anywhere on the screen calls this method
+	//getCues(1);
+	buttonClicked(birdCounter);
+	birdCounter++;
+	if (birdCounter > 3) {
+		birdCounter = 1;
+	}
 }
 
 // when the listenButton is clicked, we start start polling for changes in the json file
@@ -156,8 +254,8 @@ function listenButtonClicked() {
 	if(this.className == "off") {
 		this.className = "on";
 		this.innerHTML = "Stop Listening";
-		// this line used to be directly linked to the listenButton's onclick property
-		pollForChanges();
+		getCues(1);
+		window.setTimeout(pollForChanges, 1000., false);
 	} else {
 		this.className = "off";
 		this.innerHTML = "Listen";
@@ -166,7 +264,13 @@ function listenButtonClicked() {
 
 function pollForChanges(force) {
 	getCues(force);
-	window.setTimeout(pollForChanges, 1000., false);
+	// You know, I think I didn't have this functionality in Lysias on purpose;
+	// Otherwise someone could mess up the piece by turning off listening and turning it back on.
+	// Problem could be mitigated by turning buttons off when they're no longer valid,
+	// which I didn't do for Lysias.
+	if (listenButton.className == "on") {
+		window.setTimeout(pollForChanges, 1000., false);
+	}
 }
 
 function getCues(force) {
@@ -230,7 +334,9 @@ function getCues(force) {
 					*/
 				} catch(e) {
 					// Of course we don't want to alert this; we want it to fail unobtrusively,
-					// since all it means is that we got a bad json file... 
+					// since all it means is that we got a bad json file...
+					// however, for testing...
+					alert(e);
 					var error = e;
 				}
 			}
