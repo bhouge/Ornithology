@@ -25,11 +25,11 @@ When you are finished singing the displayed phrase, touch or click on the box fo
 
 <div id="buttons">
 
-<button id="lastPhrase" class="off">&lt;</button>
+<button id="previousPhrase" class="off">&lt;</button>
 <button id="pitch" class="off">off</button>
 <button id="startStop" class="off">off</button>
 <button id="reset" class="off">off</button>
-<button id="nextPhrase" class="off">&gt</button>
+<button id="nextPhrase" class="off">&gt;</button>
 
 </div>
 
@@ -42,7 +42,7 @@ When you are finished singing the displayed phrase, touch or click on the box fo
 var pitchButton = document.getElementById("pitch");
 var resetButton = document.getElementById("reset");
 var startStopButton = document.getElementById("startStop");
-var lastPhraseButton = document.getElementById("lastPhrase");
+var previousPhraseButton = document.getElementById("previousPhrase");
 var nextPhraseButton = document.getElementById("nextPhrase");
 //var textField = document.getElementById("textField")
 //var slider = document.getElementById("slider")
@@ -55,10 +55,13 @@ var scoreImage = document.getElementById("score");
 pitchButton.onclick = clickButton;
 resetButton.onclick = clickButton;
 startStopButton.onclick = clickButton;
+nextPhraseButton.onclick = nextPhrase;
+previousPhraseButton.onclick = previousPhrase;
 poemLine.onclick = pauseBetweenPhrases;
 
 scoreImage.addEventListener("click", pauseBetweenPhrases);
 scoreImage.src = "scores/Twitter_logo_blue.jpg";
+
 
 var poemLines = ["Ornithological Blogpoem by Elisa Gabbert (tap to begin)",
                  "You will be woken by the chirping of the birds,",
@@ -89,14 +92,120 @@ var poemLines = ["Ornithological Blogpoem by Elisa Gabbert (tap to begin)",
                  "Do not be afraid of angering the birds.",
                  "What angers the birds is fear."];
 
-
 var newScore;
 
 var currentPoemLine = 0;
 poemLine.innerHTML = poemLines[currentPoemLine];
 
-// OK, here we create the object that represents a button for each line in the poem
-// declare and initialize our cues2Play variable
+var timerID;
+var recordingTimeoutID;
+var repeat = false;
+
+function goToPhrase(phraseIndex) {
+	currentPoemLine = phraseIndex;
+	displayScore();
+}
+
+function displayScore() {
+	if (currentPoemLine >= 1 && currentPoemLine <= 27) {
+		if (currentPoemLine < 10) {
+			newScore = "scores/0" + currentPoemLine + ".jpg";
+		} else {
+			newScore = "scores/" + currentPoemLine + ".jpg";
+		}
+	} else {
+		newScore = "scores/Twitter_logo_blue.jpg";
+	}
+	scoreImage.src = newScore;
+	poemLine.innerHTML = poemLines[currentPoemLine];
+}
+
+function pauseBetweenPhrases() {
+	/*
+	if (recording) {
+		stopGetAndPostAudio();
+		recording = false;
+		window.clearTimeout(recordingTimeoutID);
+	}
+	*/
+	poemLine.innerHTML = "";
+	newScore = "scores/Twitter_logo_blue.jpg";
+	scoreImage.src = newScore;
+	repeat = Math.random() < 0.25;
+	var randomPause = Math.random() * 1000. + 500.;
+	timerID = window.setTimeout(endOfRandomPause, randomPause);
+}
+
+function endOfRandomPause() {
+	if (!repeat) {
+		nextPhrase();
+	} else {
+		displayScore();
+	}
+}
+
+function nextPhrase() {
+	if (currentPoemLine < poemLines.length - 1) {
+		currentPoemLine++;
+		/*
+		if (currentPoemLine == 0) {
+			currentPoemLine += 1;
+		} else {
+			var goToNextLineProbability = Math.random();
+			if (goToNextLineProbability < 0.75) {
+				currentPoemLine += 1;
+			}
+		}
+		*/
+	} else {
+		currentPoemLine = 0;
+	};
+	goToPhrase(currentPoemLine);
+	//startRecordingAudio();
+	//recording = true;
+	//recordingTimeoutID = window.setTimeout(recordingTimeout, 5000);
+}
+
+function previousPhrase() {
+	if (currentPoemLine > 0) {
+		currentPoemLine--;
+	}
+	goToPhrase(currentPoemLine);
+}
+
+//a handy function that will work for whichever button is clicked, avoiding code duplication
+function clickButton() {
+	// this refers to whichever button is clicked
+	if (this.id == "nextPhrase") {
+		nextPhrase();
+	}
+	if (this.className == "off") {
+		this.className = "on";
+		this.innerHTML = "on";
+		//cues2Play[this.id] = "on";
+	} else {
+		this.className = "off";
+		this.innerHTML = "off";
+		//cues2Play[this.id] = "off";
+	}
+	// write a new cues.json file
+	//updateCues();
+}
+
+/*
+function recordingTimeout() {
+	if (recording) {
+		stopGetAndPostAudio();
+		recording = false;
+	}
+}
+*/
+
+
+
+/*
+//OK, here we create the object that represents a button for each line in the poem
+//declare and initialize our cues2Play variable
 var birdCues = {};
 for (var line = 0; line < poemLines.length; line++) {
 	birdCues["cue" + line] = "off";
@@ -106,59 +215,9 @@ birdCues.panic = "off";
 //alert(birdCues.cue0);
 //var cues2Play = { cue0: "off", cue1 : "off", cue2 : "off", pitch : 1. };
 
-// when the page is first loaded, write a new cues.json script with the default values
+//when the page is first loaded, write a new cues.json script with the default values
 updateCues();
-
-var timerID;
-var recordingTimeoutID;
-
-// remove this horrible hack!
-var recording = false;
-function pauseBetweenPhrases() {
-	if (recording) {
-		stopGetAndPostAudio();
-		recording = false;
-		window.clearTimeout(recordingTimeoutID);
-	}
-	poemLine.innerHTML = "Look, it's a bird!";
-	newScore = "scores/Twitter_logo_blue.jpg";
-	scoreImage.src = newScore;
-	var randomTime = Math.random() * 1000. + 500.;
-	timerID = window.setTimeout(nextLine, randomTime);
-}
-
-function nextLine() {
-	if (currentPoemLine < poemLines.length - 1) {
-		if (currentPoemLine == 0) {
-			currentPoemLine += 1;
-		} else {
-			var goToNextLineProbability = Math.random();
-			if (goToNextLineProbability < 0.75) {
-				currentPoemLine += 1;
-			}
-		}
-	} else {
-		currentPoemLine = 0;
-	};
-	poemLine.innerHTML = poemLines[currentPoemLine];
-	if (currentPoemLine < 10) {
-		newScore = "scores/0" + currentPoemLine + ".jpg";
-	} else {
-		newScore = "scores/" + currentPoemLine + ".jpg";
-	}
-	scoreImage.src = newScore;
-	//startRecordingAudio();
-	//recording = true;
-	recordingTimeoutID = window.setTimeout(recordingTimeout, 5000);
-}
-
-function recordingTimeout() {
-	if (recording) {
-		stopGetAndPostAudio();
-		recording = false;
-	}
-}
-
+*/
 
 // ***** Let's see if we can move this to another file down the road...
 
@@ -275,7 +334,7 @@ function playRandomAudioBuffer() {
 
 */
 
-var pitchMultiplier;
+//var pitchMultiplier;
 
 /*
 function showSliderValue(newValue)
@@ -287,10 +346,12 @@ function showSliderValue(newValue)
 }
 */
 
+/*
 function updateValue() {
 	birdCues.pitch = pitchMultiplier;
 	updateCues();
 }
+*/
 
 /*
 function textFieldChangeValue(newValue) {
@@ -299,23 +360,6 @@ function textFieldChangeValue(newValue) {
 	updateValue();
 }
 */
-
-
-// a handy function that will work for whichever button is clicked, avoiding code duplication
-function clickButton() {
-	// this refers to whichever button is clicked
-	if (this.className == "off") {
-		this.className = "on";
-		this.innerHTML = "on";
-		//cues2Play[this.id] = "on";
-	} else {
-		this.className = "off";
-		this.innerHTML = "off";
-		//cues2Play[this.id] = "off";
-	}
-	// write a new cues.json file
-	//updateCues();
-}
 
 
 function updateCues(){
