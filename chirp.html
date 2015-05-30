@@ -10,12 +10,10 @@
 <h1>ORNITHOLOGICAL BLOGPOEM</h1>
 <h2>by <a href="">Elisa Gabbert</a></h2>
 
-
-
 <div id="scoreImage">
 
 <p>
-Touch or click on the box to start the piece.
+Touch or click on the bird to start the piece.
 When you see an image of a bird, wait for the next music phrase to be displayed.
 When you are finished singing the displayed phrase, touch or click on the box for the next phrase.
 </p>
@@ -35,10 +33,6 @@ When you are finished singing the displayed phrase, touch or click on the box fo
 
 </div>
 
-
-<input id="slider" type="range" min="0" max="100" value="0" oninput="showSliderValue(this.value)" onchange="updateValue(this.value)" />
-<input id="textField" type="text" value="1" onchange="textFieldChangeValue(this.value)" />
-
 </div>
 
 <script src="scripts/recorder.js"></script>
@@ -50,12 +44,12 @@ var resetButton = document.getElementById("reset");
 var startStopButton = document.getElementById("startStop");
 var lastPhraseButton = document.getElementById("lastPhrase");
 var nextPhraseButton = document.getElementById("nextPhrase");
-var textField = document.getElementById("textField")
-var slider = document.getElementById("slider")
+//var textField = document.getElementById("textField")
+//var slider = document.getElementById("slider")
 var poemLine = document.getElementById("poemLine");
 var scoreImage = document.getElementById("score");
-slider.value = 0;
-textField.value = "1.";
+//slider.value = 0;
+//textField.value = "1.";
 
 // assign what will happen when the buttons are clicked
 pitchButton.onclick = clickButton;
@@ -63,20 +57,8 @@ resetButton.onclick = clickButton;
 startStopButton.onclick = clickButton;
 poemLine.onclick = pauseBetweenPhrases;
 
-scoreImage.addEventListener("click", scoreClicked);
-
-scoreImage.src = "scores/02.jpg";
-
-function scoreClicked() {
-	var newScore;
-	var scoreIndex = Math.floor(Math.random() * 10.);
-	if (scoreIndex == 0) {
-		newScore = "scores/Twitter_logo_blue.jpg";
-	} else {
-		newScore = "scores/0" + scoreIndex + ".jpg";
-	}
-	scoreImage.src = newScore;
-}
+scoreImage.addEventListener("click", pauseBetweenPhrases);
+scoreImage.src = "scores/Twitter_logo_blue.jpg";
 
 var poemLines = ["Ornithological Blogpoem by Elisa Gabbert (tap to begin)",
                  "You will be woken by the chirping of the birds,",
@@ -108,6 +90,8 @@ var poemLines = ["Ornithological Blogpoem by Elisa Gabbert (tap to begin)",
                  "What angers the birds is fear."];
 
 
+var newScore;
+
 var currentPoemLine = 0;
 poemLine.innerHTML = poemLines[currentPoemLine];
 
@@ -128,6 +112,8 @@ updateCues();
 var timerID;
 var recordingTimeoutID;
 
+// remove this horrible hack!
+var recording = false;
 function pauseBetweenPhrases() {
 	if (recording) {
 		stopGetAndPostAudio();
@@ -135,18 +121,34 @@ function pauseBetweenPhrases() {
 		window.clearTimeout(recordingTimeoutID);
 	}
 	poemLine.innerHTML = "Look, it's a bird!";
-	timerID = window.setTimeout(nextLine, 1000);
+	newScore = "scores/Twitter_logo_blue.jpg";
+	scoreImage.src = newScore;
+	var randomTime = Math.random() * 1000. + 500.;
+	timerID = window.setTimeout(nextLine, randomTime);
 }
 
 function nextLine() {
 	if (currentPoemLine < poemLines.length - 1) {
-		currentPoemLine += 1;
+		if (currentPoemLine == 0) {
+			currentPoemLine += 1;
+		} else {
+			var goToNextLineProbability = Math.random();
+			if (goToNextLineProbability < 0.75) {
+				currentPoemLine += 1;
+			}
+		}
 	} else {
 		currentPoemLine = 0;
 	};
 	poemLine.innerHTML = poemLines[currentPoemLine];
-	startRecordingAudio();
-	recording = true;
+	if (currentPoemLine < 10) {
+		newScore = "scores/0" + currentPoemLine + ".jpg";
+	} else {
+		newScore = "scores/" + currentPoemLine + ".jpg";
+	}
+	scoreImage.src = newScore;
+	//startRecordingAudio();
+	//recording = true;
 	recordingTimeoutID = window.setTimeout(recordingTimeout, 5000);
 }
 
@@ -160,6 +162,8 @@ function recordingTimeout() {
 
 // ***** Let's see if we can move this to another file down the road...
 
+
+/*
 var AudioContext = (window.AudioContext || window.webkitAudioContext);
 var audioCtx = new AudioContext();
 
@@ -184,7 +188,6 @@ function getBufferCallback(buffers) {
 		postAudio(blob);
     });
 }
-
 
 function startUserMedia() {
 	navigator.getUserMedia = (navigator.getUserMedia ||
@@ -270,10 +273,11 @@ function playRandomAudioBuffer() {
 
 // ***** The above should ideally all be in a different file...
 
-
+*/
 
 var pitchMultiplier;
 
+/*
 function showSliderValue(newValue)
 {
 	var scaledValue = (newValue / 100.) * 31. + 1.;
@@ -281,22 +285,20 @@ function showSliderValue(newValue)
 	textField.value = scaledValue;
 	pitchMultiplier = scaledValue;
 }
+*/
 
 function updateValue() {
 	birdCues.pitch = pitchMultiplier;
 	updateCues();
 }
 
+/*
 function textFieldChangeValue(newValue) {
 	slider.value = (newValue - 1.) * (100./31.);
 	pitchMultiplier = newValue;
 	updateValue();
 }
-
-
-function buttonClicked() {
-	alert("clicked!");
-}
+*/
 
 
 // a handy function that will work for whichever button is clicked, avoiding code duplication
@@ -305,17 +307,16 @@ function clickButton() {
 	if (this.className == "off") {
 		this.className = "on";
 		this.innerHTML = "on";
-		// a good use of the object's array notation to get an object
-		// here we can't use the dot notation, since we don't know what the property is
-		cues2Play[this.id] = "on";
+		//cues2Play[this.id] = "on";
 	} else {
 		this.className = "off";
 		this.innerHTML = "off";
-		cues2Play[this.id] = "off";
+		//cues2Play[this.id] = "off";
 	}
 	// write a new cues.json file
-	updateCues();
+	//updateCues();
 }
+
 
 function updateCues(){
 	var xhr;
@@ -353,6 +354,8 @@ function updateCues(){
 	// prepend "var=" for the php script; see how it parses data it receives based on this prefix
 	xhr.send('var=' + encoded);
 }
+
+
 
 </script>
 

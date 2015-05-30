@@ -3,10 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <title>Ornithological Blogpoem</title>
+<link href="styles/birds.css" rel="stylesheet" type="text/css">
 </head>
 <body>
 
-<h1>Ornithological Blogpoem</h1>
+<h1>ORNITHOLOGICAL BLOGPOEM</h1>
 
 <div id="buttons" align="center">
 
@@ -18,7 +19,7 @@
 </div>
 
 <p>
-"Ornithological Blogpoem" by
+"ORNITHOLOGICAL BLOGPOEM" by
 <a href="https://twitter.com/egabbert">Elisa Gabbert</a>.
 </p>
 
@@ -80,7 +81,7 @@ var nudgeButton = document.getElementById("nudge");
 // for now, nudgeButton just plays a sound as a test.
 listenButton.onclick = listenButtonClicked;
 nudgeButton.onclick = nudgeButtonClicked;
-
+window.onclick = nudgeButtonClicked;
 
 
 // setting up our audio context and creating our master gain
@@ -237,16 +238,22 @@ function playBuffer(bufferIndex) {
 	soundNode.start();
 }
 
+//set up a different method for this!
+var nudgeTimeout = 0;
 var birdCounter = 1;
-function nudgeButtonClicked() {
+function nudgeButtonClicked(sender) {
 	// call getCues with "force" flag set to 1.
 	// make it so that tapping anywhere on the screen calls this method
-	//getCues(1);
+	//alert("nudged!");
+	// set timeout for onclick nudge 
+	getCues(1);
+	/*
 	buttonClicked(birdCounter);
 	birdCounter++;
 	if (birdCounter > 3) {
 		birdCounter = 1;
 	}
+	*/
 }
 
 // when the listenButton is clicked, we start start polling for changes in the json file
