@@ -25,16 +25,17 @@ When you are finished singing the displayed phrase, touch or click on the box fo
 
 <div id="buttons">
 
-<button id="previousPhrase" class="off">&lt;</button>
-<button id="pitch" class="off">off</button>
-<button id="startStop" class="off">off</button>
-<button id="reset" class="off">reset</button>
-<button id="nextPhrase" class="off">&gt;</button>
+<button id="previousPhrase">&lt;</button>
+<button id="pitch">F (176 Hz)</button>
+<button id="startStop" class="off">start</button>
+<button id="reset">reset</button>
+<button id="nextPhrase"">&gt;</button>
 
 </div>
 
 </div>
 
+<script src="scripts/BufferLoader.js"></script>
 <script src="scripts/recorder.js"></script>
 <script type="text/javascript">
 
@@ -52,9 +53,9 @@ var scoreImage = document.getElementById("score");
 //textField.value = "1.";
 
 // assign what will happen when the buttons are clicked
-pitchButton.onclick = clickButton;
+pitchButton.onclick = pitch;
 resetButton.onclick = reset;
-startStopButton.onclick = clickButton;
+startStopButton.onclick = startStop;
 nextPhraseButton.onclick = nextPhrase;
 previousPhraseButton.onclick = previousPhrase;
 poemLine.onclick = pauseBetweenPhrases;
@@ -179,22 +180,29 @@ function reset() {
 }
 
 //a handy function that will work for whichever button is clicked, avoiding code duplication
-function clickButton() {
+function startStop() {
 	// this refers to whichever button is clicked
-	if (this.id == "nextPhrase") {
-		nextPhrase();
-	}
 	if (this.className == "off") {
+		pauseBetweenPhrases();
 		this.className = "on";
-		this.innerHTML = "on";
-		//cues2Play[this.id] = "on";
+		this.innerHTML = "stop";
 	} else {
 		this.className = "off";
-		this.innerHTML = "off";
-		//cues2Play[this.id] = "off";
+		this.innerHTML = "start";
+		window.clearTimeout(timerID);
 	}
-	// write a new cues.json file
-	//updateCues();
+}
+
+function pitch() {
+	var fileNode = audioCtx.createBufferSource();
+	var gainNode = audioCtx.createGain();
+	gainNode.connect(audioCtx.destination);
+	fileNode.buffer = audioBuffers[0];	
+	fileNode.connect(gainNode);
+	fileNode.playbackRate.value = 1.;
+	fileNode.start();
+	//fileNode.start(slightDelay, 0.1, 1.);
+	//gainNode.gain.setValueCurveAtTime(grainWindow, slightDelay, 1.);
 }
 
 /*
@@ -226,11 +234,27 @@ updateCues();
 
 // ***** Let's see if we can move this to another file down the road...
 
+// network and file loading stuff
+var audioBuffers = [];
+var buffersAreLoaded = false;
 
-/*
 var AudioContext = (window.AudioContext || window.webkitAudioContext);
 var audioCtx = new AudioContext();
 
+bufferLoader = new BufferLoader(audioCtx, 
+		'sounds/uncompressed/',
+		['eeeeee.wav'], 
+		 finishedLoading);
+bufferLoader.load();
+
+function finishedLoading(bufferList) {
+	for (var i = 0; i < bufferList.length; ++i) {
+		audioBuffers[i] = bufferList[i];
+	}
+	buffersAreLoaded = true;
+}
+
+/*
 var source;
 var recorder;
 //var recording;
