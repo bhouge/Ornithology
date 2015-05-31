@@ -7,6 +7,10 @@
 </head>
 <body>
 
+<style type="text/css">
+      canvas { border: 1px solid black; }
+</style>
+
 <h1>ORNITHOLOGICAL BLOGPOEM</h1>
 <h2>by <a href="">Elisa Gabbert</a></h2>
 
@@ -19,7 +23,7 @@ When you are finished singing the displayed phrase, touch or click on the box fo
 </p>
 
 
-<img id="score" src="scores/01.jpg">
+<canvas id="score"></canvas>
 
 <div id="poemLine"></div>
 
@@ -51,6 +55,10 @@ var poemLine = document.getElementById("poemLine");
 var scoreImage = document.getElementById("score");
 //slider.value = 0;
 //textField.value = "1.";
+var canvas = document.getElementById('score');
+canvas.height = 200;
+canvas.width = 900;
+var ctx = canvas.getContext('2d');
 
 // assign what will happen when the buttons are clicked
 pitchButton.onclick = pitch;
@@ -93,7 +101,22 @@ var poemLines = ["Ornithological Blogpoem by Elisa Gabbert (tap to begin)",
                  "Do not be afraid of angering the birds.",
                  "What angers the birds is fear."];
 
+
+var twitterBird = new Image();
+twitterBird.src = "scores/Twitter_logo_blue.jpg";
+var scoreImages = [twitterBird];
+
 var newScore;
+for (var i = 1; i <= 27; i++) {
+	if (i < 10) {
+		newScore = "scores/0" + i + ".jpg";
+	} else {
+		newScore = "scores/" + i + ".jpg";
+	}
+	scoreImages[i] = new Image();
+	scoreImages[i].src = newScore;
+}
+
 
 var currentPoemLine = 0;
 poemLine.innerHTML = poemLines[currentPoemLine];
@@ -108,6 +131,7 @@ function goToPhrase(phraseIndex) {
 }
 
 function displayScore() {
+	/*
 	if (currentPoemLine >= 1 && currentPoemLine <= 27) {
 		if (currentPoemLine < 10) {
 			newScore = "scores/0" + currentPoemLine + ".jpg";
@@ -118,7 +142,18 @@ function displayScore() {
 		newScore = "scores/Twitter_logo_blue.jpg";
 	}
 	scoreImage.src = newScore;
+	*/
+	var scaledImageX = canvas.width * (scoreImages[currentPoemLine].width / 1181.);
+	var scaledImageY = scaledImageX * (scoreImages[currentPoemLine].height/scoreImages[currentPoemLine].width);
+	ctx.clearRect(0, 0, canvas.width, canvas.height);
+	ctx.drawImage(scoreImages[currentPoemLine], 0, 0, scaledImageX, scaledImageY);
 	poemLine.innerHTML = poemLines[currentPoemLine];
+}
+
+function drawBird() {
+	var scaledBirdWidth = (canvas.height / scoreImages[0].height) * scoreImages[0].width; 
+	ctx.clearRect(0, 0, canvas.width, canvas.height);
+	ctx.drawImage(scoreImages[0], (canvas.width / 2.) - (scaledBirdWidth / 2.), 0, scaledBirdWidth, canvas.height);
 }
 
 function pauseBetweenPhrases() {
@@ -129,9 +164,12 @@ function pauseBetweenPhrases() {
 		window.clearTimeout(recordingTimeoutID);
 	}
 	*/
-	poemLine.innerHTML = "";
+	poemLine.innerHTML = "Look bird";
+	/*
 	newScore = "scores/Twitter_logo_blue.jpg";
 	scoreImage.src = newScore;
+	*/
+	drawBird();
 	repeat = Math.random() < 0.25;
 	var randomPause = Math.random() * 1000. + 500.;
 	timerID = window.setTimeout(endOfRandomPause, randomPause);
