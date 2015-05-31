@@ -53,8 +53,9 @@ var scoreImage = document.getElementById("score");
 //slider.value = 0;
 //textField.value = "1.";
 var canvas = document.getElementById('score');
-canvas.height = 200;
-canvas.width = 900;
+canvas.width = window.innerWidth - 20;
+// this value comes from the proportions of my longest phrase jpg.
+canvas.height = canvas.width * 0.22;
 var ctx = canvas.getContext('2d');
 
 // assign what will happen when the buttons are clicked
@@ -66,34 +67,38 @@ previousPhraseButton.onclick = previousPhrase;
 
 scoreImage.addEventListener("click", pauseBetweenPhrases);
 
-var poemLines = [["Ornithological Blogpoem by Elisa Gabbert (tap to begin)", 0.],
-                 ["You will be woken by the chirping of the birds,", 0.25],
-                 ["which is the sound of their egos escaping from their bodies", 0.],
-                 ["in loud and irregular streams.", 0.],
-                 ["They are acupuncture birds;", 0.25],
-                 ["where the chirps fall on your eardrums corresponds to where you experience the pain.", 0.],
-                 ["The birds have PhDs.", 0.25],
-                 ["They chirp out chapters from their dissertations.", 0.],
-                 ["The birds do not agree that irony is dead.", 0.],
-                 ["One of the birds has tried repeatedly to fall to its death", 0.],
-                 ["but always starts flying at the last second.", 0.],
-                 ["The birds are excessively vain about their wings.", 0.25],
-                 ["They have been known to assemble themselves into bridges and other structures.", 0.],
-                 ["An obelisk of feathers.", 0.],
-                 ["Do not feed the birds;", 0.25],
-                 ["they are following a strict high-protein diet.", 0.],
-                 ["The birds are control freaks.", 0.25],
-                 ["Do not, under any circumstances, try to touch their beaks.", 0.],
-                 ["One of the birds has assumed a leadership role.", 0.25],
-                 ["Another bird is plotting to assassinate it.", 0.],
-                 ["Some items have gone missing from the kitchen.", 0.25],
-                 ["The birds are capable of eating almost anything but are far too discriminating.", 0.],
-                 ["If you are lucky one morning the birds may chirp selections from your favorite opera.", 0.],
-                 ["The birds are especially fond of Wagner.", 0.],
-                 ["What would you like to hear?", 0.],
-                 ["They have a very long waiting list and are nepotistic.", 0.],
-                 ["Do not be afraid of angering the birds.", 0.],
-                 ["What angers the birds is fear.", 0.]];
+var pauseRanges = [[1., 5.],
+                   [0.1, 0.5],
+                   [1., 2.5]];
+
+var poemLines = [["Ornithological Blogpoem by Elisa Gabbert (tap to begin)", 0., 0],
+                 ["You will be woken by the chirping of the birds,", 0.25, 1],
+                 ["which is the sound of their egos escaping from their bodies", 0., 1],
+                 ["in loud and irregular streams.", 0., 2],
+                 ["They are acupuncture birds;", 0.25, 1],
+                 ["where the chirps fall on your eardrums corresponds to where you experience the pain.", 0., 2],
+                 ["The birds have PhDs.", 0.25, 1],
+                 ["They chirp out chapters from their dissertations.", 0., 2],
+                 ["The birds do not agree that irony is dead.", 0., 2],
+                 ["One of the birds has tried repeatedly to fall to its death", 0., 1],
+                 ["but always starts flying at the last second.", 0., 2],
+                 ["The birds are excessively vain about their wings.", 0.25, 1],
+                 ["They have been known to assemble themselves into bridges and other structures.", 0., 1],
+                 ["An obelisk of feathers.", 0., 2],
+                 ["Do not feed the birds;", 0.25, 1],
+                 ["they are following a strict high-protein diet.", 0., 2],
+                 ["The birds are control freaks.", 0.25, 1],
+                 ["Do not, under any circumstances, try to touch their beaks.", 0., 2],
+                 ["One of the birds has assumed a leadership role.", 0.25, 1],
+                 ["Another bird is plotting to assassinate it.", 0., 2],
+                 ["Some items have gone missing from the kitchen.", 0.25, 1],
+                 ["The birds are capable of eating almost anything but are far too discriminating.", 0., 2],
+                 ["If you are lucky one morning the birds may chirp selections from your favorite opera.", 0., 1],
+                 ["The birds are especially fond of Wagner.", 0., 1],
+                 ["What would you like to hear?", 0., 2],
+                 ["They have a very long waiting list and are nepotistic.", 0., 2],
+                 ["Do not be afraid of angering the birds.", 0., 1],
+                 ["What angers the birds is fear.", 0., 2]];
 
 
 var twitterBird = new Image();
@@ -130,6 +135,7 @@ function displayScore() {
 		var scaledImageY = scaledImageX * (scoreImages[currentPoemLine].height/scoreImages[currentPoemLine].width);
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
 		ctx.drawImage(scoreImages[currentPoemLine], 0, 0, scaledImageX, scaledImageY);
+		//alert("canvas width: " + canvas.width + ", image width: " + scoreImages[currentPoemLine].width + ", scaled image width: " + Math.floor(scaledImageX));
 	} else if (currentPoemLine == 0) {
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
 		ctx.font = "48px serif";
@@ -160,7 +166,16 @@ function pauseBetweenPhrases() {
 	*/
 	drawBird();
 	repeat = Math.random() < poemLines[currentPoemLine][1];
-	var randomPause = Math.random() * 1000. + 500.;
+	// note that with the settings above, ends of sets are given a repeat value of 0
+	// it would be possible to break this with the wrong data
+	// e.g., if the end of the phrase would repeat, we'd have the wrong delay before the start of the next phrase
+	// a solution would be instead to indicate whether it's the end of a set or not,
+	// then set delay and repeats both based on that value.
+	// play with it and decide if you'd rather have the clarity or the flexibility
+	var min = pauseRanges[poemLines[currentPoemLine][2]][0] * 1000.;
+	var max = pauseRanges[poemLines[currentPoemLine][2]][1] * 1000.;
+	//alert("min: " + min + ", max: " + max);
+	var randomPause = Math.random() * (max - min) + min;
 	timerID = window.setTimeout(endOfRandomPause, randomPause);
 }
 
