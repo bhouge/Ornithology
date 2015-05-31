@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Chrip</title>
+<title>Chirp</title>
 <link href="styles/birdss.css" rel="stylesheet" type="text/css">
 </head>
 <body>
@@ -12,7 +12,7 @@
 </style>
 
 <h1>ORNITHOLOGICAL BLOGPOEM</h1>
-<h2>by <a href="">Elisa Gabbert</a></h2>
+<h2>by <a href="http://twitter.com/egabbert">Elisa Gabbert</a></h2>
 
 <div id="scoreImage">
 
@@ -28,7 +28,7 @@ When you are finished singing the displayed phrase, touch or click on the box fo
 <div id="buttons">
 
 <button id="previousPhrase">&lt;</button>
-<button id="pitch">F (176 Hz)</button>
+<button id="pitch" onclick="pitch()">F (176 Hz)</button>
 <button id="startStop" class="off">start</button>
 <button id="reset">reset</button>
 <button id="nextPhrase"">&gt;</button>
@@ -59,7 +59,7 @@ canvas.height = canvas.width * 0.22;
 var ctx = canvas.getContext('2d');
 
 // assign what will happen when the buttons are clicked
-pitchButton.onclick = pitch;
+//pitchButton.onclick = pitch;
 resetButton.onclick = reset;
 startStopButton.onclick = startStop;
 nextPhraseButton.onclick = nextPhrase;
@@ -188,6 +188,7 @@ function endOfRandomPause() {
 }
 
 function nextPhrase() {
+	window.clearTimeout(timerID);
 	if (currentPoemLine < poemLines.length - 1) {
 		currentPoemLine++;
 		/*
@@ -210,6 +211,7 @@ function nextPhrase() {
 }
 
 function previousPhrase() {
+	window.clearTimeout(timerID);
 	if (currentPoemLine > 0) {
 		currentPoemLine--;
 	}
@@ -224,25 +226,29 @@ function reset() {
 //a handy function that will work for whichever button is clicked, avoiding code duplication
 function startStop() {
 	// this refers to whichever button is clicked
+	// right now does nothing, will eventually be used for turning recording on/off
 	if (this.className == "off") {
-		pauseBetweenPhrases();
+		//pauseBetweenPhrases();
 		this.className = "on";
 		this.innerHTML = "stop";
 	} else {
 		this.className = "off";
 		this.innerHTML = "start";
-		window.clearTimeout(timerID);
+		//window.clearTimeout(timerID);
 	}
 }
 
+var fileNode;
+var gainNode;
 function pitch() {
-	var fileNode = audioCtx.createBufferSource();
-	var gainNode = audioCtx.createGain();
+	//alert("yes, trying to play pitch");
+	fileNode = audioCtx.createBufferSource();
+	gainNode = audioCtx.createGain();
 	gainNode.connect(audioCtx.destination);
 	fileNode.buffer = audioBuffers[0];	
 	fileNode.connect(gainNode);
 	fileNode.playbackRate.value = 1.;
-	fileNode.start();
+	fileNode.start(audioCtx.currentTime);
 	//fileNode.start(slightDelay, 0.1, 1.);
 	//gainNode.gain.setValueCurveAtTime(grainWindow, slightDelay, 1.);
 }
@@ -283,11 +289,16 @@ var buffersAreLoaded = false;
 var AudioContext = (window.AudioContext || window.webkitAudioContext);
 var audioCtx = new AudioContext();
 
-bufferLoader = new BufferLoader(audioCtx, 
-		'sounds/uncompressed/',
-		['eeeeee.wav'], 
-		 finishedLoading);
-bufferLoader.load();
+var bufferLoader;
+loadAudio();
+
+function loadAudio() {
+	bufferLoader = new BufferLoader(audioCtx, 
+			'sounds/compressed/',
+			['eeeeee.mp3'], 
+			 finishedLoading);
+	bufferLoader.load();
+}
 
 function finishedLoading(bufferList) {
 	for (var i = 0; i < bufferList.length; ++i) {
