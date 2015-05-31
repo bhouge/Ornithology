@@ -119,7 +119,7 @@ for (var i = 1; i <= 27; i++) {
 
 
 var currentPoemLine = 0;
-poemLine.innerHTML = poemLines[currentPoemLine];
+displayScore();
 
 var timerID;
 var recordingTimeoutID;
@@ -131,22 +131,18 @@ function goToPhrase(phraseIndex) {
 }
 
 function displayScore() {
-	/*
 	if (currentPoemLine >= 1 && currentPoemLine <= 27) {
-		if (currentPoemLine < 10) {
-			newScore = "scores/0" + currentPoemLine + ".jpg";
-		} else {
-			newScore = "scores/" + currentPoemLine + ".jpg";
-		}
+		var scaledImageX = canvas.width * (scoreImages[currentPoemLine].width / 1181.);
+		var scaledImageY = scaledImageX * (scoreImages[currentPoemLine].height/scoreImages[currentPoemLine].width);
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
+		ctx.drawImage(scoreImages[currentPoemLine], 0, 0, scaledImageX, scaledImageY);
+	} else if (currentPoemLine == 0) {
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
+		ctx.font = "48px serif";
+		ctx.fillText("Tap to begin.", 10, 50);
 	} else {
-		newScore = "scores/Twitter_logo_blue.jpg";
+		drawBird();
 	}
-	scoreImage.src = newScore;
-	*/
-	var scaledImageX = canvas.width * (scoreImages[currentPoemLine].width / 1181.);
-	var scaledImageY = scaledImageX * (scoreImages[currentPoemLine].height/scoreImages[currentPoemLine].width);
-	ctx.clearRect(0, 0, canvas.width, canvas.height);
-	ctx.drawImage(scoreImages[currentPoemLine], 0, 0, scaledImageX, scaledImageY);
 	poemLine.innerHTML = poemLines[currentPoemLine];
 }
 
