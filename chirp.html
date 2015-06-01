@@ -25,13 +25,11 @@ When you are finished singing the displayed phrase, touch or click on the box fo
 <canvas id="score"></canvas>
 
 <div id="buttons">
-
 <button id="previousPhrase">&lt;</button>
 <button id="pitch">F (176 Hz)</button>
 <button id="startStop" class="off">record</button>
 <button id="reset">reset</button>
 <button id="nextPhrase"">&gt;</button>
-
 </div>
 
 </div>
@@ -48,10 +46,7 @@ var startStopButton = document.getElementById("startStop");
 var previousPhraseButton = document.getElementById("previousPhrase");
 var nextPhraseButton = document.getElementById("nextPhrase");
 var scoreImage = document.getElementById("score");
-//var textField = document.getElementById("textField")
-//var slider = document.getElementById("slider")
-//slider.value = 0;
-//textField.value = "1.";
+
 var canvas = document.getElementById('score');
 canvas.width = window.innerWidth - 20;
 // this value comes from the proportions of my longest phrase jpg.
@@ -211,6 +206,8 @@ function reset() {
 var userAudioInitialized = false;
 
 // toggle whether or not audio is automatically recorded for each phrase.
+// could do some checks on this; I think depending on when you click these buttons, 
+// it's possible to get some errors.
 function startStop() {
 	if (this.className == "off") {
 		if (!userAudioInitialized) {
@@ -251,23 +248,7 @@ function recordingTimeout() {
 	}
 }
 
-
-//OK, here we create the object that represents a button for each line in the poem
-//declare and initialize our cues2Play variable
-var birdCues = {};
-for (var line = 0; line < poemLines.length; line++) {
-	birdCues["cue" + line] = "off";
-}
-birdCues.pitch = 1.;
-birdCues.panic = "off";
-//alert(birdCues.cue0);
-//var cues2Play = { cue0: "off", cue1 : "off", cue2 : "off", pitch : 1. };
-
-//when the page is first loaded, write a new cues.json script with the default values
-updateCues();
-
-
-// network and file loading stuff
+// file loading stuff
 var audioBuffers = [];
 var buffersAreLoaded = false;
 
@@ -292,34 +273,28 @@ function finishedLoading(bufferList) {
 	buffersAreLoaded = true;
 }
 
-//var pitchMultiplier;
 
 /*
-function showSliderValue(newValue)
-{
-	var scaledValue = (newValue / 100.) * 31. + 1.;
-	scaledValue = Math.round(scaledValue * 100.)/100.;
-	textField.value = scaledValue;
-	pitchMultiplier = scaledValue;
+//As indicated below, I'm commenting out this network update stuff until I figure out a good way
+//to coordinate multiple people sending updates at a time.
+//OK, here we create the object that represents a button for each line in the poem
+//declare and initialize our cues2Play variable
+var birdCues = {};
+for (var line = 0; line < poemLines.length; line++) {
+	birdCues["cue" + line] = "off";
 }
+birdCues.pitch = 1.;
+birdCues.panic = "off";
+//alert(birdCues.cue0);
+//var cues2Play = { cue0: "off", cue1 : "off", cue2 : "off", pitch : 1. };
+
+//when the page is first loaded, write a new cues.json script with the default values
+updateCues();
 */
 
 /*
-function updateValue() {
-	birdCues.pitch = pitchMultiplier;
-	updateCues();
-}
-*/
-
-/*
-function textFieldChangeValue(newValue) {
-	slider.value = (newValue - 1.) * (100./31.);
-	pitchMultiplier = newValue;
-	updateValue();
-}
-*/
-
-
+// Until I am able to coordinate multiple people writing to the network with some more robust kind of
+// server, I am commenting this out, to make sure nobody updates files but me.
 function updateCues(){
 	var xhr;
 	
@@ -356,6 +331,7 @@ function updateCues(){
 	// prepend "var=" for the php script; see how it parses data it receives based on this prefix
 	xhr.send('var=' + encoded);
 }
+*/
 
 </script>
 
