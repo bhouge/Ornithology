@@ -74,9 +74,9 @@ function postAudio(blob) {
 		if (xhr.readyState == 4){
 			//alert(xhr.responseText);
 			var birdIndex = xhr.responseText.match("Birds(.*)\.wav")[1];
-			birdCues["cue" + birdIndex] = "on";
+			//birdCues["cue" + birdIndex] = "on";
 			//alert(birdCues["cue" + birdIndex]);
-			updateCues();
+			//updateCues();
 			// This is your notification that the file has actually successfully uploaded
 			// So this is where you should update your cues.json file to tell audience members to download
 		}
@@ -142,6 +142,7 @@ function stopGetAndPostAudio() {
 
 function cancelAudioRecording() {
 	recorder.stop();
+	recording = false;
 	recorder.clear();
 }
 

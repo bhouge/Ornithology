@@ -119,6 +119,7 @@ var recordingTimeoutID;
 var wantToBeRecording = false;
 var repeat = false;
 
+//There is some foolishness here I should revisit someday
 function goToPhrase(phraseIndex) {
 	currentPoemLine = phraseIndex;
 	displayScore();
@@ -318,7 +319,6 @@ function updateCues(){
 	}
 	
 	// turn the object into a JSON string
-	//var json = JSON.stringify(birdCues);
 	var json = JSON.stringify(birdCues);
 	// compress it from a "binary string" to 64bit ASCII
 	// note how the php file does the inverse
