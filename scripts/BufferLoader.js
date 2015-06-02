@@ -1,8 +1,9 @@
 // Courtesy of http://www.html5rocks.com/en/tutorials/webaudio/intro/js/buffer-loader.js
 
-function BufferLoader(context, directory, urlList, callback) {
+function BufferLoader(context, directory, prefixArray, urlList, callback) {
   this.context = context;
   this.directory = directory;
+  this.prefixArray = prefixArray;
   this.urlList = urlList;
   this.onload = callback;
   this.bufferList = new Array();
@@ -44,6 +45,8 @@ BufferLoader.prototype.loadBuffer = function(url, index) {
 }
 
 BufferLoader.prototype.load = function() {
-  for (var i = 0; i < this.urlList.length; ++i)
-  this.loadBuffer(this.directory + this.urlList[i], i);
+  for (var i = 0; i < this.urlList.length; ++i) {
+	  var prefix = Math.floor(Math.random() * this.prefixArray.length);
+	  this.loadBuffer(this.directory + this.prefixArray[prefix] + this.urlList[i], i);
+  }
 }

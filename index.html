@@ -362,12 +362,16 @@ var buffersAreLoaded = false;
 
 function loadAudioData() {
 	var filesToLoad = ["yooo.mp3"];
+	var singers = ["Ben/", "Jon/", "Lori/", "Rebecca/", "Francisco/", "Clais/"];
 	for (var i = 1; i <= 27; i++) {
+		//var singer = Math.floor(Math.random() * singers.length);
 		var fileToLoad = "Birds" + i + ".mp3";
 		filesToLoad.push(fileToLoad);
 	}
+	//alert(filesToLoad);
 	bufferLoader = new BufferLoader(audioCtx, 
-			'sounds/compressed/Ben/',
+			'sounds/compressed/',
+			singers,
 			filesToLoad, 
 			finishedLoading);
 	bufferLoader.load();
