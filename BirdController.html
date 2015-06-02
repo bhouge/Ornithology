@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Chirp</title>
+<title>Bird Controller</title>
 <link href="styles/birdss.css" rel="stylesheet" type="text/css">
 </head>
 <body>
@@ -124,6 +124,7 @@ var recordingTimeoutID;
 var wantToBeRecording = false;
 var repeat = false;
 
+// There is some foolishness here I should revisit someday
 function goToPhrase(phraseIndex) {
 	currentPoemLine = phraseIndex;
 	displayScore();
@@ -182,12 +183,15 @@ function endOfRandomPause() {
 
 function nextPhrase() {
 	window.clearTimeout(timerID);
+	birdCues["cue" + currentPoemLine] = "off";
 	if (currentPoemLine < poemLines.length - 1) {
 		currentPoemLine++;
 	} else {
 		currentPoemLine = 0;
 	};
 	goToPhrase(currentPoemLine);
+	birdCues["cue" + currentPoemLine] = "on";
+	updateCues();
 	if (wantToBeRecording) {
 		startRecordingAudio();
 		recording = true;
@@ -197,15 +201,21 @@ function nextPhrase() {
 
 function previousPhrase() {
 	window.clearTimeout(timerID);
+	birdCues["cue" + currentPoemLine] = "off";
 	if (currentPoemLine > 0) {
 		currentPoemLine--;
 	}
 	goToPhrase(currentPoemLine);
+	birdCues["cue" + currentPoemLine] = "on";
+	updateCues();
 }
 
 function reset() {
 	window.clearTimeout(timerID);
+	birdCues["cue" + currentPoemLine] = "off";
 	goToPhrase(0);
+	birdCues["cue" + currentPoemLine] = "on";
+	updateCues();
 }
 
 var userAudioInitialized = false;
@@ -252,22 +262,7 @@ function recordingTimeout() {
 }
 
 
-//OK, here we create the object that represents a button for each line in the poem
-//declare and initialize our cues2Play variable
-var birdCues = {};
-for (var line = 0; line < poemLines.length; line++) {
-	birdCues["cue" + line] = "off";
-}
-birdCues.pitch = 1.;
-birdCues.panic = "off";
-//alert(birdCues.cue0);
-//var cues2Play = { cue0: "off", cue1 : "off", cue2 : "off", pitch : 1. };
-
-//when the page is first loaded, write a new cues.json script with the default values
-updateCues();
-
-
-// network and file loading stuff
+// audio set up and file loading stuff
 var audioBuffers = [];
 var buffersAreLoaded = false;
 
@@ -319,6 +314,18 @@ function textFieldChangeValue(newValue) {
 }
 */
 
+//OK, here we create the object that represents a button for each line in the poem
+//declare and initialize our cues2Play variable
+var birdCues = {};
+for (var line = 0; line < poemLines.length; line++) {
+	birdCues["cue" + line] = "off";
+}
+birdCues.pitch = 1.;
+birdCues.panic = "off";
+
+//when the page is first loaded, create and post a new cues.json file with the default values
+updateCues();
+
 
 function updateCues(){
 	var xhr;
@@ -343,7 +350,6 @@ function updateCues(){
 	}
 	
 	// turn the object into a JSON string
-	//var json = JSON.stringify(birdCues);
 	var json = JSON.stringify(birdCues);
 	// compress it from a "binary string" to 64bit ASCII
 	// note how the php file does the inverse

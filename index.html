@@ -3,25 +3,50 @@
 <head>
 <meta charset="UTF-8">
 <title>Ornithological Blogpoem</title>
-<link href="styles/birds.css" rel="stylesheet" type="text/css">
+<link href="styles/birdss.css" rel="stylesheet" type="text/css">
 </head>
 <body>
 
 <h1>ORNITHOLOGICAL BLOGPOEM</h1>
-
-<div id="buttons" align="center">
-
+<h2>by Elisa Gabbert</h2>
+<p>
+</p>
+<div id="controlButtons">
 <button id="listen" class="off">Listen</button>
 <button id="nudge" class="off">Nudge</button>
-<button onclick="buttonClicked(0)">Pregonero 1</button>
-<button onclick="buttonClicked(1)">Pregonero 2</button>
-<button onclick="buttonClicked(2)">Pregonero 3</button>
 </div>
 
-<p>
-"ORNITHOLOGICAL BLOGPOEM" by
-<a href="https://twitter.com/egabbert">Elisa Gabbert</a>.
-</p>
+<div id="birdButtons">
+<button id="birdButton1" onclick="birdButtonClicked(1)" class="off">Nudge</button>
+<button id="birdButton2" onclick="birdButtonClicked(2)" class="off">Nudge</button>
+<button id="birdButton3" onclick="birdButtonClicked(3)" class="off">Nudge</button>
+<button id="birdButton4" onclick="birdButtonClicked(4)" class="off">Nudge</button>
+<button id="birdButton5" onclick="birdButtonClicked(5)" class="off">Nudge</button>
+<button id="birdButton6" onclick="birdButtonClicked(6)" class="off">Nudge</button>
+<button id="birdButton7" onclick="birdButtonClicked(7)" class="off">Nudge</button>
+<button id="birdButton8" onclick="birdButtonClicked(8)" class="off">Nudge</button>
+<button id="birdButton9" onclick="birdButtonClicked(9)" class="off">Nudge</button>
+<button id="birdButton10" onclick="birdButtonClicked(10)" class="off">Nudge</button>
+<button id="birdButton11" onclick="birdButtonClicked(11)" class="off">Nudge</button>
+<button id="birdButton12" onclick="birdButtonClicked(12)" class="off">Nudge</button>
+<button id="birdButton13" onclick="birdButtonClicked(13)" class="off">Nudge</button>
+<button id="birdButton14" onclick="birdButtonClicked(14)" class="off">Nudge</button>
+<button id="birdButton15" onclick="birdButtonClicked(15)" class="off">Nudge</button>
+<button id="birdButton16" onclick="birdButtonClicked(16)" class="off">Nudge</button>
+<button id="birdButton17" onclick="birdButtonClicked(17)" class="off">Nudge</button>
+<button id="birdButton18" onclick="birdButtonClicked(18)" class="off">Nudge</button>
+<button id="birdButton19" onclick="birdButtonClicked(19)" class="off">Nudge</button>
+<button id="birdButton20" onclick="birdButtonClicked(20)" class="off">Nudge</button>
+<button id="birdButton21" onclick="birdButtonClicked(21)" class="off">Nudge</button>
+<button id="birdButton22" onclick="birdButtonClicked(22)" class="off">Nudge</button>
+<button id="birdButton23" onclick="birdButtonClicked(23)" class="off">Nudge</button>
+<button id="birdButton24" onclick="birdButtonClicked(24)" class="off">Nudge</button>
+<button id="birdButton25" onclick="birdButtonClicked(25)" class="off">Nudge</button>
+<button id="birdButton26" onclick="birdButtonClicked(26)" class="off">Nudge</button>
+<button id="birdButton27" onclick="birdButtonClicked(27)" class="off">Nudge</button>
+</div>
+
+
 
 <script src="scripts/BufferLoader.js"></script>
 
@@ -29,59 +54,64 @@
 
 //var fileList = ['Birds1.wav', "Birds2.wav", "Birds3.wav", "Birds4.wav", "Birds5.wav"];
 
-function getRandomFileNames(fileList, desiredFileNumber) {
-	var randomFiles = [];
-	if (fileList.length >= desiredFileNumber) {
-		var currentFile;
-		while (randomFiles.length < desiredFileNumber) {
-			var newFileIndex = Math.floor(Math.random() * fileList.length);
-			newFile = fileList[newFileIndex];
-			if (randomFiles.indexOf(newFile) < 0) {
-				randomFiles.push(newFile);
-			}
-		}
-	} else {
-		randomFiles = fileList;
-	}
-	return randomFiles;
+var poemLines = [["Ornithological Blogpoem by Elisa Gabbert (tap to begin)", 0., 0],
+                 ["You will be woken by the chirping of the birds,", 0.25, 1],
+                 ["which is the sound of their egos escaping from their bodies", 0., 1],
+                 ["in loud and irregular streams.", 0., 2],
+                 ["They are acupuncture birds;", 0.25, 1],
+                 ["where the chirps fall on your eardrums corresponds to where you experience the pain.", 0., 2],
+                 ["The birds have PhDs.", 0.25, 1],
+                 ["They chirp out chapters from their dissertations.", 0., 2],
+                 ["The birds do not agree that irony is dead.", 0., 2],
+                 ["One of the birds has tried repeatedly to fall to its death", 0., 1],
+                 ["but always starts flying at the last second.", 0., 2],
+                 ["The birds are excessively vain about their wings.", 0.25, 1],
+                 ["They have been known to assemble themselves into bridges and other structures.", 0., 1],
+                 ["An obelisk of feathers.", 0., 2],
+                 ["Do not feed the birds;", 0.25, 1],
+                 ["they are following a strict high-protein diet.", 0., 2],
+                 ["The birds are control freaks.", 0.25, 1],
+                 ["Do not, under any circumstances, try to touch their beaks.", 0., 2],
+                 ["One of the birds has assumed a leadership role.", 0.25, 1],
+                 ["Another bird is plotting to assassinate it.", 0., 2],
+                 ["Some items have gone missing from the kitchen.", 0.25, 1],
+                 ["The birds are capable of eating almost anything but are far too discriminating.", 0., 2],
+                 ["If you are lucky one morning the birds may chirp selections from your favorite opera.", 0., 1],
+                 ["The birds are especially fond of Wagner.", 0., 1],
+                 ["What would you like to hear?", 0., 2],
+                 ["They have a very long waiting list and are nepotistic.", 0., 2],
+                 ["Do not be afraid of angering the birds.", 0., 1],
+                 ["What angers the birds is fear.", 0., 2]];
+
+
+var birdButtonArray = [];
+for (var i = 1; i <= 27; i++) {
+	var buttonName = "birdButton" + i;
+	var birdButton = document.getElementById(buttonName);
+	birdButton.innerHTML = poemLines[i][0];
+	birdButtonArray.push(birdButton);
 }
 
-//var randomFiles = getRandomFileNames(fileList, 3);
-//alert(randomFiles);
-
-
-
-function buttonClicked(e) {
-	if (e > 0) {
-		var fileToLoad = "Birds" + e + ".wav";
-		bufferLoader = new BufferLoader(audioCtx, 
-				'sounds/uncompressed/',
-				[fileToLoad], 
-				 finishedLoading);
-		bufferLoader.load();
-		/*
-		var pregonero = audioCtx.createBufferSource();
-		pregonero.buffer = audioBuffers[e];
-		pregonero.connect(gainNode);
-		pregonero.start();
-		*/
-	}
+function birdButtonClicked(i) {
+	var birdIndex = i;
+	//alert(birdIndex);
+	var bird = audioCtx.createBufferSource();
+	bird.buffer = audioBuffers[i-1];
+	bird.connect(gainNode);
+	bird.start(audioCtx.currentTime);
 }
-
 
 // initializing our cues2Play variable
 var cues2Play = { "pitch" : 1. };
 
 // getting references to our buttons from the parent object
 var listenButton = document.getElementById("listen");
-// nudgeButton doesn't work yet
 var nudgeButton = document.getElementById("nudge");
 
 // setting up what functions get called when the buttons are clicked
-// for now, nudgeButton just plays a sound as a test.
 listenButton.onclick = listenButtonClicked;
 nudgeButton.onclick = nudgeButtonClicked;
-window.onclick = nudgeButtonClicked;
+//window.onclick = nudgeButtonClicked;
 
 
 // setting up our audio context and creating our master gain
@@ -97,17 +127,30 @@ gainNode.gain.value = 1.0;
 var audioBuffers = [];
 var buffersAreLoaded = false;
 
-//var birdFiles = ["Birds1.wav", "Birds2.wav", "Birds3.wav", "Birds4.wav", "Birds5.wav"];
+function loadAudioData() {
+	var filesToLoad = [];
+	for (var i = 1; i <= 27; i++) {
+		var fileToLoad = "Birds" + i + ".mp3";
+		filesToLoad.push(fileToLoad);
+	}
+	bufferLoader = new BufferLoader(audioCtx, 
+			'sounds/compressed/Ben/',
+			filesToLoad, 
+			finishedLoading);
+	bufferLoader.load();
+}
 
 
-//this was the Pregoneros version
 function finishedLoading(bufferList) {
-	for (var i = 0; i < ggbufferList.length; ++i) {
+	for (var i = 0; i < bufferList.length; ++i) {
 		audioBuffers[i] = bufferList[i];
 	}
 	buffersAreLoaded = true;
 	//alert(audioBuffers);
 }
+
+loadAudioData();
+
 
 function getRandomFileNames(fileList, desiredFileNumber) {
 	var randomFiles = [];
@@ -130,113 +173,6 @@ function getRandomFileNames(fileList, desiredFileNumber) {
 //alert(randomFiles);
 
 
-
-/*
-bufferLoader = new BufferLoader(audioCtx, 
-		'sounds/uncompressed/',
-		randomFiles, 
-		 finishedLoading);
-bufferLoader.load();
-*/
-
-/*
-
-// See the comments in the PlayFile3 demo to review what's going on each of these steps
-// And for some other options of what you can do when playing back a sound
-function button0Clicked() {
-	playIntermittentBuffer(0);
-}
-
-function button1Clicked() {
-	playIntermittentBuffer(1);
-}
-
-bufferLoader = new BufferLoader(audioCtx, 
-		'./',
-		birdFiles, 
-		finishedLoading);
-bufferLoader.load();
-*/
-
-function buttonClickeddd(e) {
-	var pregonero = audioCtx.createBufferSource();
-	pregonero.buffer = audioBuffers[e];
-	pregonero.connect(gainNode);
-	pregonero.start();
-	
-	//alert(buttonNumber - 1);
-	//playIntermittentBuffer(buttonNumber - 1);
-	// OK, let's keep a distinction between cues pressed and files recorded
-	
-	// for now, our cheating solution will be that if it's not cue0, we play the Bird.wav file that is
-	// cueIndex - 1.
-	
-	//playIntermittentBuffer(buttonNumber);
-	/*
-	if (buttonNumber > 0) {
-		var filename = 'Birds' + buttonNumber + '.wav';
-		//alert(filename);
-		bufferLoader = new BufferLoader(audioCtx, 
-				'./',
-				["Birds1.wav", "Birds2.wav", "Birds3.wav"], 
-				 finishedLoading);
-		bufferLoader.load();
-		//alert(buttonNumber);
-	}
-	*/
-}
-
-
-//var mildlyLessHackyIntermittentSoundController = [5, 5, 5, 5, 5];
-var mildlyLessHackyIntermittentSoundController = [];
-
-function finishedLoading(bufferList) {
-	//alert("am I getting called?");
-	/*
-	for (var i = 0; i < bufferList.length; ++i) {
-		audioBuffers[i] = bufferList[i];
-	}
-	buffersAreLoaded = true;
-	*/
-	var bufferNumber;
-	var hackyThing;
-	for (var i = 0; i < bufferList.length; ++i) {
-		//audioBuffers[i] = bufferList[i];
-		//alert(bufferList);
-		bufferNumber = audioBuffers.push(bufferList[i]);
-		hackyThing = mildlyLessHackyIntermittentSoundController.push(10);
-		if (bufferNumber != hackyThing) {
-			alert("Catastrophe!");
-		}
-	}
-	buffersAreLoaded = true;
-	playIntermittentBuffer(bufferNumber - 1);
-	//alert(bufferNumber);
-	
-}
-
-function playIntermittentBuffer(bufferIndex) {
-	if (mildlyLessHackyIntermittentSoundController[bufferIndex] > 0) {
-		playBuffer(bufferIndex);
-		var randomPause = Math.random() * 1000. + 2000.;
-		window.setTimeout('playIntermittentBuffer(' + bufferIndex + ')', randomPause);
-		mildlyLessHackyIntermittentSoundController[bufferIndex]--;
-	}
-}
-
-function playBuffer(bufferIndex) {
-	soundNode = audioCtx.createBufferSource();
-	//alert(audioBuffers);
-	//alert(audioBuffers.length);
-	//alert(audioBuffers[bufferIndex]);
-	soundNode.buffer = audioBuffers[bufferIndex];
-	
-	var cuePitch = cues2Play.pitch;
-	
-	soundNode.playbackRate.value = cuePitch;
-	soundNode.connect(gainNode);
-	soundNode.start();
-}
 
 //set up a different method for this!
 var nudgeTimeout = 0;
@@ -312,11 +248,10 @@ function getCues(force) {
 								if (cues2Play[cue] == "on") {
 									var cueIndex = cue.slice(3);
 									//alert(cueIndex);
-									buttonClicked(cueIndex);
+									birdButtonClicked(cueIndex);
 								}
 							}
 						}
-						
 					}
 					
 					/*
