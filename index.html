@@ -17,42 +17,39 @@
 </div>
 
 <div id="birdButtons">
-<button id="birdButton1" onclick="birdButtonClicked(1)" class="off">Nudge</button>
-<button id="birdButton2" onclick="birdButtonClicked(2)" class="off">Nudge</button>
-<button id="birdButton3" onclick="birdButtonClicked(3)" class="off">Nudge</button>
-<button id="birdButton4" onclick="birdButtonClicked(4)" class="off">Nudge</button>
-<button id="birdButton5" onclick="birdButtonClicked(5)" class="off">Nudge</button>
-<button id="birdButton6" onclick="birdButtonClicked(6)" class="off">Nudge</button>
-<button id="birdButton7" onclick="birdButtonClicked(7)" class="off">Nudge</button>
-<button id="birdButton8" onclick="birdButtonClicked(8)" class="off">Nudge</button>
-<button id="birdButton9" onclick="birdButtonClicked(9)" class="off">Nudge</button>
-<button id="birdButton10" onclick="birdButtonClicked(10)" class="off">Nudge</button>
-<button id="birdButton11" onclick="birdButtonClicked(11)" class="off">Nudge</button>
-<button id="birdButton12" onclick="birdButtonClicked(12)" class="off">Nudge</button>
-<button id="birdButton13" onclick="birdButtonClicked(13)" class="off">Nudge</button>
-<button id="birdButton14" onclick="birdButtonClicked(14)" class="off">Nudge</button>
-<button id="birdButton15" onclick="birdButtonClicked(15)" class="off">Nudge</button>
-<button id="birdButton16" onclick="birdButtonClicked(16)" class="off">Nudge</button>
-<button id="birdButton17" onclick="birdButtonClicked(17)" class="off">Nudge</button>
-<button id="birdButton18" onclick="birdButtonClicked(18)" class="off">Nudge</button>
-<button id="birdButton19" onclick="birdButtonClicked(19)" class="off">Nudge</button>
-<button id="birdButton20" onclick="birdButtonClicked(20)" class="off">Nudge</button>
-<button id="birdButton21" onclick="birdButtonClicked(21)" class="off">Nudge</button>
-<button id="birdButton22" onclick="birdButtonClicked(22)" class="off">Nudge</button>
-<button id="birdButton23" onclick="birdButtonClicked(23)" class="off">Nudge</button>
-<button id="birdButton24" onclick="birdButtonClicked(24)" class="off">Nudge</button>
-<button id="birdButton25" onclick="birdButtonClicked(25)" class="off">Nudge</button>
-<button id="birdButton26" onclick="birdButtonClicked(26)" class="off">Nudge</button>
-<button id="birdButton27" onclick="birdButtonClicked(27)" class="off">Nudge</button>
+<button id="birdButton1" onclick="birdButtonClicked(1)" class="off"></button>
+<button id="birdButton2" onclick="birdButtonClicked(2)" class="off"></button>
+<button id="birdButton3" onclick="birdButtonClicked(3)" class="off"></button>
+<button id="birdButton4" onclick="birdButtonClicked(4)" class="off"></button>
+<button id="birdButton5" onclick="birdButtonClicked(5)" class="off"></button>
+<button id="birdButton6" onclick="birdButtonClicked(6)" class="off"></button>
+<button id="birdButton7" onclick="birdButtonClicked(7)" class="off"></button>
+<button id="birdButton8" onclick="birdButtonClicked(8)" class="off"></button>
+<button id="birdButton9" onclick="birdButtonClicked(9)" class="off"></button>
+<button id="birdButton10" onclick="birdButtonClicked(10)" class="off"></button>
+<button id="birdButton11" onclick="birdButtonClicked(11)" class="off"></button>
+<button id="birdButton12" onclick="birdButtonClicked(12)" class="off"></button>
+<button id="birdButton13" onclick="birdButtonClicked(13)" class="off"></button>
+<button id="birdButton14" onclick="birdButtonClicked(14)" class="off"></button>
+<button id="birdButton15" onclick="birdButtonClicked(15)" class="off"></button>
+<button id="birdButton16" onclick="birdButtonClicked(16)" class="off"></button>
+<button id="birdButton17" onclick="birdButtonClicked(17)" class="off"></button>
+<button id="birdButton18" onclick="birdButtonClicked(18)" class="off"></button>
+<button id="birdButton19" onclick="birdButtonClicked(19)" class="off"></button>
+<button id="birdButton20" onclick="birdButtonClicked(20)" class="off"></button>
+<button id="birdButton21" onclick="birdButtonClicked(21)" class="off"></button>
+<button id="birdButton22" onclick="birdButtonClicked(22)" class="off"></button>
+<button id="birdButton23" onclick="birdButtonClicked(23)" class="off"></button>
+<button id="birdButton24" onclick="birdButtonClicked(24)" class="off"></button>
+<button id="birdButton25" onclick="birdButtonClicked(25)" class="off"></button>
+<button id="birdButton26" onclick="birdButtonClicked(26)" class="off"></button>
+<button id="birdButton27" onclick="birdButtonClicked(27)" class="off"></button>
 </div>
 
-
-
 <script src="scripts/BufferLoader.js"></script>
+<script src="scripts/IntermittentSound.js"></script>
 
 <script type="text/javascript">
-
-//var fileList = ['Birds1.wav', "Birds2.wav", "Birds3.wav", "Birds4.wav", "Birds5.wav"];
 
 var poemLines = [["Ornithological Blogpoem by Elisa Gabbert (tap to begin)", 0., 0],
                  ["You will be woken by the chirping of the birds,", 0.25, 1],
@@ -84,25 +81,261 @@ var poemLines = [["Ornithological Blogpoem by Elisa Gabbert (tap to begin)", 0.,
                  ["What angers the birds is fear.", 0., 2]];
 
 
-var birdButtonArray = [];
+//var birdButtonArray = [];
 for (var i = 1; i <= 27; i++) {
 	var buttonName = "birdButton" + i;
 	var birdButton = document.getElementById(buttonName);
 	birdButton.innerHTML = poemLines[i][0];
-	birdButtonArray.push(birdButton);
+	//birdButtonArray.push(birdButton);
 }
 
+var intermittentSounds = [];
 function birdButtonClicked(i) {
-	var birdIndex = i;
-	//alert(birdIndex);
-	var bird = audioCtx.createBufferSource();
-	bird.buffer = audioBuffers[i-1];
-	bird.connect(gainNode);
-	bird.start(audioCtx.currentTime);
+	//alert(intermittentSounds + " is " + intermittentSounds.length + " long.");
+	var measureNumber = parseInt(i, 10);
+	var bufferIndex = measureNumber;
+	switch (measureNumber) {
+		case 1:
+			//awoken
+			/*
+			var Bird1 = new IntermittentSound(audioBuffers[0], 0.1, 1.25, 4, 7, 0.35, 0.5, 0.1, 0.2, [1.]);
+			Bird1.connect(gainNode);
+			Bird1.play();
+			intermittentSounds.push(Bird1);
+			*/
+			break;
+		case 2:
+			//egos
+			var Bird2 = new IntermittentSound(audioBuffers[1], 0.85, 1.2, 4, 6, 0.35, 0.5, 0.1, 0.2, [1.]);
+			Bird2.connect(gainNode);
+			Bird2.play();
+			intermittentSounds.push(Bird2);
+			break;
+		case 3:
+			//streams
+			var Bird3 = new IntermittentSound(audioBuffers[2], 0.7, 1.1, 3, 5, 0.35, 0.5, 0.1, 0.2, [1.]);
+			Bird3.connect(gainNode);
+			Bird3.play();
+			intermittentSounds.push(Bird3);
+			break;
+		case 4:
+			//acupuncture
+			var Bird4 = new IntermittentSound(audioBuffers[3], 0.6, 1., 2, 4, 0.35, 0.5, 0.1, 0.2, [1.]);
+			Bird4.connect(gainNode);
+			Bird4.play();
+			intermittentSounds.push(Bird4);
+			break;
+		case 5:
+			//experience the pain
+			var Bird5 = new IntermittentSound(audioBuffers[4], 0.5, 1., 1, 3, 0.35, 0.5, 0.1, 0.2, [1.]);
+			Bird5.connect(gainNode);
+			Bird5.play();
+			intermittentSounds.push(Bird5);
+			break;
+		case 6:
+			//PhD's
+			/*
+			var Bird6 = new IntermittentSound(audioBuffers[5], 0.1, 1.25, 1, 3, 0.35, 0.5, 0.1, 0.3, [1.]);
+			Bird6.connect(gainNode);
+			Bird6.play();
+			intermittentSounds.push(Bird4);
+			*/
+			break;
+		case 7:
+			//dissertations
+			var Bird7 = new IntermittentSound(audioBuffers[6], 0.1, 1., 1, 2, 0.35, 0.65, 0.1, 0.3, [1., 4.]);
+			Bird7.connect(gainNode);
+			Bird7.play();
+			intermittentSounds.push(Bird7);
+			break;
+		case 8:
+			/*
+			//irony
+			var Bird7 = new IntermittentSound(audioBuffers[7], 0.1, 1.25, 1, 3, 0.35, 0.5, 0.1, 0.3, [1.]);
+			Bird7.connect(gainNode);
+			Bird7.play();
+			intermittentSounds.push(Bird7);
+			*/
+			break;
+		case 9:
+			//fall to its death
+			var Bird7 = new IntermittentSound(audioBuffers[8], 0.1, 1.25, 1, 3, 0.35, 0.5, 0.1, 0.3, [1., 4.]);
+			Bird7.connect(gainNode);
+			Bird7.play();
+			intermittentSounds.push(Bird7);
+			break;
+		case 10:
+			//flying at the last second
+			var Bird7 = new IntermittentSound(audioBuffers[9], 0.1, 1.25, 1, 3, 0.35, 0.65, 0.1, 0.5, [1.]);
+			Bird7.connect(gainNode);
+			Bird7.play();
+			intermittentSounds.push(Bird7);
+			break;
+		case 11:
+			//vain about their wings
+			var Bird7 = new IntermittentSound(audioBuffers[10], 0.1, 1.25, 1, 3, 0.5, 0.75, 0.1, 1., [1.]);
+			Bird7.connect(gainNode);
+			Bird7.play();
+			intermittentSounds.push(Bird7);
+			break;
+		case 12:
+			//bridges
+			var Bird7 = new IntermittentSound(audioBuffers[11], 0.1, 1., 1, 2, 0.5, 0.75, 0.1, 1.5, [1.]);
+			Bird7.connect(gainNode);
+			Bird7.play();
+			intermittentSounds.push(Bird7);
+			break;
+		case 13:
+			//obelisk
+			var Bird7 = new IntermittentSound(audioBuffers[12], 0.1, 0.75, 0, 1, 0.5, 0.85, 0.1, 2., [1.]);
+			Bird7.connect(gainNode);
+			Bird7.play();
+			intermittentSounds.push(Bird7);
+			break;
+		case 14:
+			//do not feed
+			/*
+			var Bird7 = new IntermittentSound(audioBuffers[13], 0.1, 1.25, 1, 3, 0.35, 0.5, 10., 10., [1.]);
+			Bird7.connect(gainNode);
+			Bird7.play();
+			intermittentSounds.push(Bird7);
+			*/
+			break;
+		case 15:
+			//high-protein
+			var Bird7 = new IntermittentSound(audioBuffers[14], 0.1, 1.25, 2, 5, 0.35, 0.5, 10., 10., [1.]);
+			Bird7.connect(gainNode);
+			Bird7.play();
+			intermittentSounds.push(Bird7);
+			break;
+		case 16:
+			//control freaks
+			var Bird7 = new IntermittentSound(audioBuffers[15], 0.1, 1.25, 1, 5, 0.35, 0.5, 10., 10., [1.]);
+			Bird7.connect(gainNode);
+			Bird7.play();
+			intermittentSounds.push(Bird7);
+			break;
+		case 17:
+			//touch their beaks
+			var Bird7 = new IntermittentSound(audioBuffers[16], 0.1, 0.75, 1, 4, 0.35, 0.5, 10., 10., [1.]);
+			Bird7.connect(gainNode);
+			Bird7.play();
+			intermittentSounds.push(Bird7);
+			break;
+		case 18:
+			//leadership
+			var Bird7 = new IntermittentSound(audioBuffers[17], 0.1, 1.75, 1, 3, 0.35, 0.5, 10., 10., [1.]);
+			Bird7.connect(gainNode);
+			Bird7.play();
+			intermittentSounds.push(Bird7);
+			break;
+		case 19:
+			//assassinate
+			var Bird7 = new IntermittentSound(audioBuffers[18], 0.1, 0.75, 0, 1, 0.35, 0.5, 10., 10., [1.]);
+			Bird7.connect(gainNode);
+			Bird7.play();
+			intermittentSounds.push(Bird7);
+			break;
+		case 20:
+			//kitchen
+			var Bird7 = new IntermittentSound(audioBuffers[1], 4., 6., 8, 10, 0.05, 0.15, 0.1, 1., [28., 30., 32.]);
+			Bird7.connect(gainNode);
+			Bird7.play();
+			intermittentSounds.push(Bird7);
+			break;
+		case 21:
+			//discriminating
+			var Bird7 = new IntermittentSound(audioBuffers[20], 1., 1.25, 0, 2, 0.35, 0.5, 1., 5., [1.]);
+			Bird7.connect(gainNode);
+			Bird7.play();
+			intermittentSounds.push(Bird7);
+			var Bird7 = new IntermittentSound(audioBuffers[2], 4., 6., 8, 10, 0.05, 0.25, 0.1, 1., [28., 30., 32.]);
+			Bird7.connect(gainNode);
+			Bird7.play();
+			intermittentSounds.push(Bird7);
+			break;
+		case 22:
+			//opera
+			var Bird7 = new IntermittentSound(audioBuffers[21], 1., 1.25, 11, 13, 0.35, 0.5, 0.1, 0.3, [24., 32.]);
+			Bird7.connect(gainNode);
+			Bird7.play();
+			intermittentSounds.push(Bird7);
+			var Bird7 = new IntermittentSound(audioBuffers[1], 4., 6., 8, 10, 0.05, 0.15, 1., 5., [28., 30., 32.]);
+			Bird7.connect(gainNode);
+			Bird7.play();
+			intermittentSounds.push(Bird7);
+			break;
+		case 23:
+			//Wagner
+			var Bird7 = new IntermittentSound(audioBuffers[22], 1., 1.25, 1, 2, 0.35, 0.5, 1., 2.5, [1.]);
+			Bird7.connect(gainNode);
+			Bird7.play();
+			intermittentSounds.push(Bird7);
+			var Bird7 = new IntermittentSound(audioBuffers[2], 4., 6., 5, 15, 0.05, 0.15, 1., 5., [28., 30., 32.]);
+			Bird7.connect(gainNode);
+			Bird7.play();
+			intermittentSounds.push(Bird7);
+			break;
+		case 24:
+			//hear
+			var Bird7 = new IntermittentSound(audioBuffers[23], 1., 1.25, 1, 2, 0.35, 0.5, 0.5, 1., [1.]);
+			Bird7.connect(gainNode);
+			Bird7.play();
+			intermittentSounds.push(Bird7);
+			var Bird7 = new IntermittentSound(audioBuffers[24], 3., 3., 5, 15, 0.35, 0.5, 2., 6., [16., 24., 32.]);
+			Bird7.connect(gainNode);
+			Bird7.play();
+			intermittentSounds.push(Bird7);
+			break;
+		case 25:
+			//nepotistic
+			var Bird7 = new IntermittentSound(audioBuffers[25], 0.5, 0.75, 1, 2, 0.35, 0.5, 0.15, 0.5, [1.]);
+			Bird7.connect(gainNode);
+			Bird7.play();
+			intermittentSounds.push(Bird7);
+			var Bird7 = new IntermittentSound(audioBuffers[24], 1.5, 2., 5, 10, 0.35, 0.5, 3., 7., [16., 20., 24., 32.]);
+			Bird7.connect(gainNode);
+			Bird7.play();
+			intermittentSounds.push(Bird7);
+			break;
+		case 26:
+			//anger
+			var Bird7 = new IntermittentSound(audioBuffers[26], 0.5, 1., 10, 15, 0.25, 0.5, 4., 10., [12, 16, 32]);
+			Bird7.connect(gainNode);
+			Bird7.play();
+			intermittentSounds.push(Bird7);
+			break;
+		case 27:
+			//fear
+			var Bird7 = new IntermittentSound(audioBuffers[26], 0.5, 0.75, 1, 2, 0.15, 0.35, 0.15, 0.5, [1.]);
+			Bird7.connect(gainNode);
+			Bird7.play();
+			intermittentSounds.push(Bird7);
+			var Bird7 = new IntermittentSound(audioBuffers[1], 0.5, 1., 8, 10, 0.15, 0.45, 10., 10., [12, 16, 18, 20, 24, 28, 32]);
+			Bird7.connect(gainNode);
+			Bird7.play();
+			intermittentSounds.push(Bird7);
+			break;
+		default:
+			if (bufferIndex > 0) {
+				var birdIndex = i;
+				//alert(birdIndex);
+				var bird = audioCtx.createBufferSource();
+				bird.buffer = audioBuffers[bufferIndex];
+				bird.connect(gainNode);
+				bird.start(audioCtx.currentTime);
+			}
+			break;
+	}
 }
 
 // initializing our cues2Play variable
-var cues2Play = { "pitch" : 1. };
+var cues2Play = {};
+for (var line = 0; line < poemLines.length; line++) {
+	cues2Play["cue" + line] = "off";
+}
+cues2Play.pitch = 1.;
+cues2Play.panic = "off";
 
 // getting references to our buttons from the parent object
 var listenButton = document.getElementById("listen");
@@ -128,7 +361,7 @@ var audioBuffers = [];
 var buffersAreLoaded = false;
 
 function loadAudioData() {
-	var filesToLoad = [];
+	var filesToLoad = ["yooo.mp3"];
 	for (var i = 1; i <= 27; i++) {
 		var fileToLoad = "Birds" + i + ".mp3";
 		filesToLoad.push(fileToLoad);
@@ -194,14 +427,31 @@ function nudgeButtonClicked(sender) {
 
 // when the listenButton is clicked, we start start polling for changes in the json file
 function listenButtonClicked() {
-	if(this.className == "off") {
-		this.className = "on";
-		this.innerHTML = "Stop Listening";
-		getCues(1);
-		window.setTimeout(pollForChanges, 1000., false);
-	} else {
-		this.className = "off";
-		this.innerHTML = "Listen";
+	if (buffersAreLoaded) {
+		var yooo = audioCtx.createBufferSource();
+		var yoooGain = audioCtx.createGain();
+		yooo.buffer = audioBuffers[0];
+		yooo.connect(yoooGain);
+		yoooGain.connect(gainNode);
+		yoooGain.gain.value = 0.5;
+		yooo.start(audioCtx.currentTime);
+		if(this.className == "off") {
+			this.className = "on";
+			this.innerHTML = "Stop Listening";
+			getCues(1);
+			window.setTimeout(pollForChanges, 1000., false);
+		} else {
+			this.className = "off";
+			this.innerHTML = "Listen";
+		}
+	}
+}
+
+function stopEverything() {
+	//alert(intermittentSounds + " is " + intermittentSounds.length + " long.");
+	for (var i = 0; i < intermittentSounds.length; i++) {
+		//alert("intermittent sound" + i + ": " + intermittentSounds[i]);
+		intermittentSounds[i].stop();
 	}
 }
 
@@ -242,13 +492,15 @@ function getCues(force) {
 					var newCues2Play = JSON.parse(xhr.responseText);
 					cues2Play.pitch = newCues2Play.pitch;
 					for (var cue in newCues2Play) {
-						if (cue.slice(0, 3) == "cue") {
-							if (cues2Play[cue] != newCues2Play[cue]) {
-								cues2Play[cue] = newCues2Play[cue];
-								if (cues2Play[cue] == "on") {
+						if (cues2Play[cue] != newCues2Play[cue]) {
+							cues2Play[cue] = newCues2Play[cue];
+							if (cues2Play[cue] == "on") {
+								if (cue.slice(0, 3) == "cue") {
 									var cueIndex = cue.slice(3);
 									//alert(cueIndex);
 									birdButtonClicked(cueIndex);
+								} else if (cue == "panic") {
+									stopEverything();
 								}
 							}
 						}

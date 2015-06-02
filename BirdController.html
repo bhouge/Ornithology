@@ -29,8 +29,9 @@ When you are finished singing the displayed phrase, touch or click on the box fo
 <button id="previousPhrase">&lt;</button>
 <button id="pitch">F (176 Hz)</button>
 <button id="startStop" class="off">record</button>
+<button id="panic" class="off">panic</button>
 <button id="reset">reset</button>
-<button id="nextPhrase"">&gt;</button>
+<button id="nextPhrase">&gt;</button>
 
 </div>
 
@@ -45,6 +46,7 @@ When you are finished singing the displayed phrase, touch or click on the box fo
 var pitchButton = document.getElementById("pitch");
 var resetButton = document.getElementById("reset");
 var startStopButton = document.getElementById("startStop");
+var panicButton = document.getElementById("panic");
 var previousPhraseButton = document.getElementById("previousPhrase");
 var nextPhraseButton = document.getElementById("nextPhrase");
 var scoreImage = document.getElementById("score");
@@ -62,6 +64,7 @@ var ctx = canvas.getContext('2d');
 pitchButton.onclick = pitch;
 resetButton.onclick = reset;
 startStopButton.onclick = startStop;
+panicButton.onclick = panic;
 nextPhraseButton.onclick = nextPhrase;
 previousPhraseButton.onclick = previousPhrase;
 
@@ -215,6 +218,21 @@ function reset() {
 	birdCues["cue" + currentPoemLine] = "off";
 	goToPhrase(0);
 	birdCues["cue" + currentPoemLine] = "on";
+	updateCues();
+}
+
+function panic() {
+	if (this.className == "off") {
+		this.className = "on";
+		this.innerHTML = "stop";
+		birdCues.panic = "on";
+	} else {
+		// do I want to cancel audio recording here?
+		wantToBeRecording = false;
+		this.className = "off";
+		this.innerHTML = "panic";
+		birdCues.panic = "off";
+	}
 	updateCues();
 }
 
