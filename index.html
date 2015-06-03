@@ -106,28 +106,28 @@ function birdButtonClicked(i) {
 			break;
 		case 2:
 			//egos
-			var Bird2 = new IntermittentSound(audioBuffers[1], 0.85, 1.2, 4, 6, 0.35, 0.5, 0.1, 0.2, [1.]);
+			var Bird2 = new IntermittentSound(audioBuffers[1], 1.5, 5., 4, 6, 0.35, 0.5, 0.1, 0.2, [1.]);
 			Bird2.connect(gainNode);
 			Bird2.play();
 			intermittentSounds.push(Bird2);
 			break;
 		case 3:
 			//streams
-			var Bird3 = new IntermittentSound(audioBuffers[2], 0.7, 1.1, 3, 5, 0.35, 0.5, 0.1, 0.2, [1.]);
+			var Bird3 = new IntermittentSound(audioBuffers[2], 1.5, 5., 3, 5, 0.35, 0.5, 0.1, 0.2, [1.]);
 			Bird3.connect(gainNode);
 			Bird3.play();
 			intermittentSounds.push(Bird3);
 			break;
 		case 4:
 			//acupuncture
-			var Bird4 = new IntermittentSound(audioBuffers[3], 0.6, 1., 2, 4, 0.35, 0.5, 0.1, 0.2, [1.]);
+			var Bird4 = new IntermittentSound(audioBuffers[3], 1., 2.5, 2, 4, 0.35, 0.5, 0.1, 0.2, [1.]);
 			Bird4.connect(gainNode);
 			Bird4.play();
 			intermittentSounds.push(Bird4);
 			break;
 		case 5:
 			//experience the pain
-			var Bird5 = new IntermittentSound(audioBuffers[4], 0.5, 1., 1, 3, 0.35, 0.5, 0.1, 0.2, [1.]);
+			var Bird5 = new IntermittentSound(audioBuffers[4], 0.5, 1., 1, 5, 0.35, 0.5, 0.1, 0.2, [1.]);
 			Bird5.connect(gainNode);
 			Bird5.play();
 			intermittentSounds.push(Bird5);
@@ -143,30 +143,36 @@ function birdButtonClicked(i) {
 			break;
 		case 7:
 			//dissertations
-			var Bird7 = new IntermittentSound(audioBuffers[6], 0.1, 1., 1, 2, 0.35, 0.65, 0.1, 0.3, [1., 4.]);
+			var Bird7 = new IntermittentSound(audioBuffers[7], 0.1, 0.75, 2, 4, 0.25, 0.4, 0.1, 0.3, [1., 4., 4,8]);
+			Bird7.connect(gainNode);
+			Bird7.play();
+			intermittentSounds.push(Bird7);
+			var Bird7 = new IntermittentSound(audioBuffers[6], 0.25, 1., 0, 2, 0.35, 0.5, 0.1, 0.3, [1.]);
 			Bird7.connect(gainNode);
 			Bird7.play();
 			intermittentSounds.push(Bird7);
 			break;
 		case 8:
-			/*
 			//irony
-			var Bird7 = new IntermittentSound(audioBuffers[7], 0.1, 1.25, 1, 3, 0.35, 0.5, 0.1, 0.3, [1.]);
+			var Bird7 = new IntermittentSound(audioBuffers[8], 0.5, 1.25, 1, 5, 0.35, 0.5, 0.1, 0.3, [1.]);
 			Bird7.connect(gainNode);
 			Bird7.play();
 			intermittentSounds.push(Bird7);
-			*/
 			break;
 		case 9:
 			//fall to its death
-			var Bird7 = new IntermittentSound(audioBuffers[8], 0.1, 1.25, 1, 3, 0.35, 0.5, 0.1, 0.3, [1., 4.]);
+			var Bird7 = new IntermittentSound(audioBuffers[8], 0.1, 1.25, 2, 5, 0.25, 0.45, 0.1, 0.3, [1., 4., 4.8]);
+			Bird7.connect(gainNode);
+			Bird7.play();
+			intermittentSounds.push(Bird7);
+			var Bird7 = new IntermittentSound(audioBuffers[9], 2., 3.25, 1, 3, 0.35, 0.5, 0.1, 0.5, [1.]);
 			Bird7.connect(gainNode);
 			Bird7.play();
 			intermittentSounds.push(Bird7);
 			break;
 		case 10:
 			//flying at the last second
-			var Bird7 = new IntermittentSound(audioBuffers[9], 0.1, 1.25, 1, 3, 0.35, 0.65, 0.1, 0.5, [1.]);
+			var Bird7 = new IntermittentSound(audioBuffers[9], 0.1, 1.25, 1, 3, 0.35, 0.65, 0.1, 0.75, [1.]);
 			Bird7.connect(gainNode);
 			Bird7.play();
 			intermittentSounds.push(Bird7);
@@ -177,6 +183,10 @@ function birdButtonClicked(i) {
 			Bird7.connect(gainNode);
 			Bird7.play();
 			intermittentSounds.push(Bird7);
+			var Bird7 = new IntermittentSound(audioBuffers[10], 0.1, 0.75, 3, 5, 0.25, 0.5, 0.1, 0.3, [1., 1.2, 4., 4.8]);
+			Bird7.connect(gainNode);
+			Bird7.play();
+			intermittentSounds.push(Bird7);
 			break;
 		case 12:
 			//bridges
@@ -184,10 +194,18 @@ function birdButtonClicked(i) {
 			Bird7.connect(gainNode);
 			Bird7.play();
 			intermittentSounds.push(Bird7);
+			var Bird7 = new IntermittentSound(audioBuffers[12], 0.1, 0.75, 4, 8, 0.25, 0.5, 0.1, 0.3, [4., 4.8, 8., 9.6]);
+			Bird7.connect(gainNode);
+			Bird7.play();
+			intermittentSounds.push(Bird7);
 			break;
 		case 13:
 			//obelisk
-			var Bird7 = new IntermittentSound(audioBuffers[12], 0.1, 0.75, 0, 1, 0.5, 0.85, 0.1, 2., [1.]);
+			var Bird7 = new IntermittentSound(audioBuffers[12], 0.1, 0.25, 0, 1, 0.35, 0.5, 0.5, 2., [1.]);
+			Bird7.connect(gainNode);
+			Bird7.play();
+			intermittentSounds.push(Bird7);
+			var Bird7 = new IntermittentSound(audioBuffers[13], 0.1, 0.5, 1, 4, 0.35, 0.5, 0.1, 0.5, [4., 4.8]);
 			Bird7.connect(gainNode);
 			Bird7.play();
 			intermittentSounds.push(Bird7);
@@ -203,28 +221,28 @@ function birdButtonClicked(i) {
 			break;
 		case 15:
 			//high-protein
-			var Bird7 = new IntermittentSound(audioBuffers[14], 0.1, 1.25, 2, 5, 0.35, 0.5, 10., 10., [1.]);
+			var Bird7 = new IntermittentSound(audioBuffers[14], 0.1, 1.25, 2, 4, 0.35, 0.5, 10., 10., [1.]);
 			Bird7.connect(gainNode);
 			Bird7.play();
 			intermittentSounds.push(Bird7);
 			break;
 		case 16:
 			//control freaks
-			var Bird7 = new IntermittentSound(audioBuffers[15], 0.1, 1.25, 1, 5, 0.35, 0.5, 10., 10., [1.]);
+			var Bird7 = new IntermittentSound(audioBuffers[15], 0.1, 1.25, 1, 3, 0.35, 0.5, 10., 10., [1.]);
 			Bird7.connect(gainNode);
 			Bird7.play();
 			intermittentSounds.push(Bird7);
 			break;
 		case 17:
 			//touch their beaks
-			var Bird7 = new IntermittentSound(audioBuffers[16], 0.1, 0.75, 1, 4, 0.35, 0.5, 10., 10., [1.]);
+			var Bird7 = new IntermittentSound(audioBuffers[16], 0.1, 0.75, 0, 1, 0.35, 0.5, 10., 10., [1.]);
 			Bird7.connect(gainNode);
 			Bird7.play();
 			intermittentSounds.push(Bird7);
 			break;
 		case 18:
 			//leadership
-			var Bird7 = new IntermittentSound(audioBuffers[17], 0.1, 1.75, 1, 3, 0.35, 0.5, 10., 10., [1.]);
+			var Bird7 = new IntermittentSound(audioBuffers[17], 0.1, 0.75, 1, 3, 0.35, 0.5, 10., 10., [1.]);
 			Bird7.connect(gainNode);
 			Bird7.play();
 			intermittentSounds.push(Bird7);
@@ -238,29 +256,45 @@ function birdButtonClicked(i) {
 			break;
 		case 20:
 			//kitchen
-			var Bird7 = new IntermittentSound(audioBuffers[1], 4., 6., 8, 10, 0.05, 0.15, 0.1, 1., [28., 30., 32.]);
+			var Bird7 = new IntermittentSound(audioBuffers[1], 3., 6., 10, 13, 0.05, 0.15, 0.1, 2., [26.667, 28., 32.]);
+			Bird7.connect(gainNode);
+			Bird7.play();
+			intermittentSounds.push(Bird7);
+			var Bird7 = new IntermittentSound(audioBuffers[2], 3., 6., 10, 13, 0.05, 0.15, 0.1, 2., [26.667, 28., 32.]);
+			Bird7.connect(gainNode);
+			Bird7.play();
+			intermittentSounds.push(Bird7);
+			var Bird7 = new IntermittentSound(audioBuffers[3], 3., 6., 10, 13, 0.05, 0.15, 0.1, 2., [26.667, 28., 32.]);
+			Bird7.connect(gainNode);
+			Bird7.play();
+			intermittentSounds.push(Bird7);
+			var Bird7 = new IntermittentSound(audioBuffers[20], 1., 1.25, 0, 2, 0.35, 0.5, 0.1, 0.5, [1., 1.2]);
 			Bird7.connect(gainNode);
 			Bird7.play();
 			intermittentSounds.push(Bird7);
 			break;
 		case 21:
 			//discriminating
-			var Bird7 = new IntermittentSound(audioBuffers[20], 1., 1.25, 0, 2, 0.35, 0.5, 1., 5., [1.]);
+			var Bird7 = new IntermittentSound(audioBuffers[21], 1., 1.25, 0, 1, 0.35, 0.5, 1., 2.5, [1., 1.2]);
 			Bird7.connect(gainNode);
 			Bird7.play();
 			intermittentSounds.push(Bird7);
-			var Bird7 = new IntermittentSound(audioBuffers[2], 4., 6., 8, 10, 0.05, 0.25, 0.1, 1., [28., 30., 32.]);
+			var Bird7 = new IntermittentSound(audioBuffers[2], 3., 6., 9, 11, 0.05, 0.25, 0.1, 1., [26.667, 28., 32.]);
 			Bird7.connect(gainNode);
 			Bird7.play();
 			intermittentSounds.push(Bird7);
 			break;
 		case 22:
 			//opera
-			var Bird7 = new IntermittentSound(audioBuffers[21], 1., 1.25, 11, 13, 0.35, 0.5, 0.1, 0.3, [24., 32.]);
+			var Bird7 = new IntermittentSound(audioBuffers[21], 1., 2.25, 11, 13, 0.35, 0.5, 0.1, 2., [26.667, 32.]);
 			Bird7.connect(gainNode);
 			Bird7.play();
 			intermittentSounds.push(Bird7);
-			var Bird7 = new IntermittentSound(audioBuffers[1], 4., 6., 8, 10, 0.05, 0.15, 1., 5., [28., 30., 32.]);
+			var Bird7 = new IntermittentSound(audioBuffers[22], 1., 1.25, 0, 2, 0.25, 0.35, 0.1, 1., [1., 1.2]);
+			Bird7.connect(gainNode);
+			Bird7.play();
+			intermittentSounds.push(Bird7);
+			var Bird7 = new IntermittentSound(audioBuffers[1], 4., 6., 8, 10, 0.05, 0.15, 1., 5., [26.667, 28., 32.]);
 			Bird7.connect(gainNode);
 			Bird7.play();
 			intermittentSounds.push(Bird7);
@@ -271,7 +305,15 @@ function birdButtonClicked(i) {
 			Bird7.connect(gainNode);
 			Bird7.play();
 			intermittentSounds.push(Bird7);
-			var Bird7 = new IntermittentSound(audioBuffers[2], 4., 6., 5, 15, 0.05, 0.15, 1., 5., [28., 30., 32.]);
+			var Bird7 = new IntermittentSound(audioBuffers[23], 1., 1.25, 0, 2, 0.15, 0.35, 0.1, 1., [1., 1.2]);
+			Bird7.connect(gainNode);
+			Bird7.play();
+			intermittentSounds.push(Bird7);
+			var Bird7 = new IntermittentSound(audioBuffers[2], 4., 6., 5, 15, 0.05, 0.15, 1., 5., [26.667, 28., 32.]);
+			Bird7.connect(gainNode);
+			Bird7.play();
+			intermittentSounds.push(Bird7);
+			var Bird7 = new IntermittentSound(audioBuffers[4], 4., 6., 8, 10, 0.05, 0.15, 1., 5., [26.667, 28., 32.]);
 			Bird7.connect(gainNode);
 			Bird7.play();
 			intermittentSounds.push(Bird7);
@@ -282,36 +324,48 @@ function birdButtonClicked(i) {
 			Bird7.connect(gainNode);
 			Bird7.play();
 			intermittentSounds.push(Bird7);
-			var Bird7 = new IntermittentSound(audioBuffers[24], 3., 3., 5, 15, 0.35, 0.5, 2., 6., [16., 24., 32.]);
+			var Bird7 = new IntermittentSound(audioBuffers[22], 1., 1.25, 0, 2, 0.15, 0.35, 0.1, 1., [1., 1.2]);
+			Bird7.connect(gainNode);
+			Bird7.play();
+			intermittentSounds.push(Bird7);
+			var Bird7 = new IntermittentSound(audioBuffers[24], 3., 3., 5, 15, 0.35, 0.5, 2., 6., [16., 23.04, 28, 32.]);
 			Bird7.connect(gainNode);
 			Bird7.play();
 			intermittentSounds.push(Bird7);
 			break;
 		case 25:
 			//nepotistic
-			var Bird7 = new IntermittentSound(audioBuffers[25], 0.5, 0.75, 1, 2, 0.35, 0.5, 0.15, 0.5, [1.]);
+			var Bird7 = new IntermittentSound(audioBuffers[25], 0.25, 0.75, 1, 4, 0.35, 0.5, 0.15, 0.5, [1.]);
 			Bird7.connect(gainNode);
 			Bird7.play();
 			intermittentSounds.push(Bird7);
-			var Bird7 = new IntermittentSound(audioBuffers[24], 1.5, 2., 5, 10, 0.35, 0.5, 3., 7., [16., 20., 24., 32.]);
+			var Bird7 = new IntermittentSound(audioBuffers[24], 1.5, 2., 5, 10, 0.35, 0.5, 3., 7., [16., 23.04, 28, 32.]);
 			Bird7.connect(gainNode);
 			Bird7.play();
 			intermittentSounds.push(Bird7);
 			break;
 		case 26:
 			//anger
-			var Bird7 = new IntermittentSound(audioBuffers[26], 0.5, 1., 10, 15, 0.25, 0.5, 4., 10., [12, 16, 32]);
+			var Bird7 = new IntermittentSound(audioBuffers[26], 0.5, 0.75, 1, 2, 0.15, 0.35, 0.15, 0.5, [1.]);
+			Bird7.connect(gainNode);
+			Bird7.play();
+			intermittentSounds.push(Bird7);
+			var Bird7 = new IntermittentSound(audioBuffers[26], 0.5, 1., 15, 25, 0.25, 0.35, 4., 10., [16, 19.2, 23.04, 32]);
 			Bird7.connect(gainNode);
 			Bird7.play();
 			intermittentSounds.push(Bird7);
 			break;
 		case 27:
 			//fear
-			var Bird7 = new IntermittentSound(audioBuffers[26], 0.5, 0.75, 1, 2, 0.15, 0.35, 0.15, 0.5, [1.]);
+			var Bird7 = new IntermittentSound(audioBuffers[27], 0.5, 0.75, 0, 1, 0.15, 0.35, 0.15, 0.5, [1.]);
 			Bird7.connect(gainNode);
 			Bird7.play();
 			intermittentSounds.push(Bird7);
-			var Bird7 = new IntermittentSound(audioBuffers[1], 0.5, 1., 8, 10, 0.15, 0.45, 10., 10., [12, 16, 18, 20, 24, 28, 32]);
+			var Bird7 = new IntermittentSound(audioBuffers[1], 0.25, 1., 15, 20, 0.15, 0.45, 10., 10., [16, 19.2, 23.04, 32]);
+			Bird7.connect(gainNode);
+			Bird7.play();
+			intermittentSounds.push(Bird7);
+			var Bird7 = new IntermittentSound(audioBuffers[1], 0.5, 1., 10, 15, 0.05, 0.15, 10., 10., [8, 9.6]);
 			Bird7.connect(gainNode);
 			Bird7.play();
 			intermittentSounds.push(Bird7);
