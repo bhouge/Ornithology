@@ -10,6 +10,10 @@
 <h1>ORNITHOLOGICAL BLOGPOEM</h1>
 <h2>by Elisa Gabbert</h2>
 <p>
+Press "Listen" to begin. If you don't hear anything, press "Nudge."
+</p>
+<p>
+Pulsar "Listen" para empezar. Si no oyes nada, pulse "Nudge."
 </p>
 <div id="controlButtons">
 <button id="listen" class="off">Listen</button>
@@ -17,33 +21,33 @@
 </div>
 
 <div id="birdButtons">
-<button id="birdButton1" onclick="birdButtonClicked(1)" class="off"></button>
-<button id="birdButton2" onclick="birdButtonClicked(2)" class="off"></button>
-<button id="birdButton3" onclick="birdButtonClicked(3)" class="off"></button>
-<button id="birdButton4" onclick="birdButtonClicked(4)" class="off"></button>
-<button id="birdButton5" onclick="birdButtonClicked(5)" class="off"></button>
-<button id="birdButton6" onclick="birdButtonClicked(6)" class="off"></button>
-<button id="birdButton7" onclick="birdButtonClicked(7)" class="off"></button>
-<button id="birdButton8" onclick="birdButtonClicked(8)" class="off"></button>
-<button id="birdButton9" onclick="birdButtonClicked(9)" class="off"></button>
-<button id="birdButton10" onclick="birdButtonClicked(10)" class="off"></button>
-<button id="birdButton11" onclick="birdButtonClicked(11)" class="off"></button>
-<button id="birdButton12" onclick="birdButtonClicked(12)" class="off"></button>
-<button id="birdButton13" onclick="birdButtonClicked(13)" class="off"></button>
-<button id="birdButton14" onclick="birdButtonClicked(14)" class="off"></button>
-<button id="birdButton15" onclick="birdButtonClicked(15)" class="off"></button>
-<button id="birdButton16" onclick="birdButtonClicked(16)" class="off"></button>
-<button id="birdButton17" onclick="birdButtonClicked(17)" class="off"></button>
-<button id="birdButton18" onclick="birdButtonClicked(18)" class="off"></button>
-<button id="birdButton19" onclick="birdButtonClicked(19)" class="off"></button>
-<button id="birdButton20" onclick="birdButtonClicked(20)" class="off"></button>
-<button id="birdButton21" onclick="birdButtonClicked(21)" class="off"></button>
-<button id="birdButton22" onclick="birdButtonClicked(22)" class="off"></button>
-<button id="birdButton23" onclick="birdButtonClicked(23)" class="off"></button>
-<button id="birdButton24" onclick="birdButtonClicked(24)" class="off"></button>
-<button id="birdButton25" onclick="birdButtonClicked(25)" class="off"></button>
-<button id="birdButton26" onclick="birdButtonClicked(26)" class="off"></button>
-<button id="birdButton27" onclick="birdButtonClicked(27)" class="off"></button>
+<button id="birdButton1" onclick="nudgeButtonClicked()" class="off"></button>
+<button id="birdButton2" onclick="nudgeButtonClicked()" class="off"></button>
+<button id="birdButton3" onclick="nudgeButtonClicked()" class="off"></button>
+<button id="birdButton4" onclick="nudgeButtonClicked()" class="off"></button>
+<button id="birdButton5" onclick="nudgeButtonClicked()" class="off"></button>
+<button id="birdButton6" onclick="nudgeButtonClicked()" class="off"></button>
+<button id="birdButton7" onclick="nudgeButtonClicked()" class="off"></button>
+<button id="birdButton8" onclick="nudgeButtonClicked()" class="off"></button>
+<button id="birdButton9" onclick="nudgeButtonClicked()" class="off"></button>
+<button id="birdButton10" onclick="nudgeButtonClicked()" class="off"></button>
+<button id="birdButton11" onclick="nudgeButtonClicked()" class="off"></button>
+<button id="birdButton12" onclick="nudgeButtonClicked()" class="off"></button>
+<button id="birdButton13" onclick="nudgeButtonClicked()" class="off"></button>
+<button id="birdButton14" onclick="nudgeButtonClicked()" class="off"></button>
+<button id="birdButton15" onclick="nudgeButtonClicked()" class="off"></button>
+<button id="birdButton16" onclick="nudgeButtonClicked()" class="off"></button>
+<button id="birdButton17" onclick="nudgeButtonClicked()" class="off"></button>
+<button id="birdButton18" onclick="nudgeButtonClicked()" class="off"></button>
+<button id="birdButton19" onclick="nudgeButtonClicked()" class="off"></button>
+<button id="birdButton20" onclick="nudgeButtonClicked()" class="off"></button>
+<button id="birdButton21" onclick="nudgeButtonClicked()" class="off"></button>
+<button id="birdButton22" onclick="nudgeButtonClicked()" class="off"></button>
+<button id="birdButton23" onclick="nudgeButtonClicked()" class="off"></button>
+<button id="birdButton24" onclick="nudgeButtonClicked()" class="off"></button>
+<button id="birdButton25" onclick="nudgeButtonClicked()" class="off"></button>
+<button id="birdButton26" onclick="nudgeButtonClicked()" class="off"></button>
+<button id="birdButton27" onclick="nudgeButtonClicked()" class="off"></button>
 </div>
 
 <script src="scripts/BufferLoader.js"></script>
@@ -499,6 +503,7 @@ function listenButtonClicked() {
 			getCues(1);
 			window.setTimeout(pollForChanges, 1000., false);
 		} else {
+			// note that we don't actually stop listening, since we don't really want to allow that!
 			this.className = "off";
 			this.innerHTML = "Listen";
 		}
