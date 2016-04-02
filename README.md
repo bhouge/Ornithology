@@ -1,12 +1,30 @@
 # Ornithology
-Intended to eventually turn into a musical setting of Elisa Gabbert's "Ornithological Blogpoem."
+A musical setting of Elisa Gabbert's "Ornithological Blogpoem" for choir and audience mobile devices.
+This system includes the following features:
+-playing sounds on audience mobile devices
+-coordinating the independent parts of each choir member via a web app score
+-recording audio and posting to a server
+
 A system for controlling sound on audience members' mobile devices in a concert setting.
-Similar in many ways to my piece "The Tomb of the Grammarian Lysias."
+
+In many ways, this piece is similar to my earlier composition "The Tomb of the Grammarian Lysias,"
+a setting of a poem by Constantine Cavafy for voice and audience mobile devices.
 https://github.com/bhouge/Lysias
+
 For more of Elisa Gabbert's fantastic poetry, check out http://thefrenchexit.blogspot.com.es/
 
 This project incorporates the amazing Recorderjs library by Matt Diamond, which can be found here:
 https://github.com/mattdiamond/Recorderjs
+
+I made a few small tweaks to support mono recording.
+
+I'm also using Boris Smus's BufferLoader, slightly modified from the tutorial he presents here:
+http://www.html5rocks.com/en/tutorials/webaudio/intro/?redirect_from_locale=es
+
+Thanks to Matt and Boris for sharing their brilliant work!
+
+I'm also using socket.io, which replaces the php of the original version. God bless socket.io!
+http://socket.io
 
 The following copyright notice and permission notice pertains to Matt Diamond's Recorderjs library
 (in my project, this library is contained in scripts/recorder.js and scripts/recorderWorker.js):
@@ -19,7 +37,3 @@ The above copyright notice and this permission notice shall be included in all c
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-I'm also using Boris Smus's BufferLoader, slightly modified from the tutorial he presents here:
-http://www.html5rocks.com/en/tutorials/webaudio/intro/?redirect_from_locale=es
-
-Thanks to Matt and Boris for sharing their brilliant work!
