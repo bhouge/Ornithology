@@ -15,6 +15,12 @@ function startUserMedia() {
 	        navigator.webkitGetUserMedia ||
 	        navigator.mozGetUserMedia ||
 	        navigator.msGetUserMedia);
+	
+	
+	// apparently this is deprecated...
+	// navigator.mozGetUserMedia
+	// "navigator.mozGetUserMedia has been replaced by navigator.mediaDevices.getUserMedia" says Firefox
+
 
 	if (navigator.getUserMedia) {
 		navigator.getUserMedia(
@@ -33,22 +39,32 @@ function startUserMedia() {
 
 function startUserStream(stream) {
 	source = audioCtx.createMediaStreamSource(stream);
-	recorder = new Recorder(source);
+	// making this change to attempt to support mono recording...
+	// recorder = new Recorder(source);
+	recorder = new Recorder(source, {numChannels:1} );
 	userPrefix = window.prompt("Enter a user name!");
 	makeNewBirdDirectory(userPrefix);
 }
 
 function getBufferCallback(buffers) {
+	//alert("post audio?");
 	//var newSource = audioCtx.createBufferSource();
-	var newBuffer = audioCtx.createBuffer(2, buffers[0].length, audioCtx.sampleRate);
+	var newBuffer = audioCtx.createBuffer(1, buffers[0].length, audioCtx.sampleRate);
 	newBuffer.getChannelData(0).set(buffers[0]);
-	newBuffer.getChannelData(1).set(buffers[1]);
+	//newBuffer.getChannelData(1).set(buffers[1]);
 	recordings.push(newBuffer);
 	recorder && recorder.exportWAV(function(blob) {
 		postAudio(blob);
     });
 }
 
+function postAudio(blob) {
+	var blobPlusFileName = [blob, birdDirectory,  currentPoemLine];
+	socket.emit('post audio', blobPlusFileName);
+	recorder.clear();
+}
+
+/*
 function postAudio(blob) {
 	var xhr;
 	
@@ -91,9 +107,13 @@ function postAudio(blob) {
 	
 	recorder.clear();
 }
+*/
 
-
+var birdDirectory;
 function makeNewBirdDirectory(audioPrefix){
+	birdDirectory = audioPrefix;
+	socket.emit('make dir', audioPrefix);
+	/*
 	var xhr;
 	
 	// try a bunch of different versions of the object to support different browsers
@@ -129,6 +149,7 @@ function makeNewBirdDirectory(audioPrefix){
 	xhr.setRequestHeader('Content-type','application/x-www-form-urlencoded');
 	// prepend "var=" for the php script; see how it parses data it receives based on this prefix
 	xhr.send('var=' + directoryPrefix + audioPrefix + "/");
+	*/
 }
 
 function startRecordingAudio() {
