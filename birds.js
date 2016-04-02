@@ -44,6 +44,8 @@ io.on('connection', function(socket){
   });
   socket.on('control message', function(msg){
 	  console.log('control message: ' + msg);
+	  //why did I think I shouldn't do this if the message hadn't changed?
+	  //I don't think that wastes anything, and it helps for rehearsal and resetting...
 	  latestControlPhrase = msg;
 	  for (phrase in checkpointPhrases) {
 		  //console.log("am I doing this right?" + checkpointPhrases[phrase]);
@@ -57,7 +59,8 @@ io.on('connection', function(socket){
 			  break;
 		  }
 	  }
-	  //io.emit('control message', msg);
+	  //if (msg != latestControlPhrase) {    }
+	  io.emit('control message', msg);
   });
   socket.on('checkpoint', function(msg){
 	  //the rule is that no one can proceed past a checkpoint until I do...
