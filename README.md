@@ -1,11 +1,12 @@
 # Ornithology
 A musical setting of Elisa Gabbert's "Ornithological Blogpoem" for choir and audience mobile devices.
 This system includes the following features:
--playing sounds on audience mobile devices
--coordinating the independent parts of each choir member via a web app score
--recording audio and posting to a server
+playing sounds on audience mobile devices
+coordinating the independent parts of each choir member via a web app score
+recording audio and posting to a server
 
-A system for controlling sound on audience members' mobile devices in a concert setting.
+Premiered at the Vox Festival, Valencia, Spain, June 4, 2015, by the composer with the Berklee Valencia App Choir.
+US Premiere at the 2nd Web Audio Conference, Georgia Tech, Atlanta, GA, April 5, 2016, by the composer with members of the Georgia Tech Choirs, led by Timothy Hsu and Jerry Ulrich.
 
 In many ways, this piece is similar to my earlier composition "The Tomb of the Grammarian Lysias,"
 a setting of a poem by Constantine Cavafy for voice and audience mobile devices.
