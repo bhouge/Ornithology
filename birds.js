@@ -112,7 +112,7 @@ function pushSoundToClient(filename, bufferIndex, socket) {
 		if (err) {
 			console.log("FOOL! " + err);
 		} else {
-			console.log('audio index:' + bufferIndex);
+			//console.log('audio index:' + bufferIndex);
 		    socket.emit('audio', { audio: true, buffer: buf, index: bufferIndex });
 		}
 	});

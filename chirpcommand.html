@@ -181,11 +181,10 @@ function startStop() {
 // here ends my little hack interlude...
 
 
-// probably [0.5, 2.5]
-// for testing, making it very short
+// set these differently for me from what's in chirpscore.html, so my phrases happen before anyone else, so I can give pitches
 var pauseRanges = [[0.1, 0.15],
                    [0.1, 0.5],
-                   [2.5, 4.]];
+                   [0.5, 2.5]];
                    
 //text, max possible repeats, which set of pause values (above) to use
 var poemLines = [["Ornithological Blogpoem by Elisa Gabbert (tap to begin)", 0, 0],
@@ -203,7 +202,7 @@ var poemLines = [["Ornithological Blogpoem by Elisa Gabbert (tap to begin)", 0, 
                  ["They have been known to assemble themselves into bridges and other structures.", 0, 1],
                  ["An obelisk of feathers.", 0, 2],
                  ["Do not feed the birds;", 2, 1],
-                 ["they are following a strict high-protein diet.", 0, 2],
+                 ["they are following a strict high-protein diet.", 0, 1],
                  ["The birds are control freaks.", 1, 1],
                  ["Do not, under any circumstances, try to touch their beaks.", 0, 2],
                  ["One of the birds has assumed a leadership role.", 2, 1],
@@ -215,7 +214,9 @@ var poemLines = [["Ornithological Blogpoem by Elisa Gabbert (tap to begin)", 0, 
                  ["What would you like to hear?", 0, 2],
                  ["They have a very long waiting list and are nepotistic.", 0, 2],
                  ["Do not be afraid of angering the birds.", 0, 1],
-                 ["What angers the birds is fear.", 0, 2]];
+                 ["What angers the birds...", 0, 1],
+                 ["...is...", 0, 1],
+                 ["...fear.", 5, 1]];
 
 
 
@@ -224,7 +225,7 @@ twitterBird.src = "scores/Twitter_logo_blue.jpg";
 var scoreImages = [twitterBird];
 
 var newScore;
-for (var i = 1; i <= 27; i++) {
+for (var i = 1; i <= poemLines.length; i++) {
 	if (i < 10) {
 		newScore = "scores/0" + i + ".jpg";
 	} else {
@@ -254,7 +255,7 @@ function goToPhrase(phraseIndex) {
 }
 
 function displayScore() {
-	if (currentPoemLine >= 1 && currentPoemLine <= 27) {
+	if (currentPoemLine >= 1 && currentPoemLine <= poemLines.length) {
 		var scaledImageX = canvas.width * (scoreImages[currentPoemLine].width / 1181.);
 		var scaledImageY = scaledImageX * (scoreImages[currentPoemLine].height/scoreImages[currentPoemLine].width);
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
