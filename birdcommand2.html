@@ -1,0 +1,389 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>ORNITHOLOGICAL BLOGPOEM</title>
+<style>
+      body { font: 13px Helvetica, Arial; }
+      canvas { border: 1px solid black; }
+</style>
+</head>
+<body>
+
+<h1>ORNITHOLOGICAL BLOGPOEM</h1>
+<h2>by Elisa Gabbert</h2>
+
+<div id="scoreImage">
+
+<p>
+Touch or click in the box below to start the piece.
+When you see an image of a bird, wait for the next music phrase to be displayed.
+When you are finished singing the displayed phrase, touch or click on the box for the next phrase.
+</p>
+
+<canvas id="score"></canvas>
+
+<div id="buttons">
+
+<button id="previousPhrase">&lt;</button>
+<button id="pitch">F (176 Hz)</button>
+<button id="startStop" class="off">enable recording</button>
+<button id="reset">reset</button>
+<button id="nextPhrase">&gt;</button>
+
+</div>
+
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="scripts/BirdRecorder.js"></script>
+<script src="scripts/recorder.js"></script>
+
+<script>
+var socketBuffers = [];
+
+var socket = io();
+// and this is for when a message is received
+// and this is what happens on the page, not the server
+socket.on('chat message', function(msg){
+	//alert(msg);
+	if (msg != "panic") {
+		//buttonActivated(msg);
+		//birdButtonClicked(msg);
+	} else {
+		stopEverything();
+	}
+});
+socket.on('image', function(msg){
+    //io.emit('chat message', msg);
+    alert(msg.buffer);
+    console.log('image received!');
+    
+    var ctx = document.getElementById('canvas').getContext('2d');
+    var img = new Image();
+    /*
+      img.onload = function(){
+        for (var i=0;i<4;i++){
+          for (var j=0;j<3;j++){
+            ctx.drawImage(img,j*50,i*38,50,38);
+          }
+        }
+      };
+    */
+    //img.src = 'https://mdn.mozillademos.org/files/5397/rhino.jpg';
+    img.src = 'data:image/jpeg;base64,' + msg.buffer;
+    //img.src = msg.buffer;
+    ctx.drawImage(img,0,0,50,38);
+});
+socket.on('audio', function(msg){
+    //io.emit('chat message', msg);
+    //alert(msg.buffer);
+    console.log('audio received!');
+    //socket.emit('chat message', msg.index);
+    //socketBuffers.push('data:audio/wav;base64,' + msg.buffer);
+    //var grainGainNode = audioCtx.createGain();
+    
+    //alert(msg.index);
+    audioCtx.decodeAudioData(msg.buffer, function(buffer) {
+    	//pushing isn't safe, because this is asynchronous, sending index with the buffer instead
+    	// the - 1 is dumb and arbitrary because of the dumb way you named your test files
+    	audioBuffers[msg.index] = buffer;
+    	//audioBuffers.push(buffer);
+    	buffersAreLoaded = true;
+    	//testSound(0);
+      }, 
+      function(error) {
+          console.error('decodeAudioData error', error);
+      });
+});
+
+
+//get access to the buttons as objects
+var pitchButton = document.getElementById("pitch");
+var resetButton = document.getElementById("reset");
+var startStopButton = document.getElementById("startStop");
+var previousPhraseButton = document.getElementById("previousPhrase");
+var nextPhraseButton = document.getElementById("nextPhrase");
+var scoreImage = document.getElementById("score");
+
+//get access to canvas
+var canvas = document.getElementById('score');
+canvas.width = window.innerWidth - 20;
+//this value comes from the proportions of my longest phrase jpg.
+canvas.height = canvas.width * 0.22;
+var ctx = canvas.getContext('2d');
+
+//assign what will happen when the buttons are clicked
+pitchButton.onclick = pitch;
+resetButton.onclick = reset;
+startStopButton.onclick = startStop;
+nextPhraseButton.onclick = nextPhrase;
+previousPhraseButton.onclick = previousPhrase;
+
+scoreImage.addEventListener("click", pauseBetweenPhrases);
+
+// here begins my little hack interlude...
+// these were for testing; does it make sense to keep a test button on the choir app?
+
+/*
+var recordButton = document.getElementById("record");
+
+recordButton.onclick = function () {
+	if (recordButton.className == "off") {
+		recordButton.className = "on";
+		recordButton.innerHTML = "stop";
+		alert("starting recording!");
+		if (wantToBeRecording) {
+			startRecordingAudio();
+			recording = true;
+			recordingTimeoutID = window.setTimeout(recordingTimeout, 10000);
+		}
+		//getCues(true);
+	} else {
+		if (recording) {
+			stopGetAndPostAudio();
+			recording = false;
+			window.clearTimeout(recordingTimeoutID);
+		}
+		recordButton.className = "off";
+		recordButton.innerHTML = "record";
+		alert("stopping recording!");
+	}
+}
+*/
+
+var readyButton = document.getElementById("startStop");
+readyButton.onclick = startStop;
+
+var userAudioInitialized = false;
+
+//toggle whether or not audio is automatically recorded for each phrase.
+function startStop() {
+	if (this.className == "off") {
+		alert("ready to record!");
+		if (!userAudioInitialized) {
+			startUserMedia();
+		}
+		wantToBeRecording = true;
+		this.className = "on";
+		this.innerHTML = "stop";
+	} else {
+		alert("no longer ready to record!");
+		if (recording) {
+			cancelAudioRecording();
+		}
+		wantToBeRecording = false;
+		this.className = "off";
+		this.innerHTML = "enable recording";
+	}
+}
+
+// here ends my little hack interlude...
+
+
+var pauseRanges = [[1., 5.],
+                   [0.1, 0.5],
+                   [1., 2.5]];
+                   
+var poemLines = [["Ornithological Blogpoem by Elisa Gabbert (tap to begin)", 0., 0],
+                 ["You will be woken by the chirping of the birds,", 0.25, 1],
+                 ["which is the sound of their egos escaping from their bodies", 0., 1],
+                 ["in loud and irregular streams.", 0., 2],
+                 ["They are acupuncture birds;", 0.25, 1],
+                 ["where the chirps fall on your eardrums corresponds to where you experience the pain.", 0., 2],
+                 ["The birds have PhDs.", 0.25, 1],
+                 ["They chirp out chapters from their dissertations.", 0., 2],
+                 ["The birds do not agree that irony is dead.", 0., 2],
+                 ["One of the birds has tried repeatedly to fall to its death", 0., 1],
+                 ["but always starts flying at the last second.", 0., 2],
+                 ["The birds are excessively vain about their wings.", 0.25, 1],
+                 ["They have been known to assemble themselves into bridges and other structures.", 0., 1],
+                 ["An obelisk of feathers.", 0., 2],
+                 ["Do not feed the birds;", 0.25, 1],
+                 ["they are following a strict high-protein diet.", 0., 2],
+                 ["The birds are control freaks.", 0.25, 1],
+                 ["Do not, under any circumstances, try to touch their beaks.", 0., 2],
+                 ["One of the birds has assumed a leadership role.", 0.25, 1],
+                 ["Another bird is plotting to assassinate it.", 0., 2],
+                 ["Some items have gone missing from the kitchen.", 0.25, 1],
+                 ["The birds are capable of eating almost anything but are far too discriminating.", 0., 2],
+                 ["If you are lucky one morning the birds may chirp selections from your favorite opera.", 0., 1],
+                 ["The birds are especially fond of Wagner.", 0., 1],
+                 ["What would you like to hear?", 0., 2],
+                 ["They have a very long waiting list and are nepotistic.", 0., 2],
+                 ["Do not be afraid of angering the birds.", 0., 1],
+                 ["What angers the birds is fear.", 0., 2]];
+
+
+
+var twitterBird = new Image();
+twitterBird.src = "scores/Twitter_logo_blue.jpg";
+var scoreImages = [twitterBird];
+
+var newScore;
+for (var i = 1; i <= 27; i++) {
+	if (i < 10) {
+		newScore = "scores/0" + i + ".jpg";
+	} else {
+		newScore = "scores/" + i + ".jpg";
+	}
+	scoreImages[i] = new Image();
+	scoreImages[i].src = newScore;
+}
+
+var currentPoemLine = 0;
+displayScore();
+
+var timerID;
+var recordingTimeoutID;
+var wantToBeRecording = false;
+var repeat = false;
+
+// this is a new thing I added when switching to socket.io
+// this array lets me pass blog, directory, and index.
+var blobToPost = [0, 0, 0];
+
+
+//There is some foolishness here I should revisit someday
+function goToPhrase(phraseIndex) {
+	currentPoemLine = phraseIndex;
+	displayScore();
+}
+
+function displayScore() {
+	if (currentPoemLine >= 1 && currentPoemLine <= 27) {
+		var scaledImageX = canvas.width * (scoreImages[currentPoemLine].width / 1181.);
+		var scaledImageY = scaledImageX * (scoreImages[currentPoemLine].height/scoreImages[currentPoemLine].width);
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
+		ctx.drawImage(scoreImages[currentPoemLine], 0, 0, scaledImageX, scaledImageY);
+		//alert("canvas width: " + canvas.width + ", image width: " + scoreImages[currentPoemLine].width + ", scaled image width: " + Math.floor(scaledImageX));
+	} else if (currentPoemLine == 0) {
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
+		ctx.font = "48px serif";
+		ctx.fillText("Tap to begin.", 10, 50);
+	} else {
+		drawBird();
+	}
+}
+
+function drawBird() {
+	var scaledBirdWidth = (canvas.height / scoreImages[0].height) * scoreImages[0].width; 
+	ctx.clearRect(0, 0, canvas.width, canvas.height);
+	ctx.drawImage(scoreImages[0], (canvas.width / 2.) - (scaledBirdWidth / 2.), 0, scaledBirdWidth, canvas.height);
+}
+
+function pauseBetweenPhrases() {
+	if (recording) {
+		stopGetAndPostAudio();
+		recording = false;
+		window.clearTimeout(recordingTimeoutID);
+	}
+	drawBird();
+	repeat = Math.random() < poemLines[currentPoemLine][1];
+	// note that with the settings above, ends of sets are given a repeat value of 0
+	// it would be possible to break this with the wrong data
+	// e.g., if the end of the phrase would repeat, we'd have the wrong delay time before the repetition
+	// a solution would be instead to indicate whether it's the end of a set or not,
+	// then set delay and repeats both based on that setting.
+	// play with it and decide if you'd rather have the clarity or the flexibility
+	var min = pauseRanges[poemLines[currentPoemLine][2]][0] * 1000.;
+	var max = pauseRanges[poemLines[currentPoemLine][2]][1] * 1000.;
+	//alert("min: " + min + ", max: " + max);
+	var randomPause = Math.random() * (max - min) + min;
+	timerID = window.setTimeout(endOfRandomPause, randomPause);
+}
+
+function endOfRandomPause() {
+	if (!repeat) {
+		nextPhrase();
+	} else {
+		displayScore();
+	}
+}
+
+function nextPhrase() {
+	window.clearTimeout(timerID);
+	if (currentPoemLine < poemLines.length - 1) {
+		currentPoemLine++;
+	} else {
+		currentPoemLine = 0;
+	};
+	goToPhrase(currentPoemLine);
+	if (wantToBeRecording) {
+		startRecordingAudio();
+		recording = true;
+		recordingTimeoutID = window.setTimeout(recordingTimeout, 10000);
+	}
+}
+
+function previousPhrase() {
+	window.clearTimeout(timerID);
+	if (currentPoemLine > 0) {
+		currentPoemLine--;
+	}
+	goToPhrase(currentPoemLine);
+}
+
+function reset() {
+	window.clearTimeout(timerID);
+	goToPhrase(0);
+}
+
+var userAudioInitialized = false;
+
+//toggle whether or not audio is automatically recorded for each phrase.
+//could do some checks on this; I think depending on when you click these buttons, 
+//it's possible to get some errors.
+function startStop() {
+	if (this.className == "off") {
+		if (!userAudioInitialized) {
+			startUserMedia();
+		}
+		wantToBeRecording = true;
+		this.className = "on";
+		this.innerHTML = "stop";
+	} else {
+		if (recording) {
+			cancelAudioRecording();
+		}
+		wantToBeRecording = false;
+		this.className = "off";
+		this.innerHTML = "record";
+	}
+}
+
+var fileNode;
+var gainNode;
+
+function pitch() {
+	fileNode = audioCtx.createBufferSource();
+	gainNode = audioCtx.createGain();
+	gainNode.connect(audioCtx.destination);
+	fileNode.buffer = audioBuffers[0];	
+	fileNode.connect(gainNode);
+	fileNode.playbackRate.value = 1.;
+	fileNode.start(audioCtx.currentTime);
+	//gainNode.gain.setValueCurveAtTime(grainWindow, slightDelay, 1.);
+}
+
+function recordingTimeout() {
+	if (recording) {
+		//stopGetAndPostAudio();
+		cancelAudioRecording();
+		recording = false;
+	}
+}
+
+//audio set up and file loading stuff
+var audioBuffers = [];
+var buffersAreLoaded = false;
+
+var AudioContext = (window.AudioContext || window.webkitAudioContext);
+var audioCtx = new AudioContext();
+
+socket.emit('chat message', 'I am connected!');
+
+</script>
+
+</body>
+</html>

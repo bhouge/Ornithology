@@ -1,58 +1,121 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Ornithological Blogpoem</title>
-<link href="styles/birdss.css" rel="stylesheet" type="text/css">
+<title>ORNITHOLOGICAL BLOGPOEM</title>
+<style>
+      * { margin: 10; padding: 20; box-sizing: border-box; }
+      body { font: 13px Helvetica, Arial; }
+
+</style>
 </head>
 <body>
-
 <h1>ORNITHOLOGICAL BLOGPOEM</h1>
 <h2>by Elisa Gabbert</h2>
+
 <p>
-Press "Listen" to begin. If you don't hear anything, press "Nudge."
+Press "Listen" to begin.
 </p>
-<p>
-Pulsar "Listen" para empezar. Si no oyes nada, pulse "Nudge."
-</p>
+
 <div id="controlButtons">
-<button id="listen" class="off">Listen</button>
-<button id="nudge" class="off">Nudge</button>
+<button id="listen" onclick="testSound(0)" class="off">Listen</button>
 </div>
 
-<div id="birdButtons">
-<button id="birdButton1" onclick="nudgeButtonClicked()" class="off"></button>
-<button id="birdButton2" onclick="nudgeButtonClicked()" class="off"></button>
-<button id="birdButton3" onclick="nudgeButtonClicked()" class="off"></button>
-<button id="birdButton4" onclick="nudgeButtonClicked()" class="off"></button>
-<button id="birdButton5" onclick="nudgeButtonClicked()" class="off"></button>
-<button id="birdButton6" onclick="nudgeButtonClicked()" class="off"></button>
-<button id="birdButton7" onclick="nudgeButtonClicked()" class="off"></button>
-<button id="birdButton8" onclick="nudgeButtonClicked()" class="off"></button>
-<button id="birdButton9" onclick="nudgeButtonClicked()" class="off"></button>
-<button id="birdButton10" onclick="nudgeButtonClicked()" class="off"></button>
-<button id="birdButton11" onclick="nudgeButtonClicked()" class="off"></button>
-<button id="birdButton12" onclick="nudgeButtonClicked()" class="off"></button>
-<button id="birdButton13" onclick="nudgeButtonClicked()" class="off"></button>
-<button id="birdButton14" onclick="nudgeButtonClicked()" class="off"></button>
-<button id="birdButton15" onclick="nudgeButtonClicked()" class="off"></button>
-<button id="birdButton16" onclick="nudgeButtonClicked()" class="off"></button>
-<button id="birdButton17" onclick="nudgeButtonClicked()" class="off"></button>
-<button id="birdButton18" onclick="nudgeButtonClicked()" class="off"></button>
-<button id="birdButton19" onclick="nudgeButtonClicked()" class="off"></button>
-<button id="birdButton20" onclick="nudgeButtonClicked()" class="off"></button>
-<button id="birdButton21" onclick="nudgeButtonClicked()" class="off"></button>
-<button id="birdButton22" onclick="nudgeButtonClicked()" class="off"></button>
-<button id="birdButton23" onclick="nudgeButtonClicked()" class="off"></button>
-<button id="birdButton24" onclick="nudgeButtonClicked()" class="off"></button>
-<button id="birdButton25" onclick="nudgeButtonClicked()" class="off"></button>
-<button id="birdButton26" onclick="nudgeButtonClicked()" class="off"></button>
-<button id="birdButton27" onclick="nudgeButtonClicked()" class="off"></button>
-</div>
+<p>
+You will be woken by the chirping of the birds, which is the sound
+of their egos escaping from their bodies in loud and irregular streams.
+They are acupuncture birds; where the chirps fall on your eardrums
+corresponds to where you experience the pain. The birds have PhDs.
+They chirp out chapters from their dissertations. The birds do not agree
+that irony is dead. One of the birds has tried repeatedly to fall to its death
+but always starts flying at the last second. The birds are excessively
+vain about their wings. They have been known to assemble themselves
+into bridges and other structures. An obelisk of feathers. Do not feed
+the birds; they are following a strict high-protein diet. The birds are
+control freaks. Do not, under any circumstances, try to touch their beaks.
+One of the birds has assumed a leadership role. Another bird is plotting
+to assassinate it. Some items have gone missing from the kitchen.
+The birds are capable
+of eating almost anything but are far too discriminating. If you are
+lucky one morning the birds may chirp selections from your favorite
+opera. The birds are especially fond of Wagner. What would you like
+to hear? They have a very long waiting list and are nepotistic. Do not
+be afraid of angering the birds. What angers the birds is fear.
+</p>
 
+<script src="/socket.io/socket.io.js"></script>
 <script src="scripts/IntermittentSound.js"></script>
 
 <script type="text/javascript">
+
+var socketBuffers = [];
+
+var socket = io();
+// and this is for when a message is received
+// and this is what happens on the page, not the server
+socket.on('chat message', function(msg){
+	//alert(msg);
+	if (msg != "panic") {
+		//buttonActivated(msg);
+		//birdButtonClicked(msg);
+		//alert(msg);
+		birdButtonTest(msg);
+	} else {
+		stopEverything();
+	}
+});
+socket.on('image', function(msg){
+    //io.emit('chat message', msg);
+    alert(msg.buffer);
+    console.log('image received!');
+    
+    var ctx = document.getElementById('canvas').getContext('2d');
+    var img = new Image();
+    /*
+      img.onload = function(){
+        for (var i=0;i<4;i++){
+          for (var j=0;j<3;j++){
+            ctx.drawImage(img,j*50,i*38,50,38);
+          }
+        }
+      };
+    */
+    //img.src = 'https://mdn.mozillademos.org/files/5397/rhino.jpg';
+    img.src = 'data:image/jpeg;base64,' + msg.buffer;
+    //img.src = msg.buffer;
+    ctx.drawImage(img,0,0,50,38);
+});
+socket.on('audio', function(msg){
+    //io.emit('chat message', msg);
+    //alert(msg.buffer);
+    console.log('audio received!');
+    socket.emit('chat message', msg.index);
+    //socketBuffers.push('data:audio/wav;base64,' + msg.buffer);
+    //var grainGainNode = audioCtx.createGain();
+    
+    //alert(msg.index);
+    audioCtx.decodeAudioData(msg.buffer, function(buffer) {
+    	//pushing isn't safe, because this is asynchronous, sending index with the buffer instead
+    	// the - 1 is dumb and arbitrary because of the dumb way you named your test files
+    	audioBuffers[msg.index - 1] = buffer;
+    	//audioBuffers.push(buffer);
+    	buffersAreLoaded = true;
+    	//testSound(0);
+      }, 
+      function(error) {
+          console.error('decodeAudioData error', error);
+      });
+});
+
+function testSound(index) {
+	alert('testing sound!');
+	var source = audioCtx.createBufferSource(); // creates a sound source
+	alert (audioBuffers[index]);
+	source.buffer = audioBuffers[index];
+	source.connect(audioCtx.destination);       // connect the source to the context's destination (the speakers)
+    source.start(0);
+}
+
 
 var poemLines = [["Ornithological Blogpoem by Elisa Gabbert (tap to begin)", 0., 0],
                  ["You will be woken by the chirping of the birds,", 0.25, 1],
@@ -92,10 +155,19 @@ for (var i = 1; i <= 27; i++) {
 	//birdButtonArray.push(birdButton);
 }
 
+
 var intermittentSounds = [];
-function birdButtonClicked(i) {
+
+function birdButtonTest(measureNumber) {
+	var Bird7 = new IntermittentSound(audioBuffers[measureNumber], 0.1, 1.25, 2, 4, 0.35, 0.5, 10., 10., [1.]);
+	Bird7.connect(gainNode);
+	Bird7.play();
+	intermittentSounds.push(Bird7);
+}
+
+function birdButtonClicked(measureNumber) {
 	//alert(intermittentSounds + " is " + intermittentSounds.length + " long.");
-	var measureNumber = parseInt(i, 10);
+	//var measureNumber = parseInt(i, 10);
 	var bufferIndex = measureNumber;
 	switch (measureNumber) {
 		case 1:
@@ -386,25 +458,7 @@ function birdButtonClicked(i) {
 	}
 }
 
-// initializing our cues2Play variable
-var cues2Play = {};
-for (var line = 0; line < poemLines.length; line++) {
-	cues2Play["cue" + line] = "off";
-}
-cues2Play.pitch = 1.;
-cues2Play.panic = "off";
-
-// getting references to our buttons from the parent object
-var listenButton = document.getElementById("listen");
-var nudgeButton = document.getElementById("nudge");
-
-// setting up what functions get called when the buttons are clicked
-listenButton.onclick = listenButtonClicked;
-nudgeButton.onclick = nudgeButtonClicked;
-//window.onclick = nudgeButtonClicked;
-
-
-// setting up our audio context and creating our master gain
+//setting up our audio context and creating our master gain
 var AudioContext = window.AudioContext || window.webkitAudioContext;
 var audioCtx = new AudioContext();
 
@@ -417,98 +471,6 @@ gainNode.gain.value = 1.0;
 var audioBuffers = [];
 var buffersAreLoaded = false;
 
-function loadAudioData() {
-	var filesToLoad = ["yooo.mp3"];
-	var singers = ["Ben/", "Jon/", "Lori/", "Rebecca/", "Francisco/", "Clais/"];
-	for (var i = 1; i <= 27; i++) {
-		//var singer = Math.floor(Math.random() * singers.length);
-		var fileToLoad = "Birds" + i + ".mp3";
-		filesToLoad.push(fileToLoad);
-	}
-	//alert(filesToLoad);
-	bufferLoader = new BufferLoader(audioCtx, 
-			'sounds/compressed/',
-			singers,
-			filesToLoad, 
-			finishedLoading);
-	bufferLoader.load();
-}
-
-
-function finishedLoading(bufferList) {
-	for (var i = 0; i < bufferList.length; ++i) {
-		audioBuffers[i] = bufferList[i];
-	}
-	buffersAreLoaded = true;
-	//alert(audioBuffers);
-}
-
-loadAudioData();
-
-
-function getRandomFileNames(fileList, desiredFileNumber) {
-	var randomFiles = [];
-	if (fileList.length >= desiredFileNumber) {
-		var currentFile;
-		while (randomFiles.length < desiredFileNumber) {
-			var newFileIndex = Math.floor(Math.random() * fileList.length);
-			newFile = fileList[newFileIndex];
-			if (randomFiles.indexOf(newFile) < 0) {
-				randomFiles.push(newFile);
-			}
-		}
-	} else {
-		randomFiles = fileList;
-	}
-	return randomFiles;
-}
-
-//var randomFiles = getRandomFileNames(birdFiles, 3);
-//alert(randomFiles);
-
-
-
-//set up a different method for this!
-var nudgeTimeout = 0;
-var birdCounter = 1;
-function nudgeButtonClicked(sender) {
-	// call getCues with "force" flag set to 1.
-	// make it so that tapping anywhere on the screen calls this method
-	//alert("nudged!");
-	// set timeout for onclick nudge 
-	getCues(1);
-	/*
-	buttonClicked(birdCounter);
-	birdCounter++;
-	if (birdCounter > 3) {
-		birdCounter = 1;
-	}
-	*/
-}
-
-// when the listenButton is clicked, we start start polling for changes in the json file
-function listenButtonClicked() {
-	if (buffersAreLoaded) {
-		var yooo = audioCtx.createBufferSource();
-		var yoooGain = audioCtx.createGain();
-		yooo.buffer = audioBuffers[0];
-		yooo.connect(yoooGain);
-		yoooGain.connect(gainNode);
-		yoooGain.gain.value = 0.5;
-		yooo.start(audioCtx.currentTime);
-		if(this.className == "off") {
-			this.className = "on";
-			this.innerHTML = "Stop Listening";
-			getCues(1);
-			window.setTimeout(pollForChanges, 1000., false);
-		} else {
-			// note that we don't actually stop listening, since we don't really want to allow that!
-			this.className = "off";
-			this.innerHTML = "Listen";
-		}
-	}
-}
-
 function stopEverything() {
 	//alert(intermittentSounds + " is " + intermittentSounds.length + " long.");
 	for (var i = 0; i < intermittentSounds.length; i++) {
@@ -517,102 +479,7 @@ function stopEverything() {
 	}
 }
 
-function pollForChanges(force) {
-	getCues(force);
-	// You know, I think I didn't have this functionality in Lysias on purpose;
-	// Otherwise someone could mess up the piece by turning off listening and turning it back on.
-	// Problem could be mitigated by turning buttons off when they're no longer valid,
-	// which I didn't do for Lysias.
-	if (listenButton.className == "on") {
-		window.setTimeout(pollForChanges, 1000., false);
-	}
-}
 
-function getCues(force) {
-	var xhr;
-	try{
-		// Opera 8.0+, Firefox, Safari
-		xhr = new XMLHttpRequest();
-	} catch(e) {
-		// Internet Explorer Browsers
-		try{
-			xhr = new ActiveXObject("Msxml2.XMLHTTP");
-		} catch(e) {
-			try{
-				xhr = new ActiveXObject("Microsoft.XMLHTTP");
-			} catch(e) {
-				alert("Your browser apparently does not support AJAX.");
-				return false;
-			}
-		}
-	}
-	xhr.onreadystatechange = function() {
-		//alert("readyState: " + xhr.readyState + "; status: " + xhr.status);
-		if (xhr.readyState == 4) {
-			if (xhr.status == 200) {
-				try {
-					var newCues2Play = JSON.parse(xhr.responseText);
-					cues2Play.pitch = newCues2Play.pitch;
-					for (var cue in newCues2Play) {
-						if (cues2Play[cue] != newCues2Play[cue]) {
-							cues2Play[cue] = newCues2Play[cue];
-							if (cues2Play[cue] == "on") {
-								if (cue.slice(0, 3) == "cue") {
-									var cueIndex = cue.slice(3);
-									//alert(cueIndex);
-									birdButtonClicked(cueIndex);
-								} else if (cue == "panic") {
-									stopEverything();
-								}
-							}
-						}
-					}
-					
-					/*
-					
-					// at some point I'll add back some of this functionality, specifically the panic button
-					for (var cue in newCues2Play) {
-							if (cues2Play[cue] != newCues2Play[cue]) {
-								cues2Play[cue] = newCues2Play[cue];
-								var cueIndex = cue.slice(3);
-								if (cue != "panic") {
-									if (cues2Play[cue] == "on") {
-										buttonActivated(cueIndex);
-									} else {
-										buttonDeactivated(cueIndex);
-									}
-								} else {
-									//alert("Start panicking!");
-									stopEverything();
-								}
-							}
-						}
-					*/
-				} catch(e) {
-					// Of course we don't want to alert this; we want it to fail unobtrusively,
-					// since all it means is that we got a bad json file...
-					// however, for testing...
-					alert(e);
-					var error = e;
-				}
-			}
-		}
-	}
-	
-	if (force) {
-		// Adding a time stamp gives it a unique name which should force the browser to really read the json file
-		// instead of using a cached version
-		var currentTime = new Date();
-		var timeStamp = currentTime.getTime();
-		xhr.open('GET', 'cues.json?_=' + timeStamp, true);
-		xhr.setRequestHeader('Cache-Control', 'no-cache');
-	} else {
-		xhr.open('GET', 'cues.json', true);
-	}
-
-	xhr.overrideMimeType("application/json");
-	xhr.send(null);
-}
 
 </script>
 
