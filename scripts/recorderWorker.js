@@ -131,7 +131,10 @@ function encodeWAV(samples){
   /* sample rate */
   view.setUint32(24, sampleRate, true);
   /* byte rate (sample rate * block align) */
-  view.setUint32(28, sampleRate * 4, true);
+  //OMG, I, Ben Houge, am making this change to attempt to support mono recording...
+  //because of this: https://github.com/mattdiamond/Recorderjs/issues/53
+  //view.setUint32(28, sampleRate * 4, true);
+  view.setUint32(28, sampleRate * numChannels * 2, true);
   /* block align (channel count * bytes per sample) */
   view.setUint16(32, numChannels * 2, true);
   /* bits per sample */
