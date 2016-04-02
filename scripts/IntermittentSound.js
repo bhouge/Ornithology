@@ -8,7 +8,7 @@
  */
 
 // creating an intermittentSound object with an object constructor
-function IntermittentSound(buffer, minPause, maxPause, minReps, maxReps, minVol, maxVol, minDur, maxDur, pitchArray) {
+function IntermittentSound(buffer, minPause, maxPause, minReps, maxReps, minVol, maxVol, minDur, maxDur, pitchArray, startWithPause) {
 	this.buffer = buffer;
 	this.minPause = minPause;
 	this.maxPause = maxPause;
@@ -21,6 +21,7 @@ function IntermittentSound(buffer, minPause, maxPause, minReps, maxReps, minVol,
 	this.outputNode;
 	this.isPlaying = false;
 	this.pitchArray = pitchArray;
+	this.startWithPause = startWithPause;
 	
 	this.dur = Math.random() * (this.maxDur - this.minDur) + this.minDur;
 	if (this.dur > this.buffer.duration) {
@@ -39,21 +40,28 @@ function IntermittentSound(buffer, minPause, maxPause, minReps, maxReps, minVol,
 	
 	function playBuffer(bufferIndex, volume, pitch) {
 		//somewhere in here we should probably error check to make sure an outputNode with an audioContext is connected
-		var newNow = that.outputNode.context.currentTime + 0.1;
+		//var newNow = that.outputNode.context.currentTime + 0.1;
 		var audioBufferSource = that.outputNode.context.createBufferSource();
 		audioBufferSource.buffer = bufferIndex;
 		audioBufferSource.playbackRate.value = pitch;
 		audioBufferGain = that.outputNode.context.createGain();
-		audioBufferGain.gain.value = volume;
-		audioBufferGain.gain.setValueAtTime(0., newNow);
+		//audioBufferGain.gain.value = volume;
+		//audioBufferGain.gain.setValueAtTime(0., newNow);
+		//audioBufferGain.gain.setValueAtTime(0., that.outputNode.context.currentTime);
 		audioBufferSource.connect(audioBufferGain);
 		audioBufferGain.connect(that.outputNode);
 		try {
-			audioBufferSource.start(newNow, that.startTime, that.dur);
+			//audioBufferSource.start(newNow, that.startTime, that.dur);
+			
 			//alert(that.outputNode.context.currentTime);
-			audioBufferGain.gain.linearRampToValueAtTime(volume, newNow + 0.05);
-			audioBufferGain.gain.linearRampToValueAtTime(volume, newNow + that.dur - 0.1);
-			audioBufferGain.gain.linearRampToValueAtTime(0.0, newNow + that.dur);
+			//audioBufferGain.gain.linearRampToValueAtTime(volume, newNow + 0.05);
+			
+			audioBufferGain.gain.linearRampToValueAtTime(0.0, that.outputNode.context.currentTime);
+			audioBufferGain.gain.linearRampToValueAtTime(volume, that.outputNode.context.currentTime + 0.05);
+			audioBufferGain.gain.linearRampToValueAtTime(volume, that.outputNode.context.currentTime + that.dur - 0.05);
+			audioBufferGain.gain.linearRampToValueAtTime(0.0, that.outputNode.context.currentTime + that.dur);
+			
+			audioBufferSource.start(that.outputNode.context.currentTime, that.startTime, that.dur);
 		} catch(e) {
 			alert(e);
 		}		
@@ -63,7 +71,7 @@ function IntermittentSound(buffer, minPause, maxPause, minReps, maxReps, minVol,
 	function tickDownIntermittentSound() {
 		var volume = (that.maxVol - that.minVol) * Math.random() + that.minVol;
 		var pitchIndex = Math.floor(Math.random() * that.pitchArray.length); 
-		var pitch = that.pitchArray[pitchIndex];
+		var pitch = pitchClassToMultiplier(that.pitchArray[pitchIndex][0], that.pitchArray[pitchIndex][1]);
 		playBuffer(that.buffer, volume, pitch);
 		//var bufferDur = that.buffer.duration;
 		// not anymore, now I'm specifying this, right?
@@ -75,10 +83,20 @@ function IntermittentSound(buffer, minPause, maxPause, minReps, maxReps, minVol,
 		that.numberOfReps--;
 	}
 	
+	function pitchClassToMultiplier(octave, interval) {
+		var multiplier = Math.pow(2., (12. * octave + interval) / 12.);
+		return multiplier;
+	}
+	
 	this.play = function() {
 		this.isPlaying = true;
 		this.numberOfReps = Math.floor(((this.maxReps - this.minReps) + 1) * Math.random() + this.minReps);
-		tickDownIntermittentSound();
+		if (this.startWithPause) {
+			var pauseDur = (that.maxPause - that.minPause) * Math.random() + that.minPause;
+			timerID = window.setTimeout(tickDownIntermittentSound, pauseDur * 1000.);
+		} else {
+			tickDownIntermittentSound();
+		}
 	}
 	
 	this.stop = function() {
@@ -96,5 +114,16 @@ function IntermittentSound(buffer, minPause, maxPause, minReps, maxReps, minVol,
 		} catch(e) {
 			alert("It seems you have not specified a valid node.");
 		}
+	}
+	
+	this.estimateDuration = function() {
+		var averageDur = (this.minDur + this.maxDur) / 2.0;
+		var averageReps = (this.minReps + this.maxReps) / 2.0; 
+		var averagePause = (this.minPause + this.maxPause) / 2.0;
+		var estimate = averageDur * (averageReps + 1) + averagePause * averageReps;
+		if (this.startWithPause) {
+			estimate += averagePause;
+		}
+		return estimate;
 	}
 }
