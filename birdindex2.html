@@ -53,9 +53,9 @@ var socket = io();
 socket.on('control message', function(msg){
 	if (msg != "panic") {
 		//kind of horrible idea for testing, simulating multiple devices to hear average timings...
-		for (var i = 0; i < 1; i++) {
-			//birdButtonClicked(parseInt(msg, 10));
-			birdButtonTest(parseInt(msg, 10));
+		for (var i = 0; i < 15; i++) {
+			birdButtonClicked(parseInt(msg, 10));
+			//birdButtonTest(parseInt(msg, 10));
 		}
 	} else {
 		stopEverything();
@@ -89,7 +89,7 @@ function completion() {
 }
 
 function birdButtonTest(measureNumber) {
-	var testBird = new IntermittentSound(audioBuffers[measureNumber], 0.15, 0.3, 10, 40, 1., 1., 1.5, 2., [[4,0], [4,3]], false, completion);
+	var testBird = new IntermittentSound(audioBuffers[measureNumber], 0.15, 0.3, 1, 4, 1., 1., 1.5, 2., [[4,0], [4,3]], false, completion);
 	console.log("estimated intermittent sound duration: " + testBird.estimateDuration());
     testBird.connect(gainNode);
 	var testChirp = new Chirp(testBird, 2.5, 6., 2, 5, true);

@@ -112,7 +112,7 @@ nextPhraseButton.onclick = nextPhrase;
 previousPhraseButton.onclick = previousPhrase;
 
 //scoreImage.addEventListener("click", pauseBetweenPhrases);
-scoreImage.addEventListener("click", phraseCompleted);
+scoreImage.addEventListener("click", canvasTapped);
 
 // here begins my little hack interlude...
 // these were for testing; does it make sense to keep a test button on the choir app?
@@ -209,8 +209,6 @@ var poemLines = [["Ornithological Blogpoem by Elisa Gabbert (tap to begin)", 0, 
                  ["...is...", 0, 1],
                  ["...fear.", 5, 1]];
 
-
-
 var twitterBird = new Image();
 twitterBird.src = "scores/Twitter_logo_blue.jpg";
 var scoreImages = [twitterBird];
@@ -229,7 +227,7 @@ for (var i = 1; i < poemLines.length; i++) {
 var currentPoemLine = 0;
 displayScore();
 
-var timerID;
+var timerID = null;
 var recordingTimeoutID;
 var wantToBeRecording = false;
 var repeat = 0;
@@ -267,38 +265,36 @@ function drawBird() {
 	ctx.drawImage(scoreImages[0], (canvas.width / 2.) - (scaledBirdWidth / 2.), 0, scaledBirdWidth, canvas.height);
 }
 
-function phraseCompleted() {
-	drawBird();
-	if (currentPoemLine < checkpointPhrase) {
-		pauseBetweenPhrases();
-	} else {
-		waitingForCheckpoint = true;
-	}
-}
-
-function pauseBetweenPhrases() {
-	//socket.emit('control message', currentPoemLine);
+function canvasTapped() {
 	if (recording) {
 		stopGetAndPostAudio();
 		recording = false;
 		window.clearTimeout(recordingTimeoutID);
 	}
-	//drawBird();
-	// note that with the settings above, ends of sets are given a repeat value of 0
-	// it would be possible to break this with the wrong data
-	// e.g., if the end of the phrase would repeat, we'd have the wrong delay time before the repetition
-	// a solution would be instead to indicate whether it's the end of a set or not,
-	// then set delay and repeats both based on that setting.
-	// play with it and decide if you'd rather have the clarity or the flexibility
-	var min = pauseRanges[poemLines[currentPoemLine][2]][0] * 1000.;
-	var max = pauseRanges[poemLines[currentPoemLine][2]][1] * 1000.;
-	//alert("min: " + min + ", max: " + max);
-	var randomPause = Math.random() * (max - min) + min;
-	timerID = window.setTimeout(endOfRandomPause, randomPause);
+	if (!timerID) {
+		drawBird();
+		if (currentPoemLine < checkpointPhrase) {
+			pauseBetweenPhrases();
+		} else {
+			waitingForCheckpoint = true;
+		}
+	}
 }
 
+function pauseBetweenPhrases() {
+	// this event is caused by tapping the canvas with the score in it.
+	// does it fire even if the bird is displayed? it must...
+	// this needs to happen regardless
+	var min = pauseRanges[poemLines[currentPoemLine][2]][0] * 1000.;
+	var max = pauseRanges[poemLines[currentPoemLine][2]][1] * 1000.;
+	var randomPause = Math.random() * (max - min) + min;
+	console.log("timerID = " + timerID);
+	timerID = window.setTimeout(endOfRandomPause, randomPause);
+	console.log("timerID = " + timerID);
+}
 
 function endOfRandomPause() {
+	timerID = null;
 	if (!repeat) {
 		nextPhrase();
 		repeat = Math.floor(Math.random() * (poemLines[currentPoemLine][1] + 1));
@@ -311,6 +307,7 @@ function endOfRandomPause() {
 
 function nextPhrase() {
 	window.clearTimeout(timerID);
+	timerID = null;
 	if (currentPoemLine < poemLines.length - 1) {
 		currentPoemLine++;
 	} else {
@@ -327,6 +324,7 @@ function nextPhrase() {
 
 function previousPhrase() {
 	window.clearTimeout(timerID);
+	timerID = null;
 	if (currentPoemLine > 0) {
 		currentPoemLine--;
 	}
@@ -335,6 +333,7 @@ function previousPhrase() {
 
 function reset() {
 	window.clearTimeout(timerID);
+	timerID = null;
 	goToPhrase(0);
 }
 
