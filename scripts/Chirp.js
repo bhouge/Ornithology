@@ -52,6 +52,7 @@ function Chirp(intermittentSound, minPause, maxPause, minReps, maxReps, startWit
 	
 	this.stop = function() {
 		this.isPlaying = false;
+		this.intermittentSound.stop();
 		window.clearTimeout(timerID); 
 	}
 	
