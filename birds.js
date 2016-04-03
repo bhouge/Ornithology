@@ -24,7 +24,7 @@ app.get('/score', function(req, res){
 	res.sendFile(__dirname + '/chirpscore.html');
 });
 
-app.get('/scorecontrol', function(req, res){
+app.get('/controller', function(req, res){
 	res.sendFile(__dirname + '/chirpcommand.html');
 });
 
