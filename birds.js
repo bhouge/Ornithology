@@ -69,6 +69,18 @@ io.on('connection', function(socket){
 	    io.emit('message', msg);
 	    console.log('message: ' + msg);
   });
+  socket.on('i am', function(msg){
+	    //io.emit('message', msg);
+	    console.log('this guy says he is a ' + msg);
+	    if (msg == 'listener') {
+	    	// we start at 1, because line 0 in our text array is the title of the poem (no audio required)
+	    	for (var i = 1; i <= 27; i++) {
+	    		var randomFolder = folderNameArray[Math.floor(Math.random() * folderNameArray.length)];
+	    		var fileToPush = __dirname + directoryPrefix + randomFolder + '/Birds' + i + '.mp3';
+	    		pushSoundToClient(fileToPush, i, socket);
+	    	}
+	    }
+  });
   socket.on('make dir', function(msg){
 	  //io.emit('chat message', msg);
 	  fs.mkdir(msg, function(err) {
@@ -97,14 +109,7 @@ io.on('connection', function(socket){
 	  //console.log('posting file...');
   });
   socket.emit('audio', { audio: true, buffer: F176Hz, index: 0 });
-  
-  // we start at 1, because line 0 in our text array is the title of the poem (no audio required)
-  
-  for (var i = 1; i <= 27; i++) {
-		var randomFolder = folderNameArray[Math.floor(Math.random() * folderNameArray.length)];
-		var fileToPush = __dirname + directoryPrefix + randomFolder + '/Birds' + i + '.mp3';
-		pushSoundToClient(fileToPush, i, socket);
-  }
+  socket.emit('get type', 'because you just connected!');
 });
 
 function pushSoundToClient(filename, bufferIndex, socket) {

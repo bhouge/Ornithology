@@ -59,6 +59,10 @@ socket.on('control message', function(msg){
 		stopEverything();
 	}
 });
+socket.on('get type', function(msg){
+	//console.log("client's secret message is " + msg);
+	socket.emit('i am', "listener");
+});
 socket.on('audio', function(msg){
     console.log('audio received!');
     audioCtx.decodeAudioData(msg.buffer, function(buffer) {

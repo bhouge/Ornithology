@@ -62,6 +62,10 @@ socket.on('new checkpoint', function(msg){
 		pauseBetweenPhrases();
 	}
 });
+socket.on('get type', function(msg){
+	//console.log("client's secret message is " + msg);
+	socket.emit('i am', "chorister");
+});
 socket.on('audio', function(msg){
     //io.emit('chat message', msg);
     //alert(msg.buffer);

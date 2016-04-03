@@ -75,6 +75,10 @@ socket.on('image', function(msg){
     //img.src = msg.buffer;
     ctx.drawImage(img,0,0,50,38);
 });
+socket.on('get type', function(msg){
+	//console.log("client's secret message is " + msg);
+	socket.emit('i am', "supreme leader");
+});
 socket.on('audio', function(msg){
     //io.emit('chat message', msg);
     //alert(msg.buffer);
