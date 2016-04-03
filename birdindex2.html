@@ -44,6 +44,7 @@ Chrome or Firefox are the recommended browsers on Android.
 
 <script src="/socket.io/socket.io.js"></script>
 <script src="scripts/IntermittentSound.js"></script>
+<script src="scripts/Chirp.js"></script>
 
 <script type="text/javascript">
 
@@ -91,16 +92,21 @@ listenButton.onclick = function() {
 };
 
 var intermittentSounds = [];
+var chirps = [];
 
 function completion() {
 	console.log("So crazy it might work!");
 }
 
+
 function birdButtonTest(measureNumber) {
-	var Bird0 = new IntermittentSound(audioBuffers[measureNumber], 0.1, 0.25, 2, 2, 1., 1., 0.2, 0.4, [[0,0]], false, completion);
-	Bird0.connect(gainNode);
-	Bird0.play();
-	intermittentSounds.push(Bird0);
+	var testBird = new IntermittentSound(audioBuffers[measureNumber], 0.15, 0.3, 1, 4, 1., 1., 1.5, 2., [[4,0], [4,3]], false, completion);
+	console.log("estimated intermittent sound duration: " + testBird.estimateDuration());
+    testBird.connect(gainNode);
+	var testChirp = new Chirp(testBird, 2.5, 6., 2, 5, true);
+	console.log("estimated chirp duration: " + testChirp.estimateDuration());
+	testChirp.play();
+	chirps.push(testChirp);
 }
 
 var bufferIndex = 0;
@@ -482,6 +488,15 @@ function birdButtonClicked(measureNumber) {
 	}
 }
 
+function stopEverything() {
+	//alert(intermittentSounds + " is " + intermittentSounds.length + " long.");
+	for (var i = 0; i < intermittentSounds.length; i++) {
+		//alert("intermittent sound" + i + ": " + intermittentSounds[i]);
+		intermittentSounds[i].stop();
+	}
+	//add support for chirps...
+}
+
 //setting up our audio context and creating our master gain
 var AudioContext = window.AudioContext || window.webkitAudioContext;
 var audioCtx = new AudioContext();
@@ -495,14 +510,6 @@ gainNode.gain.value = 1.0;
 var audioBuffers = [];
 var buffersAreLoaded = false;
 
-function stopEverything() {
-	//alert(intermittentSounds + " is " + intermittentSounds.length + " long.");
-	for (var i = 0; i < intermittentSounds.length; i++) {
-		//alert("intermittent sound" + i + ": " + intermittentSounds[i]);
-		intermittentSounds[i].stop();
-	}
-	//add support for chirps...
-}
 
 </script>
 

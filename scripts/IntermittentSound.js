@@ -133,10 +133,22 @@ function IntermittentSound(buffer, minPause, maxPause, minReps, maxReps, minVol,
 	}
 	
 	this.estimateDuration = function() {
-		var averageDur = (this.minDur + this.maxDur) / 2.0;
+		var midiPitchArray = [];
+		for (var i = 0; i < this.pitchArray.length; i++) {
+			var midiPitch = this.pitchArray[i][0] * 12;
+			midiPitch += this.pitchArray[i][1];
+			midiPitchArray.push(midiPitch);
+		}
+		var averagePitch = 0;
+		for (var i = 0; i < midiPitchArray.length; i++) {
+			averagePitch += midiPitchArray[i];
+		}
+		averagePitch = averagePitch / midiPitchArray.length;
+		averagePitch = pitchClassToMultiplier(0, averagePitch);
+		var averageDur = ((this.minDur + this.maxDur) / 2.0) / averagePitch;
 		var averageReps = (this.minReps + this.maxReps) / 2.0; 
 		var averagePause = (this.minPause + this.maxPause) / 2.0;
-		var estimate = averageDur * (averageReps + 1) + averagePause * averageReps;
+		var estimate = averageDur * (averageReps + 1.0) + averagePause * averageReps;
 		if (this.startWithPause) {
 			estimate += averagePause;
 		}
