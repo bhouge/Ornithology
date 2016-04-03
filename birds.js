@@ -14,7 +14,7 @@ var folderNameArray = ['Ben',
 var latestControlPhrase = 0;
 //checkpoints are as follows:
 // 1-5, 6-7, 8-13, 14-19, 20-21, 22-24, 25, 26-27, (28, 29)
-var checkpointPhrases = [0, 5, 7, 13, 19, 21, 24, 25, 27, 28, 29];
+var checkpointPhrases = [0, 5, 7, 13, 19, 21, 24, 25, 27, 28, 29, 9999];
 
 app.get('/', function(req, res){
 	  res.sendFile(__dirname + '/birdindex2.html');
@@ -52,10 +52,8 @@ io.on('connection', function(socket){
 		  if (checkpointPhrases[phrase] == latestControlPhrase) {
 			  if (checkpointPhrases.length > phrase) {
 				  io.emit('new checkpoint', checkpointPhrases[parseInt(phrase, 10) + 1]);
-			  } else {
-				  io.emit('new checkpoint', checkpointPhrases[phrase]);
 			  }
-			  console.log("moving on to the next checkpoint!");
+			  console.log("moving on to the next checkpoint: " + checkpointPhrases[parseInt(phrase, 10) + 1]);
 			  break;
 		  }
 	  }

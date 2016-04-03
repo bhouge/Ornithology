@@ -250,7 +250,7 @@ function displayScore() {
 		//alert("canvas width: " + canvas.width + ", image width: " + scoreImages[currentPoemLine].width + ", scaled image width: " + Math.floor(scaledImageX));
 	} else if (currentPoemLine == 0) {
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
-		ctx.font = "48px serif";
+		ctx.font = "48px Helvetica"; //"48px serif"; //font: 13px Helvetica, Arial;
 		ctx.fillText("Tap to begin.", 10, 50);
 	} else {
 		drawBird();
@@ -311,6 +311,7 @@ function nextPhrase() {
 		currentPoemLine++;
 	} else {
 		currentPoemLine = 0;
+		checkpointPhrase = 0;
 	};
 	goToPhrase(currentPoemLine);
 	if (wantToBeRecording) {

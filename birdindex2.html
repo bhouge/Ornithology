@@ -9,15 +9,7 @@
 </head>
 <body>
 <h1>ORNITHOLOGICAL BLOGPOEM</h1>
-<h2>by Elisa Gabbert</h2>
-
-<p>
-Press "Listen" to begin.
-</p>
-
-<div id="controlButtons">
-<button id="listen" class="off">Listen</button>
-</div>
+<h2>Poem by Elisa Gabbert. Music by Ben Houge.</h2>
 
 <p>
 You will be woken by the chirping of the birds, which is the sound
@@ -40,6 +32,14 @@ opera. The birds are especially fond of Wagner. What would you like
 to hear? They have a very long waiting list and are nepotistic. Do not
 be afraid of angering the birds. What angers the birds is fear.
 </p>
+
+<div id="controlButtons">
+<button id="listen" class="off">Listen</button>
+</div>
+
+<h3>
+Press "Listen" to begin. Turn your phone upside down to help the sound propagate.
+</h3>
 
 <script src="/socket.io/socket.io.js"></script>
 <script src="scripts/IntermittentSound.js"></script>
@@ -79,7 +79,7 @@ function testSound(index) {
 var listenButtonEnabled = true;
 var listenButton = document.getElementById('listen');
 listenButton.onclick = function() {
-	if (listenButtonEnabled) {
+	if (listenButtonEnabled && bufferIndex < 20) {
 		testSound(0);
 	}
 };
@@ -93,8 +93,9 @@ function birdButtonTest(measureNumber) {
 	intermittentSounds.push(Bird0);
 }
 
+var bufferIndex = 0;
 function birdButtonClicked(measureNumber) {
-	var bufferIndex = measureNumber;
+	bufferIndex = measureNumber;
 	//IntermittentSound(buffer, minPause, maxPause, minReps, maxReps, minVol, maxVol, minDur, maxDur, pitchArray, startWithPause)
 	switch (measureNumber) {
 		case 1:
