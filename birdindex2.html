@@ -53,7 +53,8 @@ socket.on('control message', function(msg){
 		//birdButtonTest(msg);
 		//kind of horrible idea for testing, simulating multiple devices to hear average timings...
 		for (var i = 0; i < 1; i++) {
-			birdButtonClicked(parseInt(msg, 10));
+			//birdButtonClicked(parseInt(msg, 10));
+			birdButtonTest(parseInt(msg, 10));
 		}
 	} else {
 		stopEverything();
@@ -91,8 +92,12 @@ listenButton.onclick = function() {
 
 var intermittentSounds = [];
 
+function completion() {
+	console.log("So crazy it might work!");
+}
+
 function birdButtonTest(measureNumber) {
-	var Bird0 = new IntermittentSound(audioBuffers[measureNumber], 0., 0., 5, 5, 1., 1., 10., 10., [[0,0]]);
+	var Bird0 = new IntermittentSound(audioBuffers[measureNumber], 0.1, 0.25, 2, 2, 1., 1., 0.2, 0.4, [[0,0]], false, completion);
 	Bird0.connect(gainNode);
 	Bird0.play();
 	intermittentSounds.push(Bird0);
@@ -496,6 +501,7 @@ function stopEverything() {
 		//alert("intermittent sound" + i + ": " + intermittentSounds[i]);
 		intermittentSounds[i].stop();
 	}
+	//add support for chirps...
 }
 
 </script>

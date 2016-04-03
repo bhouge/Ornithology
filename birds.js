@@ -28,7 +28,7 @@ app.get('/controller', function(req, res){
 	res.sendFile(__dirname + '/chirpcommand.html');
 });
 
-app.get('/control', function(req, res){
+app.get('/test', function(req, res){
 	res.sendFile(__dirname + '/birdcommand4.html');
 });
 

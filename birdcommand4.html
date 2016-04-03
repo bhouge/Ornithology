@@ -17,6 +17,10 @@
 
 <script>
 var socket = io();
+socket.on('get type', function(msg){
+	//console.log("client's secret message is " + msg);
+	socket.emit('i am', "tester");
+});
 
 var panicButton = document.getElementById('panic');
 panicButton.onclick = function() {

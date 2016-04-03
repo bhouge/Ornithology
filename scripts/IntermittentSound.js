@@ -8,7 +8,8 @@
  */
 
 // creating an intermittentSound object with an object constructor
-function IntermittentSound(buffer, minPause, maxPause, minReps, maxReps, minVol, maxVol, minDur, maxDur, pitchArray, startWithPause) {
+function IntermittentSound(buffer, minPause, maxPause, minReps, maxReps, minVol, maxVol, minDur, maxDur, pitchArray, startWithPause, completionCallback) {
+	//alert(this);
 	this.buffer = buffer;
 	this.minPause = minPause;
 	this.maxPause = maxPause;
@@ -22,6 +23,7 @@ function IntermittentSound(buffer, minPause, maxPause, minReps, maxReps, minVol,
 	this.isPlaying = false;
 	this.pitchArray = pitchArray;
 	this.startWithPause = startWithPause;
+	this.completionCallback = completionCallback;
 	
 	this.dur = Math.random() * (this.maxDur - this.minDur) + this.minDur;
 	if (this.dur > this.buffer.duration) {
@@ -79,8 +81,19 @@ function IntermittentSound(buffer, minPause, maxPause, minReps, maxReps, minVol,
 		if (that.numberOfReps > 0 && that.isPlaying) {
 			var pauseDur = (that.maxPause - that.minPause) * Math.random() + that.minPause;
 			timerID = window.setTimeout(tickDownIntermittentSound, (pauseDur + bufferDur/pitch) * 1000.);
+		} else {
+			timerID = window.setTimeout(finishedPlaying, (bufferDur/pitch) * 1000.);
 		}
 		that.numberOfReps--;
+	}
+	
+	function finishedPlaying() {
+		//alert(that);
+		that.isPlaying = false;
+		//console.log("this is how we know an intermittent sound is done, right?");
+		if (that.completionCallback) {
+			that.completionCallback();
+		}
 	}
 	
 	function pitchClassToMultiplier(octave, interval) {
@@ -100,8 +113,11 @@ function IntermittentSound(buffer, minPause, maxPause, minReps, maxReps, minVol,
 	}
 	
 	this.stop = function() {
-		this.isPlaying = false;
-		window.clearTimeout(timerID); 
+		if (this.isPlaying) {
+			window.clearTimeout(timerID);
+			this.isPlaying = false;
+			finishedPlaying();
+		}
 	}
 	
 	this.connect = function(nodeToConnectTo) {
