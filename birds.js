@@ -124,7 +124,7 @@ io.on('connection', function(socket){
   });
   socket.on('make dir', function(msg){
 	  //io.emit('chat message', msg);
-	  fs.mkdir(msg + Date.now(), function(err) {
+	  fs.mkdir(msg, function(err) {
 		  if(err) {
 			  console.log("FOOL! " + err);
 		  } else {
