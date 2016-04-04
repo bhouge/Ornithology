@@ -18,7 +18,9 @@ var checkpoint = false;
 // 1-5, 6-7, 8-13, 14-19, 20-21, 22-24, 25, 26-27, (28, 29)
 var checkpointPhrases = [0, 5, 7, 13, 19, 21, 24, 25, 27, 28, 29, 9999];
 
-var listenerCount;
+var listenerCount = 0;
+var choristerCount = 0;
+var supremeLeaderCount = 0;
 
 app.get('/', function(req, res){
 	  res.sendFile(__dirname + '/birdindex2.html');
@@ -42,9 +44,20 @@ app.get(/^(.*)$/, function(req, res){
 });
 
 io.on('connection', function(socket){
-  console.log('a user connected');
+  //console.log('a user connected');
   socket.on('disconnect', function(){
-		console.log('user disconnected');
+	  if (socket.birdType == "listener") {
+		  listenerCount--;
+		  console.log('listener disconnected; listeners remaining: ' + listenerCount);
+	  } else if (socket.birdType == "chorister") {
+		  choristerCount--;
+		  console.log('chorister disconnected; choristers remaining: ' + choristerCount);
+	  } else if (socket.birdType == "supreme leader") {
+		  supremeLeaderCount--;
+		  console.log('supreme leader disconnected; supreme leaders remaining: ' + supremeLeaderCount);
+	  } else {
+		  console.log('mystery user disconnected');
+	  }
   });
   socket.on('control message', function(msg){
 	  //these are coming from chirpcommand and going to birdindex
@@ -86,10 +99,10 @@ io.on('connection', function(socket){
   socket.on('i am', function(msg){
 	    //io.emit('message', msg);
 	  	//add a property that is name, so we can know who's disconnecting as well
-	    console.log('this guy says he is a ' + msg);
 	    if (msg == 'listener') {
+	    	socket.birdType = msg;
 	    	listenerCount++;
-	    	console.log("this many listeners: " + listenerCount);
+	    	console.log("listener connected; listeners: " + listenerCount);
 	    	// we start at 1, because line 0 in our text array is the title of the poem (no audio required)
 	    	for (var i = 1; i <= 29; i++) {
 	    		var randomFolder = folderNameArray[Math.floor(Math.random() * folderNameArray.length)];
@@ -97,12 +110,21 @@ io.on('connection', function(socket){
 	    		pushSoundToClient(fileToPush, i, socket);
 	    	}
 	    } else if (msg == 'chorister') {
-	    	socket.emit('new checkpoint', checkpoint);
+	    	//socket.emit('new checkpoint', checkpoint);
+	    	socket.birdType = msg;
+	    	choristerCount++;
+	    	console.log("chorister connected; choristers: " + choristerCount);
+	    } else if (msg == 'supreme leader') {
+	    	socket.birdType = msg;
+	    	supremeLeaderCount++;
+	    	console.log("supreme leader connected; supreme leaders: " + supremeLeaderCount);
+	    } else {
+	    	console.log("mystery user connected");
 	    }
   });
   socket.on('make dir', function(msg){
 	  //io.emit('chat message', msg);
-	  fs.mkdir(msg, function(err) {
+	  fs.mkdir(msg + Date.now(), function(err) {
 		  if(err) {
 			  console.log("FOOL! " + err);
 		  } else {
@@ -132,7 +154,7 @@ io.on('connection', function(socket){
 });
 
 function pushSoundToClient(filename, bufferIndex, socket) {
-	console.log('Pushing ' + filename + ' to buffer index ' + bufferIndex + ' on socket ' + socket);
+	//console.log('Pushing ' + filename + ' to buffer index ' + bufferIndex + ' on socket ' + socket);
 	fs.readFile(filename, function(err, buf){
 		if (err) {
 			console.log("FOOL! " + err);

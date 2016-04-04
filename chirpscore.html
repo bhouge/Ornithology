@@ -274,6 +274,7 @@ function canvasTapped() {
 	if (!timerID) {
 		drawBird();
 		if (currentPoemLine < checkpointPhrase) {
+			//alert("currentPoemLine: " + currentPoemLine + "; checkpointPhrase: " + checkpointPhrase);
 			pauseBetweenPhrases();
 		} else {
 			waitingForCheckpoint = true;
@@ -288,9 +289,9 @@ function pauseBetweenPhrases() {
 	var min = pauseRanges[poemLines[currentPoemLine][2]][0] * 1000.;
 	var max = pauseRanges[poemLines[currentPoemLine][2]][1] * 1000.;
 	var randomPause = Math.random() * (max - min) + min;
-	console.log("timerID = " + timerID);
+	//console.log("timerID = " + timerID);
 	timerID = window.setTimeout(endOfRandomPause, randomPause);
-	console.log("timerID = " + timerID);
+	//console.log("timerID = " + timerID);
 }
 
 function endOfRandomPause() {
@@ -302,7 +303,7 @@ function endOfRandomPause() {
 		displayScore();
 		repeat--;
 	}
-	console.log(repeat);
+	//console.log(repeat);
 }
 
 function nextPhrase() {
