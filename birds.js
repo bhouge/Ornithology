@@ -18,6 +18,8 @@ var checkpoint = false;
 // 1-5, 6-7, 8-13, 14-19, 20-21, 22-24, 25, 26-27, (28, 29)
 var checkpointPhrases = [0, 5, 7, 13, 19, 21, 24, 25, 27, 28, 29, 9999];
 
+var listenerCount;
+
 app.get('/', function(req, res){
 	  res.sendFile(__dirname + '/birdindex2.html');
 });
@@ -48,6 +50,8 @@ io.on('connection', function(socket){
 	  //these are coming from chirpcommand and going to birdindex
 	  console.log('control message: ' + msg);
 	  if (msg == "continue") {
+		  //this is goofy, but just add 1000 to the latestControlPhrase to generate a new cue for listeners...
+		  io.emit('control message', latestControlPhrase + 1000);
 		  io.emit('new checkpoint', checkpoint);
 		  console.log("moving on to the next checkpoint: " + checkpoint);
 	  } else {
@@ -81,8 +85,11 @@ io.on('connection', function(socket){
   });
   socket.on('i am', function(msg){
 	    //io.emit('message', msg);
+	  	//add a property that is name, so we can know who's disconnecting as well
 	    console.log('this guy says he is a ' + msg);
 	    if (msg == 'listener') {
+	    	listenerCount++;
+	    	console.log("this many listeners: " + listenerCount);
 	    	// we start at 1, because line 0 in our text array is the title of the poem (no audio required)
 	    	for (var i = 1; i <= 29; i++) {
 	    		var randomFolder = folderNameArray[Math.floor(Math.random() * folderNameArray.length)];

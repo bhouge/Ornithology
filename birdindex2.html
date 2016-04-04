@@ -311,10 +311,13 @@ function birdButtonClicked(measureNumber) {
 			Bird.connect(gainNode);
 			Bird.play();
 			intermittentSounds.push(Bird);
+			break;
+		case 1019:
+			//assassinate continued...
 			var phd = [6, 7];
 			var randomBufferIndex = Math.floor(Math.random() * phd.length);
 			var randomBuffer = phd[randomBufferIndex];
-			Bird = new IntermittentSound(audioBuffers[randomBuffer], 0.5, 1.25, 3, 7, 0.025, 0.15, 0.5, 2., [[0,-6], [0,-6]], true);
+			var Bird = new IntermittentSound(audioBuffers[randomBuffer], 0.5, 1.25, 3, 7, 0.025, 0.15, 0.5, 2., [[0,-6], [0,-6]], true);
 			console.log(Bird.estimateDuration());
 			Bird.connect(gainNode);
 			Bird.play();
