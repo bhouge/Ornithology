@@ -124,7 +124,7 @@ startStopButton.onclick = startStop;
 nextPhraseButton.onclick = nextPhrase;
 previousPhraseButton.onclick = previousPhrase;
 
-scoreImage.addEventListener("click", pauseBetweenPhrases);
+scoreImage.addEventListener("click", canvasTapped);
 
 // here begins my little hack interlude...
 // these were for testing; does it make sense to keep a test button on the choir app?
@@ -256,19 +256,31 @@ function goToPhrase(phraseIndex) {
 	displayScore();
 }
 
+var pausedAtCheckpoint = false;
+
+//let us pause for a moment and ponder the folly of specifying the same information here as well as on the server...
+//someday make this and the text/parameters of the poem itself separate resources...
+var checkpointPhrases = [0, 5, 7, 13, 19, 21, 24, 25, 27, 28, 29, 9999];
+
 function displayScore() {
-	if (currentPoemLine >= 1 && currentPoemLine <= poemLines.length) {
-		var scaledImageX = canvas.width * (scoreImages[currentPoemLine].width / 1181.);
-		var scaledImageY = scaledImageX * (scoreImages[currentPoemLine].height/scoreImages[currentPoemLine].width);
-		ctx.clearRect(0, 0, canvas.width, canvas.height);
-		ctx.drawImage(scoreImages[currentPoemLine], 0, 0, scaledImageX, scaledImageY);
-		//alert("canvas width: " + canvas.width + ", image width: " + scoreImages[currentPoemLine].width + ", scaled image width: " + Math.floor(scaledImageX));
-	} else if (currentPoemLine == 0) {
+	if (pausedAtCheckpoint) {
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
 		ctx.font = "48px Helvetica"; 
-		ctx.fillText("Tap to begin.", 10, 50);
+		ctx.fillText("Tap to continue...", 10, 50);
 	} else {
-		drawBird();
+		if (currentPoemLine >= 1 && currentPoemLine <= poemLines.length) {
+			var scaledImageX = canvas.width * (scoreImages[currentPoemLine].width / 1181.);
+			var scaledImageY = scaledImageX * (scoreImages[currentPoemLine].height/scoreImages[currentPoemLine].width);
+			ctx.clearRect(0, 0, canvas.width, canvas.height);
+			ctx.drawImage(scoreImages[currentPoemLine], 0, 0, scaledImageX, scaledImageY);
+			//alert("canvas width: " + canvas.width + ", image width: " + scoreImages[currentPoemLine].width + ", scaled image width: " + Math.floor(scaledImageX));
+		} else if (currentPoemLine == 0) {
+			ctx.clearRect(0, 0, canvas.width, canvas.height);
+			ctx.font = "48px Helvetica"; 
+			ctx.fillText("Tap to begin.", 10, 50);
+		} else {
+			drawBird();
+		}
 	}
 }
 
@@ -278,11 +290,8 @@ function drawBird() {
 	ctx.drawImage(scoreImages[0], (canvas.width / 2.) - (scaledBirdWidth / 2.), 0, scaledBirdWidth, canvas.height);
 }
 
-var pausedAtCheckpoint = false;
-
-function pauseBetweenPhrases() {
+function canvasTapped() {
 	// this event is caused by tapping the canvas with the score in it.
-	// does it fire even if the bird is displayed? it must...
 	// this needs to happen regardless
 	if (recording) {
 		stopGetAndPostAudio();
@@ -290,35 +299,94 @@ function pauseBetweenPhrases() {
 		window.clearTimeout(recordingTimeoutID);
 	}
 	if (!timerID) {
-		//what I had before, which was working fine
-		socket.emit('control message', currentPoemLine);
-		drawBird();
-		// note that with the settings above, ends of sets are given a repeat value of 0
-		// it would be possible to break this with the wrong data
-		// e.g., if the end of the phrase would repeat, we'd have the wrong delay time before the repetition
-		// a solution would be instead to indicate whether it's the end of a set or not,
-		// then set delay and repeats both based on that setting.
-		// play with it and decide if you'd rather have the clarity or the flexibility
-		var min = pauseRanges[poemLines[currentPoemLine][2]][0] * 1000.;
-		var max = pauseRanges[poemLines[currentPoemLine][2]][1] * 1000.;
-		//alert("min: " + min + ", max: " + max);
-		var randomPause = Math.random() * (max - min) + min;
-		console.log("timerID = " + timerID);
-		timerID = window.setTimeout(endOfRandomPause, randomPause);
-		console.log("timerID = " + timerID);
+		pauseBetweenPhrases();
 	}
-	/*
-	if (!pausedAtCheckpoint) {
-	
-	} else {
-		pausedAtCheckpoint = false;
-	}
-	*/
-	
 }
 
+function pauseBetweenPhrases() {
+	//what I had before, which was working fine
+	drawBird();
+	// note that with the settings above, ends of sets are given a repeat value of 0
+	// it would be possible to break this with the wrong data
+	// e.g., if the end of the phrase would repeat, we'd have the wrong delay time before the repetition
+	// a solution would be instead to indicate whether it's the end of a set or not,
+	// then set delay and repeats both based on that setting.
+	// play with it and decide if you'd rather have the clarity or the flexibility
+	var min = pauseRanges[poemLines[currentPoemLine][2]][0] * 1000.;
+	var max = pauseRanges[poemLines[currentPoemLine][2]][1] * 1000.;
+	//alert("min: " + min + ", max: " + max);
+	var randomPause = Math.random() * (max - min) + min;
+	console.log("timerID = " + timerID);
+	timerID = window.setTimeout(endOfRandomPause, randomPause);
+	console.log("timerID = " + timerID);
+}
 
 function endOfRandomPause() {
+	timerID = null;
+	//here's where we decide what the next line is
+	//could be the next line in the poem, could be the previous line repeated, could be a "tap to continue" screen
+	if (pausedAtCheckpoint) {
+		// stop being pausedAtCheckpoint and proceed to the next phrase
+		socket.emit('control message', 'continue');
+		pausedAtCheckpoint = false;
+		nextPhrase();
+	} else {
+		//conscious decision to send this on repeats, 'cause why not, more density...
+		socket.emit('control message', currentPoemLine);
+		if (!repeat) {
+			for (i in checkpointPhrases) {
+				if (checkpointPhrases[i] == currentPoemLine) {
+					pausedAtCheckpoint = true;						
+				}
+			}
+			if (!pausedAtCheckpoint) {
+				nextPhrase();
+				repeat = Math.floor(Math.random() * (poemLines[currentPoemLine][1] + 1));
+			} else {
+				displayScore();
+			}
+		} else {
+			displayScore();
+			repeat--;
+		}
+		console.log(repeat);
+	}
+	
+	/*
+	//do not look at the following disaster...need to rewrite this whole display business...
+	//ok, all this craziness has to go somewhere...
+	
+	if (pausedAtCheckpoint) {
+			socket.emit('control message', 'continue');
+			// stop being pausedAtCheckpoint and proceed to the next phrase
+			pausedAtCheckpoint = false;
+			pauseBetweenPhrases();
+		} else {
+			socket.emit('control message', currentPoemLine);
+			
+			// perhaps this was all folly; what if I just change this in displayScore?
+			
+			if (repeat) {
+				pauseBetweenPhrases();
+			} else {
+				// check to see if the phrase that just ended was one of our magic phrases
+				// if so, display special screen and set pausedAtCheckpoint
+				for (i in checkpointPhrases) {
+					if (checkpointPhrases[i] == currentPoemLine) {
+						pausedAtCheckpoint = true;						
+					}
+				}
+				if (pausedAtCheckpoint) {
+					ctx.clearRect(0, 0, canvas.width, canvas.height);
+					ctx.font = "48px Helvetica"; 
+					ctx.fillText("Tap to continue...", 10, 50);
+				} else {
+					pauseBetweenPhrases();
+				}
+			}
+			
+		}
+	
 	timerID = null;
 	if (!repeat) {
 		nextPhrase();
@@ -328,6 +396,7 @@ function endOfRandomPause() {
 		repeat--;
 	}
 	console.log(repeat);
+	*/
 }
 
 function nextPhrase() {

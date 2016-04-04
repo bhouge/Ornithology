@@ -4,14 +4,16 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 
 var directoryPrefix = '/sounds/compressed/';
-var folderNameArray = ['Ben', 
-            		 'Clais', 
-            		 'Rebecca', 
-            		 'Jon',
-            		 'Francisco',
-            		 'Lori'];
+var folderNameArray = ['Ben',
+                       'BenFTW',
+                       'Clais', 
+                       'Rebecca', 
+                       'Jon',
+                       'Francisco',
+                       'Lori'];
 
 var latestControlPhrase = 0;
+var checkpoint = false;
 //checkpoints are as follows:
 // 1-5, 6-7, 8-13, 14-19, 20-21, 22-24, 25, 26-27, (28, 29)
 var checkpointPhrases = [0, 5, 7, 13, 19, 21, 24, 25, 27, 28, 29, 9999];
@@ -43,24 +45,32 @@ io.on('connection', function(socket){
 		console.log('user disconnected');
   });
   socket.on('control message', function(msg){
+	  //these are coming from chirpcommand and going to birdindex
 	  console.log('control message: ' + msg);
-	  //why did I think I shouldn't do this if the message hadn't changed?
-	  //I don't think that wastes anything, and it helps for rehearsal and resetting...
-	  latestControlPhrase = msg;
-	  for (phrase in checkpointPhrases) {
-		  //console.log("am I doing this right?" + checkpointPhrases[phrase]);
-		  if (checkpointPhrases[phrase] == latestControlPhrase) {
-			  if (checkpointPhrases.length > phrase) {
-				  io.emit('new checkpoint', checkpointPhrases[parseInt(phrase, 10) + 1]);
+	  if (msg == "continue") {
+		  io.emit('new checkpoint', checkpoint);
+		  console.log("moving on to the next checkpoint: " + checkpoint);
+	  } else {
+		  latestControlPhrase = parseInt(msg, 10);
+		  //console.log("latestControlPhrase: " + latestControlPhrase);
+		  io.emit('control message', msg);
+		  for (phrase in checkpointPhrases) {
+			  if (checkpointPhrases[phrase] == latestControlPhrase) {
+				  if (checkpointPhrases.length > phrase) {
+					  checkpoint = checkpointPhrases[parseInt(phrase, 10) + 1];
+				  }
 			  }
-			  console.log("moving on to the next checkpoint: " + checkpointPhrases[parseInt(phrase, 10) + 1]);
-			  break;
 		  }
+		  /*
+		  if (!latestControlPhrase) {
+			  io.emit('new checkpoint', checkpoint);
+		  }
+		  */
 	  }
-	  //if (msg != latestControlPhrase) {    }
-	  io.emit('control message', msg);
   });
   socket.on('checkpoint', function(msg){
+	  //uh, maybe this is unused? Did I replace this with "new checkpoint"?
+	  //apparently so; the log below hasn't been printed since last time I opened this shell...
 	  //the rule is that no one can proceed past a checkpoint until I do...
 	  //io.emit('control message', msg);
 	  console.log('checkpoint: ' + msg);
@@ -74,11 +84,13 @@ io.on('connection', function(socket){
 	    console.log('this guy says he is a ' + msg);
 	    if (msg == 'listener') {
 	    	// we start at 1, because line 0 in our text array is the title of the poem (no audio required)
-	    	for (var i = 1; i <= 27; i++) {
+	    	for (var i = 1; i <= 29; i++) {
 	    		var randomFolder = folderNameArray[Math.floor(Math.random() * folderNameArray.length)];
 	    		var fileToPush = __dirname + directoryPrefix + randomFolder + '/Birds' + i + '.mp3';
 	    		pushSoundToClient(fileToPush, i, socket);
 	    	}
+	    } else if (msg == 'chorister') {
+	    	socket.emit('new checkpoint', checkpoint);
 	    }
   });
   socket.on('make dir', function(msg){

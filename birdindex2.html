@@ -479,6 +479,8 @@ function birdButtonClicked(measureNumber) {
 			intermittentSounds.push(Bird);
 			break;
 		default:
+			/*
+			this was a terrible idea! well, kind of useful during testing...
 			if (bufferIndex > 0 && bufferIndex < audioBuffers.length) {
 				var birdIndex = bufferIndex;
 				var bird = audioCtx.createBufferSource();
@@ -486,6 +488,7 @@ function birdButtonClicked(measureNumber) {
 				bird.connect(gainNode);
 				bird.start(audioCtx.currentTime);
 			}
+		*/
 			break;
 	}
 }
