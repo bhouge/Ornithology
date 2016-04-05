@@ -32,6 +32,9 @@ opera. The birds are especially fond of Wagner. What would you like
 to hear? They have a very long waiting list and are nepotistic. Do not
 be afraid of angering the birds. What angers the birds is fear.
 </p>
+<p>
+This poem originally appeared on Chris Tonelli's blog and was subsequently published in THE FRENCH EXIT by Birds, LLC.
+</p>
 
 <div id="controlButtons">
 <button id="listen" class="off">Listen</button>
@@ -119,7 +122,7 @@ function birdButtonClicked(measureNumber) {
 		case 1:
 			// first tonality lasts about 22 sec from end of first phrase...
 			//awoken
-			var Bird = new IntermittentSound(audioBuffers[1], 2.5, 5., 2, 4, 0.05, 0.15, 0.1, 0.15, [[0,0]], true);
+			var Bird = new IntermittentSound(audioBuffers[1], 3., 12., 2, 4, 0.05, 0.15, 0.1, 0.15, [[0,0]], true);
 			console.log(Bird.estimateDuration());
 			Bird.connect(gainNode);
 			Bird.play();
@@ -127,7 +130,7 @@ function birdButtonClicked(measureNumber) {
 			break;
 		case 2:
 			//egos
-			var Bird = new IntermittentSound(audioBuffers[2], 1.5, 4., 2, 4, 0.05, 0.2, 0.1, 0.2, [[0,0]], true);
+			var Bird = new IntermittentSound(audioBuffers[2], 2., 10., 2, 4, 0.05, 0.2, 0.1, 0.2, [[0,0]], true);
 			console.log(Bird.estimateDuration());
 			Bird.connect(gainNode);
 			Bird.play();
@@ -135,7 +138,7 @@ function birdButtonClicked(measureNumber) {
 			break;
 		case 3:
 			//streams
-			var Bird = new IntermittentSound(audioBuffers[3], 1., 3.5, 2, 4, 0.1, 0.25, 0.1, 0.25, [[0,0]], true);
+			var Bird = new IntermittentSound(audioBuffers[3], 1.5, 8., 1, 3, 0.1, 0.25, 0.1, 0.25, [[0,0]], true);
 			console.log(Bird.estimateDuration());
 			Bird.connect(gainNode);
 			Bird.play();
@@ -143,7 +146,7 @@ function birdButtonClicked(measureNumber) {
 			break;
 		case 4:
 			//acupuncture
-			var Bird = new IntermittentSound(audioBuffers[4], 1., 3., 1, 4, 0.1, 0.3, 0.15, 0.25, [[0,0]], true);
+			var Bird = new IntermittentSound(audioBuffers[4], 0.5, 7., 1, 3, 0.1, 0.3, 0.15, 0.25, [[0,0]], true);
 			console.log(Bird.estimateDuration());
 			Bird.connect(gainNode);
 			Bird.play();
@@ -151,7 +154,15 @@ function birdButtonClicked(measureNumber) {
 			break;
 		case 5:
 			//experience the pain
-			var Bird = new IntermittentSound(audioBuffers[5], 0.35, 1., 1, 3, 0.1, 0.25, 0.1, 0.2, [[0,0]], true);
+			var Bird = new IntermittentSound(audioBuffers[5], 0.5, 5., 1, 3, 0.1, 0.25, 0.1, 0.2, [[0,0]], true);
+			console.log(Bird.estimateDuration());
+			Bird.connect(gainNode);
+			Bird.play();
+			intermittentSounds.push(Bird);
+			break;
+		case 1005:
+			//pain continued...
+			var Bird = new IntermittentSound(audioBuffers[1], 0.5, 3., 2, 5, 0.05, 0.15, 0.1, 0.15, [[0,2]], true);
 			console.log(Bird.estimateDuration());
 			Bird.connect(gainNode);
 			Bird.play();
@@ -159,7 +170,7 @@ function birdButtonClicked(measureNumber) {
 			break;
 		case 6:
 			//PhD's
-			var Bird = new IntermittentSound(audioBuffers[6], 0.35, 1., 2, 6, 0.1, 0.3, 0.1, 0.3, [[0,0]], true);
+			var Bird = new IntermittentSound(audioBuffers[6], 0.45, 1., 3, 7, 0.05, 0.25, 0.1, 0.3, [[0,0]], true);
 			console.log(Bird.estimateDuration());
 			Bird.connect(gainNode);
 			Bird.play();
@@ -167,7 +178,25 @@ function birdButtonClicked(measureNumber) {
 			break;
 		case 7:
 			//dissertations
-			var Bird = new IntermittentSound(audioBuffers[7], 0.35, 1., 1, 4, 0.1, 0.15, 0.1, 0.2, [[0,0], [3,0]], true);
+			var Bird = new IntermittentSound(audioBuffers[7], 0.35, 1., 2, 6, 0.05, 0.25, 0.1, 0.2, [[0,0]], true);
+			console.log(Bird.estimateDuration());
+			Bird.connect(gainNode);
+			Bird.play();
+			intermittentSounds.push(Bird);
+			Bird = new IntermittentSound(audioBuffers[7], 0.1, 0.3, 1, 3, 0.025, 0.1, 0.1, 0.2, [[3,0]], true);
+			console.log(Bird.estimateDuration());
+			Bird.connect(gainNode);
+			var testChirp = new Chirp(Bird, 2., 7., 2, 5, true);
+			console.log("estimated chirp duration: " + testChirp.estimateDuration());
+			testChirp.play();
+			chirps.push(testChirp);
+			break;
+		case 1007:
+			//dissertations continued...
+			var accupuncture = [1, 4];
+			var randomBufferIndex = Math.floor(Math.random() * accupuncture.length);
+			var randomBuffer = accupuncture[randomBufferIndex];
+			var Bird = new IntermittentSound(audioBuffers[randomBuffer], 1., 3., 2, 5, 0.05, 0.15, 0.1, 0.15, [[0,0]], true);
 			console.log(Bird.estimateDuration());
 			Bird.connect(gainNode);
 			Bird.play();
@@ -175,7 +204,7 @@ function birdButtonClicked(measureNumber) {
 			break;
 		case 8:
 			//irony
-			var Bird = new IntermittentSound(audioBuffers[8], 0.5, 3.5, 5, 10, 0.35, 0.5, 0.25, 0.4, [[0,0]], true);
+			var Bird = new IntermittentSound(audioBuffers[8], 0.5, 3.5, 5, 10, 0.1, 0.2, 0.25, 0.4, [[0,0]], true);
 			console.log(Bird.estimateDuration());
 			Bird.connect(gainNode);
 			Bird.play();
@@ -183,7 +212,7 @@ function birdButtonClicked(measureNumber) {
 			break;
 		case 9:
 			//fall to its death
-			var Bird = new IntermittentSound(audioBuffers[9], 1.5, 3., 4, 7, 0.35, 0.5, 0.35, 0.5, [[0,0]], true);
+			var Bird = new IntermittentSound(audioBuffers[9], 1.5, 3., 4, 7, 0.1, 0.3, 0.35, 0.5, [[0,0]], true);
 			console.log(Bird.estimateDuration());
 			Bird.connect(gainNode);
 			Bird.play();
@@ -191,7 +220,7 @@ function birdButtonClicked(measureNumber) {
 			break;
 		case 10:
 			//flying at the last second
-			var Bird = new IntermittentSound(audioBuffers[10], 1.25, 3., 3, 6, 0.35, 0.5, 0.4, 0.75, [[0,0], [0,3]], true);
+			var Bird = new IntermittentSound(audioBuffers[10], 1.25, 3., 3, 6, 0.15, 0.35, 0.4, 0.75, [[0,0], [0,3]], true);
 			console.log(Bird.estimateDuration());
 			Bird.connect(gainNode);
 			Bird.play();
@@ -199,33 +228,39 @@ function birdButtonClicked(measureNumber) {
 			break;
 		case 11:
 			//vain about their wings
-			var Bird = new IntermittentSound(audioBuffers[11], 1.25, 2.35, 2, 5, 0.35, 0.5, 0.5, 1., [[0,0], [0,-3]], true);
+			var Bird = new IntermittentSound(audioBuffers[11], 1.25, 2.35, 2, 5, 0.15, 0.4, 0.5, 1., [[0,0], [0,-3]], true);
 			console.log(Bird.estimateDuration());
 			Bird.connect(gainNode);
 			Bird.play();
 			intermittentSounds.push(Bird);
-			Bird = new IntermittentSound(audioBuffers[11], 1.5, 2.5, 3, 6, 0.0025, 0.0075, 1.25, 2.5, [[4,0], [4,-3], [4,3]], true);
+			//make this guy a chirp!
+			Bird = new IntermittentSound(audioBuffers[11], 0.15, 0.25, 1, 3, 0.0025, 0.0075, 1.25, 2.5, [[4,0], [4,-3], [4,3]], true);
 			console.log(Bird.estimateDuration());
 			Bird.connect(gainNode);
-			Bird.play();
-			intermittentSounds.push(Bird);
+			var testChirp = new Chirp(Bird, 1.5, 2.5, 3, 6, true);
+			console.log("estimated chirp duration: " + testChirp.estimateDuration());
+			testChirp.play();
+			chirps.push(testChirp);
 			break;
 		case 12:
 			//bridges
-			var Bird = new IntermittentSound(audioBuffers[12], 1., 1.75, 1, 4, 0.35, 0.5, 0.75, 1.5, [[0,0], [0,-3], [0,3]], true);
+			var Bird = new IntermittentSound(audioBuffers[12], 1., 1.75, 1, 4, 0.2, 0.45, 0.75, 1.5, [[0,0], [0,-3], [0,3]], true);
 			console.log(Bird.estimateDuration());
 			Bird.connect(gainNode);
 			Bird.play();
 			intermittentSounds.push(Bird);
-			Bird = new IntermittentSound(audioBuffers[12], 1.5, 2.5, 3, 6, 0.005, 0.01, 1.25, 2.5, [[4,0], [4,-3], [4,3]], true);
+			//another chirp!
+			Bird = new IntermittentSound(audioBuffers[12], 0.15, 0.25, 1, 3, 0.005, 0.01, 1.25, 2.5, [[4,0], [4,-3], [4,3]], true);
 			console.log(Bird.estimateDuration());
 			Bird.connect(gainNode);
-			Bird.play();
-			intermittentSounds.push(Bird);
+			var testChirp = new Chirp(Bird, 1.5, 2.5, 3, 6, true);
+			console.log("estimated chirp duration: " + testChirp.estimateDuration());
+			testChirp.play();
+			chirps.push(testChirp);
 			break;
 		case 13:
 			//obelisk
-			var Bird = new IntermittentSound(audioBuffers[13], 0.5, 1.25, 0, 2, 0.35, 0.5, 1.25, 2.5, [[0,0], [0,-3], [0,3]], true);
+			var Bird = new IntermittentSound(audioBuffers[13], 0.5, 1.25, 1, 2, 0.2, 0.45, 1.25, 2.5, [[0,0], [0,-3], [0,3]], true);
 			console.log(Bird.estimateDuration());
 			Bird.connect(gainNode);
 			Bird.play();
@@ -251,7 +286,7 @@ function birdButtonClicked(measureNumber) {
 			break;
 		case 14:
 			//do not feed
-			var Bird = new IntermittentSound(audioBuffers[14], 0.5, 3.5, 4, 8, 0.35, 0.5, 1.25, 2.5, [[0,0]], true);
+			var Bird = new IntermittentSound(audioBuffers[14], 0.5, 3.5, 4, 8, 0.15, 0.5, 0.5, 2.5, [[0,0]], true);
 			console.log(Bird.estimateDuration());
 			Bird.connect(gainNode);
 			Bird.play();
@@ -335,7 +370,7 @@ function birdButtonClicked(measureNumber) {
 			var leadership = [18, 19];
 			var randomBufferIndex = Math.floor(Math.random() * leadership.length);
 			var randomBuffer = leadership[randomBufferIndex];
-			var Bird = new IntermittentSound(audioBuffers[randomBuffer], 0.5, 1.25, 3, 7, 0.025, 0.15, 0.5, 2., [[0,1]], true);
+			var Bird = new IntermittentSound(audioBuffers[randomBuffer], 0.5, 1.25, 3, 7, 0.1, 0.35, 0.5, 2., [[0,1]], true);
 			console.log(Bird.estimateDuration());
 			Bird.connect(gainNode);
 			Bird.play();
@@ -399,7 +434,7 @@ function birdButtonClicked(measureNumber) {
 			var freaks = [14, 15, 16, 17, 18, 19];
 			var randomBufferIndex = Math.floor(Math.random() * freaks.length);
 			var randomBuffer = freaks[randomBufferIndex];
-			Bird = new IntermittentSound(audioBuffers[randomBuffer], 0.5, 1.25, 3, 7, 0.025, 0.05, 0.5, 2., [[0,0], [0,0]], true);
+			Bird = new IntermittentSound(audioBuffers[randomBuffer], 0.5, 1.25, 3, 7, 0.2, 0.4, 0.5, 2., [[0,0]], true);
 			console.log(Bird.estimateDuration());
 			Bird.connect(gainNode);
 			Bird.play();
@@ -418,7 +453,7 @@ function birdButtonClicked(measureNumber) {
 			break;
 		case 22:
 			//opera
-			var Bird = new IntermittentSound(audioBuffers[22], 0.5, 1.25, 3, 6, 0.05, 0.3, 0.5, 1.5, [[0,0]], true);
+			var Bird = new IntermittentSound(audioBuffers[22], 0.5, 1.25, 3, 6, 0.15, 0.45, 0.5, 1.5, [[0,0]], true);
 			console.log(Bird.estimateDuration());
 			Bird.connect(gainNode);
 			Bird.play();
@@ -431,7 +466,7 @@ function birdButtonClicked(measureNumber) {
 			break;
 		case 23:
 			//Wagner
-			var Bird = new IntermittentSound(audioBuffers[23], 0.5, 1.25, 2, 4, 0.1, 0.4, 0.5, 1., [[0,0]], true);
+			var Bird = new IntermittentSound(audioBuffers[23], 0.5, 1.25, 2, 4, 0.15, 0.45, 0.5, 1., [[0,0]], true);
 			console.log(Bird.estimateDuration());
 			Bird.connect(gainNode);
 			Bird.play();
@@ -441,11 +476,20 @@ function birdButtonClicked(measureNumber) {
 			Bird.connect(gainNode);
 			Bird.play();
 			intermittentSounds.push(Bird);
-			Bird = new IntermittentSound(audioBuffers[23], 0.5, 3., 1, 3, 0.05, 0.15, 0.35, 0.75, [[3, 0], [3, 3], [4, 6], [4, 9]], true);
+			Bird = new IntermittentSound(audioBuffers[23], 0.05, 0.15, 3, 7, 0.05, 0.15, 0.35, 0.75, [[4, 6], [4, 9]], true);
 			console.log(Bird.estimateDuration());
 			Bird.connect(gainNode);
-			Bird.play();
-			intermittentSounds.push(Bird);
+			var testChirp = new Chirp(Bird, 1.5, 5., 1, 3, true);
+			console.log("estimated chirp duration: " + testChirp.estimateDuration());
+			testChirp.play();
+			chirps.push(testChirp);
+			Bird = new IntermittentSound(audioBuffers[23], 0.15, 0.25, 1, 4, 0.05, 0.15, 0.35, 0.75, [[3, 0], [3, 3]], true);
+			console.log(Bird.estimateDuration());
+			Bird.connect(gainNode);
+			testChirp = new Chirp(Bird, 1.5, 5., 1, 3, true);
+			console.log("estimated chirp duration: " + testChirp.estimateDuration());
+			testChirp.play();
+			chirps.push(testChirp);
 			break;
 		case 24:
 			//hear
@@ -503,11 +547,13 @@ function birdButtonClicked(measureNumber) {
 			Bird.connect(gainNode);
 			Bird.play();
 			intermittentSounds.push(Bird);
-			Bird = new IntermittentSound(audioBuffers[25], 1.5, 2.25, 3, 8, 0.025, 0.075, 1., 5., [[5, 0], [6, 0]], true);
+			Bird = new IntermittentSound(audioBuffers[25], 0.03, 0.06, 3, 6, 0.025, 0.075, 1., 5., [[5, 0], [6, 0]], true);
 			console.log(Bird.estimateDuration());
 			Bird.connect(gainNode);
-			Bird.play();
-			intermittentSounds.push(Bird);
+			var testChirp = new Chirp(Bird, 2., 6., 3, 8, true);
+			console.log("estimated chirp duration: " + testChirp.estimateDuration());
+			testChirp.play();
+			chirps.push(testChirp);
 			break;
 		case 1025:
 			//nepotistic continued...
@@ -518,7 +564,7 @@ function birdButtonClicked(measureNumber) {
 			intermittentSounds.push(Bird);
 			break;
 		case 26:
-			//anger
+			//afraid
 			var Bird = new IntermittentSound(audioBuffers[26], 1., 1.5, 1, 2, 0.1, 0.35, 0.15, 0.35, [[0, 0], [4, 0]], true);
 			console.log(Bird.estimateDuration());
 			Bird.connect(gainNode);
@@ -529,14 +575,16 @@ function birdButtonClicked(measureNumber) {
 			Bird.connect(gainNode);
 			Bird.play();
 			intermittentSounds.push(Bird);
-			Bird = new IntermittentSound(audioBuffers[1], 1., 3., 10, 14, 0.1, 0.35, 0.5, 1.5, [[4, 6], [4, 9]], true);
+			Bird = new IntermittentSound(audioBuffers[1], 0.1, 0.25, 1, 3, 0.1, 0.35, 0.5, 1.5, [[4, 6], [4, 9]], true);
 			console.log(Bird.estimateDuration());
 			Bird.connect(gainNode);
-			Bird.play();
-			intermittentSounds.push(Bird);
+			var testChirp = new Chirp(Bird, 2., 6., 5, 7, true);
+			console.log("estimated chirp duration: " + testChirp.estimateDuration());
+			testChirp.play();
+			chirps.push(testChirp);
 			break;
 		case 27:
-			//fear
+			//anger
 			//phrases 1, 4, 8, 11, 12 are the basic f minor-ish set.
 			var Bird = new IntermittentSound(audioBuffers[1], 1.5, 3., 0, 5, 0.1, 0.35, 0.15, 0.35, [[0, 6], [0, -6]], true);
 			console.log(Bird.estimateDuration());
@@ -546,18 +594,52 @@ function birdButtonClicked(measureNumber) {
 			var minorish = [1, 4, 8, 11, 12];
 			var randomBufferIndex = Math.floor(Math.random() * minorish.length);
 			var randomBuffer = minorish[randomBufferIndex];
-			Bird = new IntermittentSound(audioBuffers[randomBuffer], 0.5, 3., 7, 12, 0.5, 0.85, 0.25, 0.5, [[3, 6], [3, 9], [4, 6], [4, 9]], true);
+			Bird = new IntermittentSound(audioBuffers[randomBuffer], 0.035, 0.065, 3, 7, 0.5, 0.85, 0.25, 0.5, [[3, 6], [3, 9]], true);
 			console.log(Bird.estimateDuration());
 			Bird.connect(gainNode);
-			Bird.play();
-			intermittentSounds.push(Bird);
-			randomBufferIndex = Math.floor(Math.random() * minorish.length);
-			randomBuffer = minorish[randomBufferIndex];
-			Bird = new IntermittentSound(audioBuffers[randomBuffer], 1., 3., 10, 14, 0.35, 0.6, 0.5, 1.5, [[4, 6], [4, 9], [5, 6]], true);
+			var testChirp = new Chirp(Bird, 2., 4., 5, 10, true);
+			console.log("estimated chirp duration: " + testChirp.estimateDuration());
+			testChirp.play();
+			chirps.push(testChirp);
+			break;
+		case 28:
+			//is
+			var minorish = [1, 4, 8, 11, 12];
+			var randomBufferIndex = Math.floor(Math.random() * minorish.length);
+			var randomBuffer = minorish[randomBufferIndex];
+			var Bird = new IntermittentSound(audioBuffers[randomBuffer], 0.055, 0.07, 3, 7, 0.5, 0.85, 0.25, 0.5, [[4, 6], [4, 9]], true);
 			console.log(Bird.estimateDuration());
 			Bird.connect(gainNode);
-			Bird.play();
-			intermittentSounds.push(Bird);
+			var testChirp = new Chirp(Bird, 2., 4., 3, 9, true);
+			console.log("estimated chirp duration: " + testChirp.estimateDuration());
+			testChirp.play();
+			chirps.push(testChirp);
+			break;
+		case 1028:
+			//is continued...
+			var minorish = [1, 4, 8, 11, 12];
+			var randomBufferIndex = Math.floor(Math.random() * minorish.length);
+			var randomBuffer = minorish[randomBufferIndex];
+			var Bird = new IntermittentSound(audioBuffers[randomBuffer], 0.15, 0.2, 0, 4, 0.35, 0.6, 0.5, 1.5, [[4, 6], [4, 9]], true);
+			console.log(Bird.estimateDuration());
+			Bird.connect(gainNode);
+			var testChirp = new Chirp(Bird, 2., 4., 4, 8, true);
+			console.log("estimated chirp duration: " + testChirp.estimateDuration());
+			testChirp.play();
+			chirps.push(testChirp);
+			break;
+		case 29:
+			//fear
+			var minorish = [1, 4, 8, 11, 12];
+			var randomBufferIndex = Math.floor(Math.random() * minorish.length);
+			var randomBuffer = minorish[randomBufferIndex];
+			var Bird = new IntermittentSound(audioBuffers[randomBuffer], 0.04, 0.055, 1, 4, 0.35, 0.6, 0.5, 1.5, [[5, 6]], true);
+			console.log(Bird.estimateDuration());
+			Bird.connect(gainNode);
+			var testChirp = new Chirp(Bird, 2., 5., 5, 8, true);
+			console.log("estimated chirp duration: " + testChirp.estimateDuration());
+			testChirp.play();
+			chirps.push(testChirp);
 			break;
 		default:
 			/*
