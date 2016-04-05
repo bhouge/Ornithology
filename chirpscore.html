@@ -152,7 +152,7 @@ var userAudioInitialized = false;
 //toggle whether or not audio is automatically recorded for each phrase.
 function startStop() {
 	if (this.className == "off") {
-		alert("ready to record!");
+		//alert("ready to record!");
 		if (!userAudioInitialized) {
 			startUserMedia();
 		}
@@ -160,7 +160,7 @@ function startStop() {
 		this.className = "on";
 		this.innerHTML = "stop";
 	} else {
-		alert("no longer ready to record!");
+		//alert("no longer ready to record!");
 		if (recording) {
 			cancelAudioRecording();
 		}
@@ -340,6 +340,7 @@ function reset() {
 
 var userAudioInitialized = false;
 
+/*
 //toggle whether or not audio is automatically recorded for each phrase.
 //could do some checks on this; I think depending on when you click these buttons, 
 //it's possible to get some errors.
@@ -360,6 +361,7 @@ function startStop() {
 		this.innerHTML = "record";
 	}
 }
+*/
 
 var fileNode;
 var gainNode;

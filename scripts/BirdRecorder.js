@@ -11,17 +11,27 @@ var directoryPrefix = "sounds/uncompressed/";
 var userPrefix;
 
 function startUserMedia() {
+	/*
 	navigator.getUserMedia = (navigator.getUserMedia ||
 	        navigator.webkitGetUserMedia ||
 	        navigator.mozGetUserMedia ||
 	        navigator.msGetUserMedia);
 	
-	
+	*/
 	// apparently this is deprecated...
 	// navigator.mozGetUserMedia
 	// "navigator.mozGetUserMedia has been replaced by navigator.mediaDevices.getUserMedia" says Firefox
 
+	var p = navigator.mediaDevices.getUserMedia({ audio: true, video: false });
 
+	p.then(function(mediaStream) {
+		startUserStream(mediaStream)
+	});
+
+	p.catch(function(err) { console.log(err.name); }); // always check for errors at the end.
+	
+	
+	/*
 	if (navigator.getUserMedia) {
 		navigator.getUserMedia(
 		// constraints
@@ -35,6 +45,7 @@ function startUserMedia() {
 	} else {
 		console.log("getUserMedia not supported");
 	};
+	*/
 }
 
 function startUserStream(stream) {
@@ -59,7 +70,7 @@ function getBufferCallback(buffers) {
 }
 
 function postAudio(blob) {
-	var blobPlusFileName = [blob, birdDirectory,  currentPoemLine];
+	var blobPlusFileName = [blob, birdDirectory, currentPoemLine];
 	socket.emit('post audio', blobPlusFileName);
 	recorder.clear();
 }

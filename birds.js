@@ -4,13 +4,41 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 
 var directoryPrefix = '/sounds/compressed/';
-var folderNameArray = ['Ben',
+var folderNameArray = ['BenFTW',
+                       'b1rds3y3',
+                       'bogaloogaloo',
+                       'brice',
+                       'bridgesandstructuresbuilding',
+                       'Elianna',
+                       'EliannaP',
+                       'EliannaPa',
+                       'Emma Cohen',
+                       'Emma Cohen 2',
+                       'Emma Cohen 3',
+                       'Hello!',
+                       'JonnyWang2',
+                       'JonnyWang3',
+                       'JonnyWangGTCMT',
+                       'papertoweltubegoatee',
+                       'professorbirdwithaphd',
+                       'Recording2',
+                       'Test3',
+                       'TheBirdIsTheWoooord',
+                       'tobleronemaster',
+                       'windvalley'];
+
+/*
+ * 
+ * 'Ben',
                        'BenFTW',
                        'Clais', 
                        'Rebecca', 
                        'Jon',
                        'Francisco',
-                       'Lori'];
+                       'Lori',
+ * 
+ * 
+ */
 
 var latestControlPhrase = 0;
 var checkpoint = false;
