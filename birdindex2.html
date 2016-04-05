@@ -56,7 +56,7 @@ var socket = io();
 socket.on('control message', function(msg){
 	if (msg != "panic") {
 		//kind of horrible idea for testing, simulating multiple devices to hear average timings...
-		for (var i = 0; i < 3; i++) {
+		for (var i = 0; i < 1; i++) {
 			birdButtonClicked(parseInt(msg, 10));
 			//birdButtonTest(parseInt(msg, 10));
 		}
