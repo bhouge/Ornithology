@@ -24,14 +24,19 @@ function startUserMedia() {
 
 	var p = navigator.mediaDevices.getUserMedia({ audio: true, video: false });
 
+	// new to promises...this is the method that is called when the deferred action is successful
 	p.then(function(mediaStream) {
 		startUserStream(mediaStream)
 	});
 
+	// and this is the method that is called if the deferred method is not successful
+	// BTW, confirming that the Eclipse error in the following line is a bug in Eclipse, not in my code:
+	// https://bugs.eclipse.org/bugs/show_bug.cgi?id=457830
 	p.catch(function(err) { console.log(err.name); }); // always check for errors at the end.
 	
 	
 	/*
+	// the old way, now deprecated...
 	if (navigator.getUserMedia) {
 		navigator.getUserMedia(
 		// constraints
@@ -74,6 +79,8 @@ function postAudio(blob) {
 	socket.emit('post audio', blobPlusFileName);
 	recorder.clear();
 }
+
+// all of the AJAX stuff below has been happily replaced by socket.io
 
 /*
 function postAudio(blob) {
